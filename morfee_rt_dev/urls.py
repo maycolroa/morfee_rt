@@ -26,5 +26,9 @@ urlpatterns = [
     path('password_change_done/', auth_views.PasswordChangeDoneView.as_view(template_name='users/password_change_done.html'), name='password_change_done'),
 
     path('autorizaciones/', include('autorizaciones.urls')),
-
+    path('contratos/', include('contratos.urls')),
+    path('facturas/', include('facturas.urls')),
+    path('incapacidades/', include('incapacidades.urls')),
+    path('pagos/', include('pagos.urls')),
+    path('consulta/', include('consulta.urls')),
 ]

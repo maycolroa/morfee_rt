@@ -97,7 +97,7 @@
 			<!-- Left Sidebar Menu -->
 			<div class="fixed-sidebar-left hidden-print">
 				{% block menu %}
-					{% include 'morfee_frontier/menu_admin.html' %}
+					{% include 'base/menu_retec.html' %}
 				{% endblock %}
 			</div>
 			<!-- /Left Sidebar Menu -->
@@ -215,7 +215,7 @@
 	
 		<!-- Init JavaScript -->
 		<script src="{% static 'dist/js/init.js' %}"></script>
-		<script src="{% static 'builder/app.js' %}"></script>
+		<script src="{% static 'app.js' %}"></script>
 		{% block logica %}
 		{% endblock %}
 	</body>

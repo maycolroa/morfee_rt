@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from morfee_rt_dev.mongo import Mongo
 from consulta.models import Consulta
+from datetime import date
 
 # Create your views here.
 def createConsulta(name, cole, cla, cli, user):
@@ -37,19 +38,18 @@ def aut_panel(request, section):
 
 def aut_inicio(request):
     coleccion = 'retec_autorizacion_' + str(request.user.cliente.id) if request.user.cliente else 'retec_autorizacion_0'
-    return render(request, 'reservas/autorizaciones/aut_inicio.html', {'coleccion': coleccion})
+    return render(request, 'autorizaciones/aut_inicio.html', {'coleccion': coleccion})
 
 def aut_table(request):
     coleccion = 'retec_autorizacion_' + str(request.user.cliente.id) if request.user.cliente else 'retec_autorizacion_0'
-    return render(request, 'reservas/autorizaciones/aut_table.html', {'coleccion': coleccion})
+    return render(request, 'autorizaciones/aut_table.html', {'coleccion': coleccion})
 
 def aut_import(request):
     coleccion = 'retec_autorizacion_' + str(request.user.cliente.id) if request.user.cliente else 'retec_autorizacion_0'
-    return render(request, 'reservas/autorizaciones/aut_import.html', {'coleccion': coleccion})
+    return render(request, 'autorizaciones/aut_import.html', {'coleccion': coleccion})
 
 def aut_dash(request):
-    coleccion = 'retec_autorizacion_' + str(request.user.cliente.id) if request.user.cliente else 'retec_autorizacion_0'
-    mongo = Mongo(coleccion)
+    mongo = Mongo('retec_autorizaciones')
     datos = mongo.aggregate([
         {"$facet": {
             'facet_amb': [{"$sortByCount": "$amb"}],
@@ -67,21 +67,21 @@ def aut_dash(request):
 @login_required(login_url='/login/')
 def dash_autorizaciones(request):
     clienteId = '0'
-    cliente = 'CAJACOPI'
+    cliente = 'NUEVO CLIENTE'
     if request.user.cliente:
         clienteId = request.user.cliente.id
         cliente = request.user.cliente.cliente
-    return render(request, 'reservas/dashboards/new_autorizaciones.html', {'clienteId': clienteId, 'cliente': cliente})
+    return render(request, 'autorizaciones/new_autorizaciones.html', {'clienteId': clienteId, 'cliente': cliente})
 
 def raw_facet_auto(request):
-    tema = request.POST.get('tema') if request.POST.get('tema') else 'retec_autorizacion_0'
+    tema = 'retec_autorizaciones'
     clave = request.POST.get('clave') if request.POST.get('clave') else ''
     rawper = int(request.POST.get('periodo'))
     periodo = {"$exists": False} if rawper == 0 else rawper
     cliente_id = request.user.cliente_id if request.user.cliente_id else 0
     user_id = request.user.id
     consulta = createConsulta('raw_aut_dat' + str(rawper), tema, clave, cliente_id, user_id)
-    mongo = Mongo(tema)
+    mongo = Mongo('retec_autorizaciones')
     try:
         datos = mongo.aggregate([
             {'$match': {'crx': periodo} }, 
@@ -137,7 +137,7 @@ def raw_facet_auto(request):
         return HttpResponse([], content_type="application/json")
 
 def raw_facet_auto_control(request):
-    tema = request.POST.get('tema') if request.POST.get('tema') else 'retec_autorizacion_0'
+    tema = 'retec_autorizaciones'
     clave = request.POST.get('clave') if request.POST.get('clave') else ''
     rawper = int(request.POST.get('periodo'))
     periodo = {"$exists": False} if rawper == 0 else rawper
@@ -162,7 +162,7 @@ def raw_facet_auto_control(request):
         return HttpResponse([], content_type="application/json")
 
 def schema_auto(request):
-    tema = request.POST.get('tema') if request.POST.get('tema') else 'retec_autorizacion_0'
+    tema = 'retec_autorizaciones'
     clave = request.POST.get('clave') if request.POST.get('clave') else ''
     rawper = int(request.POST.get('periodo'))
     periodo = {"$exists": False} if rawper == 0 else rawper

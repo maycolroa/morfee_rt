@@ -1,3 +1,238 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, JsonResponse
+from morfee_rt_dev.mongo import Mongo
+from consulta.models import Consulta
+from datetime import date
+import json
+# from bson.code import Code
 
-# Create your views here.
+def createConsulta(name, cole, cla, cli, user):
+    print('Generando consulta: ' + name)
+    try:
+        c = Consulta.objects.filter(nombre=name, coleccion=cole, cliente_id=cli, user_id=user).get()
+        c.clave = cla
+        c.estado = 'reopen'
+        c.created_at = date.today()
+        c.save()
+        return c
+    except Consulta.DoesNotExist:
+        cn = Consulta()
+        cn.nombre = name
+        cn.coleccion = cole
+        cn.clave = cla
+        cn.estado = 'open'
+        cn.cliente_id = cli
+        cn.user_id = user
+        cn.save()
+        return cn
+
+def getConsulta(request):
+    keycode = request.POST.get('clave') if request.POST.get('clave') else ''
+    name = request.POST.get('consulta')
+    cli = request.user.cliente_id if request.user.cliente_id else 0
+    uid = request.user.id
+    print('Clave: ' + keycode + ', consulta: ' + name)
+    try:
+        c = Consulta.objects.filter(nombre=name, clave=keycode, cliente_id=cli, user_id=uid).get() if keycode != '' else Consulta.objects.filter(nombre=name, cliente_id=cli, user_id=uid).get()
+        contenido = json.loads(c.contenido) if c.contenido else []
+        print('Consulta encontrada')
+        rs = {'nombre': c.nombre, 'coleccion': c.coleccion, 'contenido': contenido, 'clave': c.clave, 'estado': c.estado, 'created_at': c.created_at}
+        return JsonResponse(rs)
+    except Consulta.DoesNotExist:
+        print('No existe la consulta')
+        rs = {'nombre': name, 'coleccion': '', 'contenido': '', 'clave': keycode, 'estado': 'void', 'created_at': str(date.today())}
+        return JsonResponse(rs)
+
+def pag_panel(request, section):
+    if section == 'inicio':
+        return pag_inicio(request)
+    elif section == 'table':
+        return pag_table(request)
+    elif section == 'import':
+        return pag_import(request)
+    elif section == 'dash':
+        return pag_dash(request)
+
+def pag_inicio(request):
+    return render(request, 'pagos/pag_inicio.html')
+
+def pag_table(request):
+    coleccion = 'retec_pagos'
+    return render(request, 'pagos/pag_table.html', {'coleccion': coleccion})
+
+def pag_import(request):
+    coleccion = 'retec_pagos'
+    return render(request, 'pagos/pag_import.html', {'coleccion': coleccion})
+
+def pag_dash(request):
+    coleccion = 'retec_pagos'
+    mongo = Mongo(coleccion)
+    datos = mongo.aggregate([
+        {"$facet": {
+            'facet_pla': [{"$sortByCount": "$pla"}],
+            'facet_amb': [{"$sortByCount": "$amb"}],
+            'facet_tra': [{"$sortByCount": "$tra"}],
+            'facet_total': [{"$group": {"_id": None, "n": {"$sum": 1}}}],
+            'facet_vdo': [{"$group": {"_id": None, "n": {"$sum": "$vdo"}}}],
+            'facet_gde': [{"$group": {"_id": None, "n": {"$sum": "$gde"}}}],
+            'facet_vpbs': [{"$group": {"_id": None, "n": {"$sum": "$vpbs"}}}],
+            'facet_vpac': [{"$group": {"_id": None, "n": {"$sum": "$vpac"}}}],
+            'facet_vppm': [{"$group": {"_id": None, "n": {"$sum": "$vppm"}}}],
+            'facet_doc': [{"$sortByCount": "$tus"}],
+        }},
+    ])
+    return HttpResponse(datos, content_type="application/json")
+
+def raw_facet_pay(request):
+    tema = 'retec_pagos'
+    clave = request.POST.get('clave') if request.POST.get('clave') else ''
+    rawper = int(request.POST.get('periodo'))
+    periodo = {"$exists": False} if rawper == 0 else rawper
+    cliente_id = request.user.cliente_id if request.user.cliente_id else 0
+    user_id = request.user.id
+    consulta = createConsulta('raw_pay_dat' + str(rawper), tema, clave, cliente_id, user_id)
+    print('domora + ' + tema)
+    mongo = Mongo(tema)
+    try:
+        datos = mongo.aggregate([
+            {'$match': {'crx': periodo}}, 
+            {
+                '$facet': {
+                    # '$vbs'	'$vpm'
+                    'rs_0': [ {'$group': {
+                        '_id': None, 
+                        'total': {'$sum': 1}, 
+                        'sum_vdo': {'$sum': "$vdo"}, 
+                        'sum_gde': {"$sum": "$gde"}, 
+                        'r_pbs': {'$sum': '$vpbs'}, 
+                        'r_pm': {'$sum': '$vppm'} 
+                    }}],
+                    'rs_1': [ {'$group': {'_id': '$pla', 'total': {'$sum': 1}}} ],
+                    'rs_2': [ {'$group': {'_id': '$tra', 'total': {'$sum': 1}}} ],
+                    'rs_3': [ {'$group': {'_id': '$amb', 'total': {'$sum': 1}}} ],
+                    'rs_4': [ {'$group': {'_id': '$tus', 'total': {'$sum': 1}}} ],
+                    'pmx':  [ {'$group': {'_id': '$pmx', 'total': {'$sum': 1}}} ],
+                    'new_1': [ {'$group': {'_id': '$tpp', 'total': {'$sum': 1}}} ],
+                    'new_2': [ {'$group': {'_id': '$mpa', 'total': {'$sum': 1}}} ],
+                    # 'rs_5': [
+                    #     {'$match': {'crx': periodo}}, 
+                    #     {'$group': {'_id': {'tm_tra': '$tra', 'tm_tus': '$tus'}, 'total': {'$sum': 1}}}
+                    # ]
+                }
+            }
+        ])
+        consulta.contenido = str(datos)
+        consulta.estado = 'close'
+        consulta.save()
+        print('dinabot')
+        print(datos)
+        return HttpResponse(datos, content_type="application/json")
+    except:
+        consulta.estado = 'failed'
+        consulta.save()
+        return HttpResponse([], content_type="application/json")
+
+def raw_facet_pay_control(request):
+    tema = 'retec_pagos'
+    clave = request.POST.get('clave') if request.POST.get('clave') else ''
+    rawper = int(request.POST.get('periodo'))
+    periodo = {"$exists": False} if rawper == 0 else rawper
+    cliente_id = request.user.cliente_id if request.user.cliente_id else 0
+    user_id = request.user.id
+    consulta = createConsulta('raw_pay_ctr' + str(rawper), tema, clave, cliente_id, user_id)
+    mongo = Mongo(tema)
+    try:
+        datos = mongo.aggregate([
+            {"$match": {'crx': periodo} },
+            {'$group': {
+                '_id': None,
+                's_vdo': {'$sum': '$vdo'},		# FACTURADO TOTAL
+                's_gde': {'$sum': '$gde'},		# GLOSA DEFINITIVA
+                's_vpbs': {'$sum': '$vpbs'},	# PAGADO PBS
+                's_vppm': {'$sum': '$vppm'},	# PAGADO PM
+                'f_pbs': {'$sum': {'$cond': [{'$in': ['$pmx', ['0', 0]]}, '$vdo', 0]}},		# FACTURADO PBS
+                'f_pm': {'$sum': {'$cond': [{'$in': ['$pmx', ['1', 1]]}, '$vdo', 0]}},		# FACTURADO PM
+                'g_pbs': {'$sum': {'$cond': [{'$in': ['$pmx', ['0', 0]]}, '$gde', 0]}},		# GLOSADO PBS
+                'g_pm': {'$sum': {'$cond': [{'$in': ['$pmx', ['1', 1]]}, '$gde', 0]}},		# GLOSADO PM
+                'total': {'$sum': 1}
+            }}
+        ])
+        # // rawCtr.s_vpbs
+        # // rawCtr.s_vppm
+        consulta.contenido = str(datos)
+        consulta.estado = 'close'
+        consulta.save()
+        print(datos)
+        return HttpResponse(datos, content_type="application/json")
+    except:
+        consulta.estado = 'failed'
+        consulta.save()
+        return HttpResponse([], content_type="application/json")
+
+@login_required(login_url='/login/')
+def dash_pagos(request):
+    clienteId = '0'
+    cliente = 'NUEVO CLIENTE'
+    if request.user.cliente:
+        clienteId = request.user.cliente.id
+        cliente = request.user.cliente.cliente
+    return render(request, 'pagos/new_pagos.html', {'clienteId': clienteId, 'cliente': cliente})
+
+def schema_pago(request):
+    tema = 'retec_pagos'
+    clave = request.POST.get('clave') if request.POST.get('clave') else ''
+    rawper = int(request.POST.get('periodo'))
+    periodo = {"$exists": False} if rawper == 0 else rawper
+    cliente_id = request.user.cliente_id if request.user.cliente_id else 0
+    user_id = request.user.id
+    consulta = createConsulta('schema_pay' + str(rawper), tema, clave, cliente_id, user_id)
+    mongo = Mongo(tema)
+    print('Coleccion: ' + tema + ', Periodo: ' + str(rawper))
+    try:    
+        datos = mongo.aggregate([
+            {"$match": {'crx': periodo} },
+            {'$group': {
+                '_id': None,
+                'n_ifa': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$ifa', None] }, None] }, 0, 1] } },
+                'n_tpp': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$tpp', None] }, None] }, 0, 1] } },
+                'n_idp': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$idp', None] }, None] }, 0, 1] } },
+                'n_nmp': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$nmp', None] }, None] }, 0, 1] } },
+                'n_pla': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$pla', None] }, None] }, 0, 1] } },
+                'n_tra': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$tra', None] }, None] }, 0, 1] } },
+                'n_idc': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$idc', None] }, None] }, 0, 1] } },
+                'n_tus': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$tus', None] }, None] }, 0, 1] } },
+                'n_ius': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$ius', None] }, None] }, 0, 1] } },
+                'n_iau': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$iau', None] }, None] }, 0, 1] } },
+                'n_fau': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$fau', None] }, None] }, 0, 1] } },
+                'n_amb': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$amb', None] }, None] }, 0, 1] } },
+                'n_ids': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$ids', None] }, None] }, 0, 1] } },
+                'n_ser': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$ser', None] }, None] }, 0, 1] } },
+                'n_dia': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$dia', None] }, None] }, 0, 1] } },
+                'n_can': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$can', None] }, None] }, 0, 1] } },
+                'n_fp': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$fp', None] }, None] }, 0, 1] } },
+                'n_fr': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$fr', None] }, None] }, 0, 1] } },
+                'n_vdo': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$vdo', None] }, None] }, 0, 1] } },
+                'n_gde': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$gde', None] }, None] }, 0, 1] } },
+                'n_mpa': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$mpa', None] }, None] }, 0, 1] } },
+                'n_vpbs': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$vpbs', None] }, None] }, 0, 1] } },
+                'n_vpac': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$vpac', None] }, None] }, 0, 1] } },
+                'n_vppm': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$vppm', None] }, None] }, 0, 1] } },
+                'n_fpa': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$fpa', None] }, None] }, 0, 1] } },
+                'n_pmx': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$pmx', None] }, None] }, 0, 1] } },
+                'n_pac': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$pac', None] }, None] }, 0, 1] } },
+                'n_ume': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$ume', None] }, None] }, 0, 1] } },
+                'n_ffa': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$ffa', None] }, None] }, 0, 1] } },
+                'n_cov': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$cov', None] }, None] }, 0, 1] } },
+                'total': {'$sum': 1}
+            }},
+        ])
+        consulta.contenido = str(datos)
+        consulta.estado = 'close'
+        consulta.save()
+        print(datos)
+        return HttpResponse(datos, content_type="application/json")
+    except:
+        consulta.estado = 'failed'
+        consulta.save()
+        return HttpResponse([], content_type="application/json")

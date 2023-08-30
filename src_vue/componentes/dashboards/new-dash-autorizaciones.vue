@@ -629,8 +629,8 @@ export default {
         return {
             tokens: {},
             keycode: '',
-            pathsearch: this.pathdata.replace(/dash.*$/i, 'dash/consulta/auto'),
-            fuente: (this.cliente == '0')? 'retec_autorizacion_0': this.cliente + '_retec_autorizacion',
+            pathsearch: root_path + 'consulta/dash/consulta/auto',
+            fuente: 'retec_autorizaciones',
             // fuente: '7_retec_autorizacion',
             krache: 'dash_auto_' + this.cliente,
             krache_ctr: 'dash_auto_ctr_' + this.cliente,

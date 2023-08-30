@@ -11,8 +11,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from os import getenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+PRODUCT_STATUS = getenv("PRODUCT_STATUS", "False") == "True"
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -81,24 +83,38 @@ WSGI_APPLICATION = 'morfee_rt_dev.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'db_morfee_rt',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+if PRODUCT_STATUS == False:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'db_morfee_rt',
+            'USER': 'root',
+            'PASSWORD': '',
+            'HOST': '127.0.0.1',
+            'PORT': '3306',
+            'OPTIONS': {
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            }
         }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'db_morfee_rt',
+            'USER': 'doadmin',
+            'PASSWORD': 'zcnkr6zdz2depana',
+            'HOST': 'db-mysql-nyc3-80737-do-user-7990340-0.b.db.ondigitalocean.com',
+            'PORT': '25060',
+            'OPTIONS': {
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            },
+        }
+    }
 
 # CUSTOM_URI_MONGO = 'mongodb://localhost:27017/'
 CUSTOM_URI_MONGO = 'mongodb+srv://carvi:ac2502412@sgsss.yv4ar.gcp.mongodb.net/morfeeweb?authSource=admin'
-CUSTOM_DB_MONGO = 'morfeeweb'
+CUSTOM_DB_MONGO = 'morfee_lobster'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -124,9 +140,28 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / "static",]
-STATIC_ROOT = "/staticfiles/"
+if PRODUCT_STATUS == False:
+    STATIC_URL = 'static/'
+    STATICFILES_DIRS = [BASE_DIR / "static",]
+    STATIC_ROOT = "/staticfiles/"
+else:
+    #Version actualizada
+    AWS_ACCESS_KEY_ID = 'VDPJXJOCWLN4YLB7WLVG'
+    AWS_SECRET_ACCESS_KEY = 'oCXyf0QEppqysauxt3mdRV03G4Cs3OSrkQLnPZeMuZk'
+    AWS_STORAGE_BUCKET_NAME = 'almacenmorfee'
+    AWS_S3_ENDPOINT_URL = 'https://nyc3.digitaloceanspaces.com'
+    AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400', 'ACL': 'public-read'}
+    AWS_QUERYSTRING_AUTH = False
+    AWS_LOCATION = 'https://almacenmorfee.nyc3.digitaloceanspaces.com/'
+    # AWS_LOCATION = 'cuentas_medicas/static'
+    STATIC_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/cuentas_medicas/static/"
+
+    STATICFILES_FOLDER = "cuentas_medicas/static"
+    MEDIAFILES_FOLDER = "cuentas_medicas/media"
+
+    STATICFILES_STORAGE = 'custom_storages.StaticFileStorage'
+    DEFAULT_FILE_STORAGE = "custom_storages.MediaFileStorage"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
