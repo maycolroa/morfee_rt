@@ -178,6 +178,7 @@ Vue.component('ghg-import', require('./componentes/ghg_import.vue').default);
 
 Vue.component('root-periodos', require('./componentes/select-periodos.vue').default);
 Vue.component('load-and-time', require('./componentes/load_and_time.vue').default);
+Vue.component('proyeccion', require('./componentes/proyeccion.vue').default);
 
 window.app = new Vue({
     el: '#mainApp'

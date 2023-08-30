@@ -28,6 +28,9 @@
         <a href="{% url 'retec_pagos_new' %}" class="{% if request.resolver_match.url_name == 'retec_pagos_new' %}active{% endif %}">
             <div class="pull-left"><i class="zmdi zmdi-inbox me-3"></i><span class="right-nav-text">Pagos</span></div><div class="clearfix"></div>
         </a>
+        <a href="{% url 'pro_inicio' %}" class="{% if request.resolver_match.url_name == 'pro_inicio' %}active{% endif %}">
+            <div class="pull-left"><i class="zmdi zmdi-inbox me-3"></i><span class="right-nav-text">Proyecciones</span></div><div class="clearfix"></div>
+        </a>
         {% comment %}
         {% if user.cliente.is_indigena != True %}
         <a href="{% url 'retec_incapacidades_new' %}" class="{% if request.resolver_match.url_name == 'retec_incapacidades_new' %}active{% endif %}">

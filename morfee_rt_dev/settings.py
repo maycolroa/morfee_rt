@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'facturas',
     'incapacidades',
     'pagos',
+    'proyecciones',
     'triangulos',
     'users'
 ]
@@ -153,11 +154,11 @@ else:
     AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400', 'ACL': 'public-read'}
     AWS_QUERYSTRING_AUTH = False
     AWS_LOCATION = 'https://almacenmorfee.nyc3.digitaloceanspaces.com/'
-    # AWS_LOCATION = 'cuentas_medicas/static'
-    STATIC_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/cuentas_medicas/static/"
+    # AWS_LOCATION = 'reservas/static'
+    STATIC_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/reservas/static/"
 
-    STATICFILES_FOLDER = "cuentas_medicas/static"
-    MEDIAFILES_FOLDER = "cuentas_medicas/media"
+    STATICFILES_FOLDER = "reservas/static"
+    MEDIAFILES_FOLDER = "reservas/media"
 
     STATICFILES_STORAGE = 'custom_storages.StaticFileStorage'
     DEFAULT_FILE_STORAGE = "custom_storages.MediaFileStorage"

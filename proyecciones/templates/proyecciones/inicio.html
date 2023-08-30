@@ -1,0 +1,36 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block contenido %}
+<div class="row heading-bg">
+    <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+        <h5 class="txt-dark">PROYECCIONES</h5>
+    </div>
+    <!-- Breadcrumb -->
+    <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+        <ol class="breadcrumb">
+            <li><a href="{% url 'inicio' %}">Morfee</a></li>
+            <li class="active"><span>Proyecciones</span></li>
+        </ol>
+    </div>
+    <!-- /Breadcrumb -->
+</div>
+<div class="panel panel-default card-view border">
+    <div class="panel-heading d-none">
+        <ul class="nav nav-pills">
+            <li class="active"><a href="{% url 'retec_incapacidades' 'inicio' %}">Dashboard</a></li>
+            <li><a href="{% url 'retec_incapacidades' 'table' %}">Registros</a></li>
+            <li><a href="{% url 'retec_incapacidades' 'import' %}">Importar</a></li>
+        </ul>
+        <hr class="light-grey-hr mb-1">
+        <!-- <h6 class="panel-title fs-5">RÉGIMEN CONTRIBUTIVO</h6> -->
+    </div>
+    <div class="panel-wrapper collapse in">
+        <div class="panel-body">
+            <h5>Predicción Cuentas Médicas - Innovación Analítica</h5>
+            <hr>
+            <proyeccion></proyeccion>
+        </div>
+    </div>
+</div>
+{% endblock %}
