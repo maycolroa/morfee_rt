@@ -59,17 +59,19 @@
             </div>
         </div>
         <div class="text-center">
-            <button class="btn btn-success">Predecir</button>
+            <button class="btn btn-success" @click="prediccion">Predecir</button>
         </div>
+        <div class="mt-4">{{ status }}</div>
     </div>
 </template>
 <script>
 export default {
     props: {
-        ejemplo: {type: String, default: ''},
+        pathmodel: {type: String, default: ''},
     },
     data() {
         return {
+            modelo: null,
             mes_servicio: '',
             valor_factura: '',
             tipo_contrato: '',
@@ -87,9 +89,36 @@ export default {
 		isEmpty: function(arg){
 			return ['', undefined, null].includes(arg)? true: /^\s*$/.test(arg);
 		},
+        loadModel: async function(){
+            this.status = 'Cargando modelo...';
+            this.modelo = await tf.loadLayersModel(this.pathmodel);
+            this.status = 'Modelo cargado';
+        },
+        prediccion: function(){
+            if(this.modelo){
+                console.log('Prediciendo...');
+                let inputData = tf.tensor2d([
+                    this.mes_servicio, 
+                    this.valor_factura, 
+                    this.tipo_contrato, 
+                    this.modalidad_contrato, 
+                    this.municipio_afiliado, 
+                    this.departamento_afiliado, 
+                    this.tipo_regimen, 
+                    this.pos
+                ], [1, 8]);
+                let result = this.modelo.predict(inputData);
+                result.print();
+                console.log('Listo...');
+            }
+        }
     },
     mounted() {
-        // alert('some');
+        const plugin = document.createElement('script');
+        plugin.setAttribute("src", "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest");
+        plugin.async = true;
+        plugin.onload = () => this.loadModel();
+        document.head.appendChild(plugin);
     }
 }
 </script>
