@@ -3,4 +3,5 @@ from . import views
 
 urlpatterns = [
     path('dash/consulta/auto', views.getConsulta, name='retec_consulta'),
+    path('consultas_view',views.consultas_view),
 ]

@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from .models import Consulta
 from datetime import date
+from morfee_rt_dev.mongo import Mongo
 import json
 
 # Create your views here.
@@ -21,3 +22,26 @@ def getConsulta(request):
         print('No existe la consulta')
         rs = {'nombre': name, 'coleccion': '', 'contenido': '', 'clave': keycode, 'estado': 'void', 'created_at': str(date.today())}
         return JsonResponse(rs)
+
+def consultas_view(request):
+    #autorizaciones facturas pagos incapacidades
+    cm_colection = request.POST.get('colections') if request.POST.get('colections') else ''
+    datos =[]
+    if cm_colection != '':
+        cm_colection = cm_colection+'_view' 
+        #verificamos la existencia de la coleccion o view
+        mongo_v = Mongo()
+        listaCM = mongo_v.listarColecciones()
+        if cm_colection in listaCM:
+            mongo = Mongo(cm_colection).find('')       
+            datos =[{'estado' : 'si', 'datos':mongo, 'view':cm_colection}]
+        else:
+            datos = [{'estado' : 'no', 'datos':'', 'view': 'no_exite_view_'+cm_colection}]
+    else:
+        datos =[{'estado' : 'no', 'datos':'', 'view':'no ha enviado coleccion'}]
+    return HttpResponse(datos, content_type="application/json")
+
+
+
+
+     
