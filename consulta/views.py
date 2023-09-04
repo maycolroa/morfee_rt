@@ -23,23 +23,30 @@ def getConsulta(request):
         rs = {'nombre': name, 'coleccion': '', 'contenido': '', 'clave': keycode, 'estado': 'void', 'created_at': str(date.today())}
         return JsonResponse(rs)
 
+
 def consultas_view(request):
     #autorizaciones facturas pagos incapacidades
-    cm_colection = request.POST.get('colections') if request.POST.get('colections') else ''
-    datos =[]
+    cm_colection = request.POST.get('collections') if request.POST.get('collections') else ''
+    #datos ={}
+    x = []
     if cm_colection != '':
         cm_colection = cm_colection+'_view' 
         #verificamos la existencia de la coleccion o view
         mongo_v = Mongo()
         listaCM = mongo_v.listarColecciones()
+        query = []
         if cm_colection in listaCM:
-            mongo = Mongo(cm_colection).find('')       
-            datos =[{'estado' : 'si', 'datos':mongo, 'view':cm_colection}]
+            mongo = Mongo(cm_colection)
+            x = mongo.aggregate([{'$match':{}}])      
+            #datos ={"estado" : "si", "datos":x, "view":cm_colection}
         else:
-            datos = [{'estado' : 'no', 'datos':'', 'view': 'no_exite_view_'+cm_colection}]
-    else:
-        datos =[{'estado' : 'no', 'datos':'', 'view':'no ha enviado coleccion'}]
-    return HttpResponse(datos, content_type="application/json")
+            x = {'_id':'sin registro'}
+            #datos = {'estado' : 'no', 'datos':'', 'view': 'no_exite_view_'+cm_colection}
+    else: 
+        x = {'_id':'no hay datos'}
+        #datos ={'estado' : 'no', 'datos':'', 'view':'no ha enviado coleccion'}
+    return HttpResponse(x, content_type="application/json")
+    #return JsonResponse(datos)
 
 
 

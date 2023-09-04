@@ -212,3 +212,7 @@ def schema_auto(request):
         consulta.estado = 'failed'
         consulta.save()
         return HttpResponse([], content_type="application/json")
+    
+def view_periodo(request):
+    return render(request, 'autorizaciones/view_periodo.html')
+

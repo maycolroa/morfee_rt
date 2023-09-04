@@ -8,6 +8,8 @@ urlpatterns = [
     path('dash/autorizaciones/controls', views.raw_facet_auto_control, name='retec_auto_ctr'),
     path('dash/autorizaciones/schema', views.schema_auto, name='retec_auto_sch'),
 
+    path('example/view_periodo',views.view_periodo, name='view_periodo'),
+
     # path('dashboards/<str:section>/', views.dashboards, name='retec_dashboard'),
     # path('contratos/<str:section>/', views.cont_panel, name='retec_contratos'),
     # path('facturas/<str:section>/', views.fac_panel, name='retec_facturas'),
