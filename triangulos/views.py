@@ -7,127 +7,14 @@ from datetime import date
 import json
 # from bson.code import Code
 
-def createConsulta(name, cole, cla, cli, user):
-    print('Generando consulta: ' + name)
-    try:
-        c = Consulta.objects.filter(nombre=name, coleccion=cole, cliente_id=cli, user_id=user).get()
-        c.clave = cla
-        c.estado = 'reopen'
-        c.created_at = date.today()
-        c.save()
-        return c
-    except Consulta.DoesNotExist:
-        cn = Consulta()
-        cn.nombre = name
-        cn.coleccion = cole
-        cn.clave = cla
-        cn.estado = 'open'
-        cn.cliente_id = cli
-        cn.user_id = user
-        cn.save()
-        return cn
-
-def getConsulta(request):
-    keycode = request.POST.get('clave') if request.POST.get('clave') else ''
-    name = request.POST.get('consulta')
-    cli = request.user.cliente_id if request.user.cliente_id else 0
-    uid = request.user.id
-    print('Clave: ' + keycode + ', consulta: ' + name)
-    try:
-        c = Consulta.objects.filter(nombre=name, clave=keycode, cliente_id=cli, user_id=uid).get() if keycode != '' else Consulta.objects.filter(nombre=name, cliente_id=cli, user_id=uid).get()
-        contenido = json.loads(c.contenido) if c.contenido else []
-        print('Consulta encontrada')
-        rs = {'nombre': c.nombre, 'coleccion': c.coleccion, 'contenido': contenido, 'clave': c.clave, 'estado': c.estado, 'created_at': c.created_at}
-        return JsonResponse(rs)
-    except Consulta.DoesNotExist:
-        print('No existe la consulta')
-        rs = {'nombre': name, 'coleccion': '', 'contenido': '', 'clave': keycode, 'estado': 'void', 'created_at': str(date.today())}
-        return JsonResponse(rs)
-
-
-# Create your views here.
-@login_required(login_url='/login/')
-def inicio(request):
-    return render(request, 'reservas/panel_modulo.html')
-
 @login_required(login_url='/login/')
 def piramide(request):
     clienteId = '0'
-    cliente = 'CAJACOPI'
+    cliente = 'CLIENTE NUEVO'
     if request.user.cliente:
         clienteId = request.user.cliente.id
         cliente = request.user.cliente.cliente
-    return render(request, 'reservas/piramide.html', {'clienteId': clienteId, 'cliente': cliente})
-
-@login_required(login_url='/login/')
-def fragmentation(request):
-    clienteId = '0'
-    cliente = 'CAJACOPI'
-    if request.user.cliente:
-        clienteId = str(request.user.cliente.id)
-        cliente = request.user.cliente.cliente
-    return render(request, 'reservas/fragmentation.html', {'masterId': clienteId, 'clienteId': clienteId, 'cliente': cliente})
-
-@login_required(login_url='/login/')
-def custom_1(request):
-    return render(request, 'reservas/clientes/custom_1.html')
-
-@login_required(login_url='/login/')
-def custom_2(request):
-    return render(request, 'reservas/clientes/custom_2.html')
-
-# ***********************************************************
-# ******************** SECTION CONTRATOS ********************
-# ***********************************************************
-
-def cont_panel(request, section):
-    if section == 'inicio':
-        return cont_inicio(request)
-    elif section == 'table':
-        return cont_table(request)
-    elif section == 'import':
-        return cont_import(request)
-    elif section == 'dash':
-        return cont_dash(request)
-    elif section == 'extra':
-        return cont_extra(request)
-
-def cont_inicio(request):
-    coleccion = 'retec_contratos_' + str(request.user.cliente.id) if request.user.cliente else 'retec_contratos_0'
-    return render(request, 'reservas/contratos/cont_inicio.html', {'coleccion': coleccion})
-
-def cont_import(request):
-    coleccion = 'retec_contratos_' + str(request.user.cliente.id) if request.user.cliente else 'retec_contratos_0'
-    return render(request, 'reservas/contratos/cont_import.html', {'coleccion': coleccion})
-
-def cont_table(request):
-    coleccion = 'retec_contratos_' + str(request.user.cliente.id) if request.user.cliente else 'retec_contratos_0'
-    return render(request, 'reservas/contratos/cont_table.html', {'coleccion': coleccion})
-
-def cont_dash(request):
-    coleccion = 'retec_contratos_' + str(request.user.cliente.id) if request.user.cliente else 'retec_contratos_0'
-    mongo = Mongo(coleccion)
-    datos = mongo.aggregate([
-        {"$facet": {
-            'facet_pla': [{"$sortByCount": "$pla"}],
-            'facet_base': [{"$group": {"_id": "", "base": {"$sum": "$bas"}}}],
-            'facet_actual': [{"$group": {"_id": "", "actual": {"$sum": "$act"}}}],
-            'facet_total': [{"$group": {"_id": None, "n": {"$sum": 1}}}],
-            'facet_pre': [{"$group": {"_id": "$idp"}}],
-            'facet_doc': [{"$sortByCount": "$tpp"}],
-            # 'facet_suma': [{"$project": {"base": {"$sum": "$bas"}, "actual": {"$sum": "$act"}}}],
-            # {"$group": {"_id": "$depmun", "total": {"$sum": 1}}}
-        }},
-    ])
-    return HttpResponse(datos, content_type="application/json")
-
-def cont_extra(request):
-    coleccion = 'retec_contratos_' + str(request.user.cliente.id) if request.user.cliente else 'retec_contratos_0'
-    mongo = Mongo(coleccion)
-    datos = mongo.getCliente().count()
-    mongo.close()
-    return HttpResponse(datos, content_type="application/json")
-
+    return render(request, 'triangulos/piramide.html', {'clienteId': clienteId, 'cliente': cliente})
 
 # ****************************************************************
 # ******************** SECTION AUTORIZACIONES ********************

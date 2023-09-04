@@ -28,6 +28,9 @@
         <a href="{% url 'retec_pagos_new' %}" class="{% if request.resolver_match.url_name == 'retec_pagos_new' %}active{% endif %}">
             <div class="pull-left"><i class="zmdi zmdi-inbox me-3"></i><span class="right-nav-text">Pagos</span></div><div class="clearfix"></div>
         </a>
+        <a href="{% url 'retec_piramide' %}" class="{% if request.resolver_match.url_name == 'retec_piramide' %}active{% endif %}">
+            <div class="pull-left"><i class="zmdi zmdi-triangle-up me-3"></i><span class="right-nav-text">Triángulos</span></div><div class="clearfix"></div>
+        </a>
         <a href="{% url 'pro_inicio' %}" class="{% if request.resolver_match.url_name == 'pro_inicio' %}active{% endif %}">
             <div class="pull-left"><i class="zmdi zmdi-inbox me-3"></i><span class="right-nav-text">Proyecciones</span></div><div class="clearfix"></div>
         </a>
@@ -43,9 +46,6 @@
             <div class="pull-left"><i class="zmdi zmdi-view-week me-3"></i><span class="right-nav-text">Periodos</span></div><div class="clearfix"></div>
         </a>
         {% if user.cliente.is_indigena != True %}
-        <a href="{% url 'retec_piramide' %}" class="{% if request.resolver_match.url_name == 'retec_piramide' %}active{% endif %}">
-            <div class="pull-left"><i class="zmdi zmdi-triangle-up me-3"></i><span class="right-nav-text">Triángulos</span></div><div class="clearfix"></div>
-        </a>
         {% endif %}
         {% if user.cliente.id == 5 %}
         <a href="{% url 'retec_custom_1' %}" class="{% if request.resolver_match.url_name == 'retec_custom_1' %}active{% endif %}">

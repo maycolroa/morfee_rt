@@ -28,8 +28,8 @@
     <div class="panel-wrapper collapse in">
         <div class="panel-body">
             <h5>Predicción Cuentas Médicas - Innovación Analítica</h5>
-            <hr>
-            <proyeccion pathmodel="{% static 'modelos/model.json'%}"></proyeccion>
+            <div class="my-4"></div>
+            <proyeccion pathpredict="{% url 'pro_predecir' %}" pathmodel="{% static 'modelos/dl_rt_pagos.h5' %}"></proyeccion>
         </div>
     </div>
 </div>
