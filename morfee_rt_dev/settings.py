@@ -33,6 +33,7 @@ ALLOWED_HOSTS = ['127.0.0.1', '10.244.8.31', 'famisanar.morfee.com.co', 'dolphin
 
 INSTALLED_APPS = [
     # 'django.contrib.admin',
+    # 'channels',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -78,6 +79,11 @@ TEMPLATES = [
         },
     },
 ]
+
+# ASGI_APPLICATION = 'morfee_rt_dev.asgi.application'
+# CHANNEL_LAYERS = {
+#     'default': {'BACKEND': 'channels.layers.InMemoryChannelLayer'}
+# }
 
 WSGI_APPLICATION = 'morfee_rt_dev.wsgi.application'
 

@@ -2,7 +2,7 @@
     <div>
         <div class="p-4 text-center d-flex justify-content-center classIni" v-if="step == 1">
             <div class="bg-light-danger border border-danger px-3 py-3" v-if="has_error_dict">
-                <div v-if="sindiccionario">
+                <div>
                     <div v-if="f_head == ''" class="d-flex align-items-center">
                         <i class="fa fa-times fs-5 me-2 txt-danger"></i>
                         <span class="txt-danger">No se definió cómo manejará las cabeceras el importador.</span>
@@ -11,10 +11,6 @@
                         <i class="fa fa-times fs-5 me-2 txt-danger"></i>
                         <span class="txt-danger">Para el tipo de cabeceras <strong>{{ f_head }}</strong> se require definir los campos requeridos.</span>
                     </div>
-                </div>
-                <div class="d-flex align-items-center" v-else>
-                    <i class="fa fa-warning fs-3 me-3 txt-danger"></i>
-                    <div class="txt-danger">No se pudo acceder a los datos de configuración de diccionarios para la colección <strong>{{ prefijo + lc_destino }}</strong>!</div>
                 </div>
             </div>
             <span class="txhover" v-on:click="step = 2" v-else>
@@ -336,35 +332,6 @@ export default {
             this.first_line_pass = false;
             this.arr_campos.forEach(elm => elm.match = 0);
         },
-        loadInfo: function(){
-            this.has_error_dict = false;
-            var ruta = root_path + 'users/admin/diccionario/' + this.lc_prefijo + this.lc_destino + '/';
-            axios.get(ruta).then(res => {
-                if(res.data.status == 'success'){
-                    this.diccionario = res.data;
-                    this.f_campos = this.diccionario.campos.split('|').map(elm => elm.split(':')[0]).join('|');
-                    this.f_head = this.diccionario.type_head;
-                    this.f_rules = this.diccionario.reglas;
-                    this.f_rules.split('|').forEach(elm => {
-                        let bi = elm.split(':');
-                        this.raw_rules[bi[0]] = bi[1];
-                    });
-                    this.arr_campos = this.diccionario.campos.split('|').map(elm => {
-                        let tm = elm.split(':');
-                        let a = tm[0];
-                        let b = (tm.length > 1)? tm[1]: a.toString();
-                        let c = (tm.length > 2)? tm[2]: b.toString();
-                        return {'field': a, 'head': b, 'human': c, 'rule': (this.raw_rules[a] == undefined)? 'Mixed': this.raw_rules[a], 'has': true, 'match': 0};
-                    });
-                    if(this.skipintro && this.f_head != '') this.step = 2;
-                }else{
-                    this.has_error_dict = true;
-                }
-            }).catch(err => {
-                this.has_error_dict = true;
-                console.log(err);
-            });
-        },
         setConfig: function(hd, cmps, rls){
             // auto | file_parse | file_fixed
             var tm = 'head:auto|campos:uno:Titulo'
@@ -417,6 +384,8 @@ export default {
             document.getElementById('fl_file').click();
         },
         sendFileUpload: function(){
+            alert(this.lc_prefijo + this.lc_destino);
+            return true;
             let per = (this.withperiodo)? (this.getPeriodo() != ''): true;
             if(per == false){
                 alert('Debe seleccionar el periodo de corte de la base de datos!');
@@ -611,11 +580,7 @@ export default {
         this.lc_prefijo = (this.destino == '' && this.prefijo == '')? 'tmp_': this.prefijo;
         this.lc_error = ['strict', 'ignore'].includes(this.error)? this.error: 'strict';
         this.setDestino(this.destino);
-        if(this.sindiccionario){
-            this.setConfig(this.head, this.fields, this.rules);
-        }else{
-            this.loadInfo();
-        }
+        this.setConfig(this.head, this.fields, this.rules);
         this.markdate();
     }
 }

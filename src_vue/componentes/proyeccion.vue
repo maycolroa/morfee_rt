@@ -107,7 +107,7 @@
         <div :class="'d-flex justify-content-center mt-4 ' + status">
             <button class="btn btn-info" @click="fillData">Datos de prueba</button>
             <button class="btn btn-primary mx-2" @click="resetear">Resetear</button>
-            <button class="btn btn-success btn-icon-anim" :disabled="is_valid() == false" @click="loadPredict">Predecir</button>
+            <button class="btn btn-success btn-icon-anim px-5" :disabled="is_valid() == false" @click="loadPredict">Predecir</button>
         </div>
         <div class="text-center mt-4" v-if="status == state.LOADING">
             <div class="d-flex align-items-center">

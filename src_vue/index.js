@@ -180,6 +180,7 @@ Vue.component('root-periodos', require('./componentes/select-periodos.vue').defa
 Vue.component('load-and-time', require('./componentes/load_and_time.vue').default);
 Vue.component('proyeccion', require('./componentes/proyeccion.vue').default);
 Vue.component('get-view-periodo', require('./componentes/get_view_periodo.vue').default);
+Vue.component('chat-time', require('./componentes/chat.vue').default);
 
 window.app = new Vue({
     el: '#mainApp'

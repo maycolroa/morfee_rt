@@ -12,5 +12,17 @@ import os
 from django.core.asgi import get_asgi_application
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'morfee_rt_dev.settings')
-
 application = get_asgi_application()
+
+# from channels.routing import ProtocolTypeRouter, URLRouter
+# from channels.auth import AuthMiddlewareStack
+# import proyecciones.routing
+
+# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'morfee_rt_dev.settings')
+
+# application = ProtocolTypeRouter({
+#     'http': get_asgi_application(),
+#     'websocket': AuthMiddlewareStack(
+#         URLRouter(proyecciones.routing.websocket_urlpatterns)
+#     )
+# })

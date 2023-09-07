@@ -16,6 +16,10 @@ import os
 def tpl_inicio(request):
     return render(request, 'proyecciones/inicio.html')
 
+@login_required(login_url='/login/')
+def tpl_chat(request):
+    return render(request, 'proyecciones/chat.html')
+
 def predecir(request):
     model_file = os.path.join(settings.MODELS, 'dl_rt_pagos.h5')
     model = tf.keras.models.load_model(model_file)
