@@ -23,6 +23,7 @@ export default {
         campo_categoria: {type: String, default: 'categoria'},
         campo_valor: {type: String, default: 'valor'},
         alfa: {type: String, default: '1'},
+        leyenda: {type: String, default: 'none'},
         etiquetas: {type: Boolean, default: false},
         lanzarevento: {type: String, default: 'none'},
         min: {type: String, default: "none"},
@@ -258,6 +259,10 @@ export default {
                 this.ejeCategorias.renderer.labels.template.verticalCenter = "middle";
                 this.ejeCategorias.renderer.labels.template.rotation = 315;
             }
+            if(this.leyenda != 'none'){
+                this.chart.legend = new am4charts.Legend();
+                this.chart.legend.position = this.leyenda;
+            }
             this.ejeValores = this.chart.yAxes.push(new am4charts.ValueAxis());
             this.ejeValores.fontFamily = 'Poppins';
             if(this.sin_valores) this.ejeValores.renderer.labels.template.disabled = true;
@@ -286,6 +291,7 @@ export default {
             }
             this.listSeries.forEach((elm, indice) => {
                 let serie = this.chart.series.push(new am4charts.LineSeries());
+                serie.name = elm;
                 serie.dataFields.valueY = elm;
                 if(this.procesar_fechas){
                     serie.dataFields.dateX = this.field_categoria;

@@ -182,6 +182,8 @@ Vue.component('proyeccion', require('./componentes/proyeccion.vue').default);
 Vue.component('get-view-periodo', require('./componentes/get_view_periodo.vue').default);
 Vue.component('chat-time', require('./componentes/chat.vue').default);
 
+Vue.component('cuentas-medicas', require('./componentes/facturas/cuentas_medicas.vue').default);
+
 window.app = new Vue({
     el: '#mainApp'
 });

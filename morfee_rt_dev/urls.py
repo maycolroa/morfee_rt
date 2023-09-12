@@ -33,4 +33,5 @@ urlpatterns = [
     path('consulta/', include('consulta.urls')),
     path('proyecciones/', include('proyecciones.urls')),
     path('triangulos/', include('triangulos.urls')),
+    path('users/', include('users.urls'))
 ]

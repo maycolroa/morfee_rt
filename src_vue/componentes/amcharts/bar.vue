@@ -65,6 +65,7 @@ export default {
             lc_altura: 0,
             lc_grilla: 0.1,
             lc_custom: this.custom,
+            lc_pretag: this.pretag,
             chart: null,
             datos: [],
             ejeCategorias: null,
@@ -121,14 +122,23 @@ export default {
             }else if(['basica', 'material', 'dataviz', 'kelly', 'frozen', 'moonrise'].indexOf(arg) > -1){
                 this.themePaleta = arg;
             }else if(/^\d+$/.test(arg)){
-                var plt = ['basica', 'basica', 'material', 'dataviz', 'kelly', 'frozen', 'moonrise'];
-                var num = parseInt(arg);
+                let plt = ['basica', 'basica', 'material', 'dataviz', 'kelly', 'frozen', 'moonrise'];
+                let num = parseInt(arg);
                 this.themePaleta = (num > 0 && num < 7)? plt[num]: 'basica';
             }else if(/#/.test(arg)){
                 this.paletas.custom = arg.split(',');
                 this.themePaleta = 'custom';
             }else{
                 this.themePaleta = 'basica';
+            }
+        },
+        setColor: function(arg){
+            if(this.isCreated){
+                if(this.boxSeries.length == 1){
+                    this.boxSeries.forEach(serie => {
+                        serie.columns.template.adapter.add('fill', (fill, target) => new am4core.color(arg));
+                    });
+                }
             }
         },
         getPaleta: function(){
@@ -179,11 +189,11 @@ export default {
             this.hasData = false;
         },
         preview: function(){
-            var a = ["Colombia", "Brasil", "Argentina", "Perú", "Ecuador", "Venezuela", "Chile", "Paraguay", "Uruguay", "Bolivia", "Japón", "Korea"];
-            var b = [];
+            let a = ["Colombia", "Brasil", "Argentina", "Perú", "Ecuador", "Venezuela", "Chile", "Paraguay", "Uruguay", "Bolivia", "Japón", "Korea"];
+            let b = [];
             let ckey = this.listSeries[0];
             a.forEach(elm => {
-                var dt = new Object();
+                let dt = new Object();
                 dt[this.campo_categoria] = elm;
                 dt[ckey] = Math.round(Math.random() * 100 + 70);
                 b.push(dt);
@@ -191,7 +201,7 @@ export default {
             this.setDatos(b);
         },
         createChart: function(){
-            var colorSet = new am4core.ColorSet();
+            let colorSet = new am4core.ColorSet();
             colorSet.list = this.getPaleta().map(col => new am4core.color(col));
             
             this.chart = am4core.create(this.$refs.chartdiv, am4charts.XYChart);
@@ -263,8 +273,8 @@ export default {
                 this.ejeValores.title.text = this.titulo_eje;
             }
             this.listSeries.forEach((elm, indice) => {
-                var boxType = this.boxTypes[indice];
-                var serie = (boxType == 'columna')? this.chart.series.push(new am4charts.ColumnSeries()): this.chart.series.push(new am4charts.LineSeries());
+                let boxType = this.boxTypes[indice];
+                let serie = (boxType == 'columna')? this.chart.series.push(new am4charts.ColumnSeries()): this.chart.series.push(new am4charts.LineSeries());
                 serie.name = this.txleyendas[indice];
                 serie.dataFields.categoryX = this.campo_categoria;
                 serie.dataFields.valueY = elm;
@@ -337,8 +347,8 @@ export default {
                     }
                 }
                 if(this.etiquetas){
-                    var tag = serie.bullets.push(new am4charts.LabelBullet());
-                    tag.label.text = this.pretag + "{valueY}";
+                    let tag = serie.bullets.push(new am4charts.LabelBullet());
+                    tag.label.text = this.lc_pretag + "{valueY}";
                     if(boxType == 'columna'){
                         tag.label.verticalCenter = "bottom";
                         if(this.apilado) tag.locationY = 0.5;

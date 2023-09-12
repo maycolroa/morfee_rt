@@ -7,6 +7,21 @@ from datetime import date
 import json
 # from bson.code import Code
 
+def tpl_cuentas_medicas(request):
+    return render(request, 'facturas/cuentas_medicas.html')
+
+def data_cm(request):
+    # vdo:VlrFacturado
+    # vgl:VlrGlosado
+    mongo = Mongo('retec_facturas')
+    datos = mongo.aggregate([
+        {"$addFields": {"vraw": {"$toString": "$fr"}} },
+        {"$project": {"vdo": 1, "vgl": 1,  "prd": {"$substrBytes": ["$vraw", 0, 6]}} }, 
+        {"$group": {"_id": "$prd", "v_facturado": {"$sum": "$vdo"}, "v_glosado": {"$sum": "$vgl"}} },
+        {"$sort": { "_id": 1} }
+    ])
+    return HttpResponse(datos, content_type="application/json")
+
 def createConsulta(name, cole, cla, cli, user):
     print('Generando consulta: ' + name)
     try:
