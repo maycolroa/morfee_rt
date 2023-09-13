@@ -17,9 +17,20 @@ def data_cm(request):
     datos = mongo.aggregate([
         {"$addFields": {"vraw": {"$toString": "$fr"}} },
         {"$project": {"vdo": 1, "vgl": 1,  "prd": {"$substrBytes": ["$vraw", 0, 6]}} }, 
-        {"$group": {"_id": "$prd", "v_facturado": {"$sum": "$vdo"}, "v_glosado": {"$sum": "$vgl"}} },
+        {"$group": {
+            "_id": "$prd", 
+            "v_facturado": {"$sum": "$vdo"}, 
+            "v_glosado": {"$sum": "$vgl"},
+            "pag_pbs": {"$sum": "$vpbs"},
+            "pag_pm": {"$sum": "$vppm"},
+            "pag_pac": {"$sum": "$vpac"},
+            "res_pbs": {"$sum": "$vrpbs"},
+            "res_pm": {"$sum": "vrpm"},
+            "res_pac": {"$sum": "vrpac"}
+        }},
         {"$sort": { "_id": 1} }
     ])
+    print(datos)
     return HttpResponse(datos, content_type="application/json")
 
 def createConsulta(name, cole, cla, cli, user):

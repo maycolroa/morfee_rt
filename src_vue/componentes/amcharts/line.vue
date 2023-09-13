@@ -312,15 +312,19 @@ export default {
                     serie.fill = gradient;
                 }
                 if(this.puntos){
+                    let interfaceColors = new am4core.InterfaceColorSet();
                     let bullet = serie.bullets.push(new am4charts.CircleBullet());
-                    bullet.circle.fill = am4core.color("#FFF");
-                    bullet.circle.strokeWidth = (this.grosor != "none")? parseInt(this.grosor): 1;
+                    bullet.circle.stroke = interfaceColors.getFor("background");
+                    bullet.circle.strokeWidth = 2;
                     if(this.lanzarevento != 'none'){
                         bullet.events.on("hit", ev => {
                             let contexto = ev.target.dataItem.dataContext;
                             this.$eventBus.$emit(this.lanzarevento, contexto);
                         });
                     }
+                    // let bullet = serie.bullets.push(new am4charts.CircleBullet());
+                    // bullet.circle.fill = am4core.color("#FFF");
+                    // bullet.circle.strokeWidth = (this.grosor != "none")? parseInt(this.grosor): 1;
                 }
                 if(this.etiquetas){
                     let tag = serie.bullets.push(new am4charts.LabelBullet());
