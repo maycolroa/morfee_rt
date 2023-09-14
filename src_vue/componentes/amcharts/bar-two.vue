@@ -129,8 +129,17 @@ export default {
             this.lc_altura = (this.datos.length > 0)? this.datos.length * this.lc_unidad + 60: 200;
             if(this.isCreated){
                 this.chart.data = this.datos;
+                this.runAnimate();
             }
             this.hasData = true;
+        },
+        runAnimate: function(){
+            if(this.chart != null){
+                this.chart.appear();
+                this.chart.series.each(function(series) {
+                    series.appear();
+                });
+            }
         },
         createChart: function(){
             var colorSet = new am4core.ColorSet();

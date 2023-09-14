@@ -1,8 +1,13 @@
 <template>
     <div :class="status">
-        <div class="mt-2 mb-3">
-            <h5 class="txt-dark mb-0">CUENTAS MÉDICAS</h5>
-            <div style="letter-spacing:3px; color:#555; font:12px Arial">Módulo de reservas técnicas</div>
+        <div class="d-flex justify-content-between mt-2 mb-3">
+            <div>
+                <h5 class="txt-dark mb-0">CUENTAS MÉDICAS</h5>
+                <div style="letter-spacing:3px; color:#555; font:12px Arial">Módulo de reservas técnicas</div>
+            </div>
+            <div>
+                <temporizador></temporizador>
+            </div>
         </div>
         <div class="d-flex justify-content-between mb-4 df-options">
             <a :class="section == elm.code? 'flex-fill bg-target': 'flex-fill bg-custom'" href="javascript:void(0)" v-for="(elm, i) in opt" :key="i" @click="setSection(elm.code)">
@@ -13,17 +18,25 @@
             </a>
         </div>
         <div class="row">
-            <div class="col-sm-3">
-                <contador-light ref="c_per" texto="Periodos" valor="0" duracion="1" icono="fa fa-calendar"></contador-light>
+            <div class="col-sm-6">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <contador-light ref="c_per" texto="Periodos FRAD" valor="0" duracion="1" icono="fa fa-calendar"></contador-light>
+                    </div>
+                    <div class="col-sm-7">
+                        <contador-light ref="c_fac" pretag="$ " texto="Valor facturado" valor="0" duracion="1" icono="fa fa-line-chart"></contador-light>
+                    </div>
+                </div>
             </div>
-            <div class="col-sm-3">
-                <contador-light ref="c_fac" pretag="$ " texto="Valor facturado" valor="0" duracion="1" icono="fa fa-line-chart"></contador-light>
-            </div>
-            <div class="col-sm-3">
-                <contador-light ref="c_glo" pretag="$ " texto="Valor glosado" valor="0" duracion="1" icono="fa fa-line-chart"></contador-light>
-            </div>
-            <div class="col-sm-3">
-                <contador-light ref="c_percent" texto="% de glosa" valor="0" duracion="1" icono="fa fa-percent"></contador-light>
+            <div class="col-sm-6">
+                <div class="row">
+                    <div class="col-sm-7">
+                        <contador-light ref="c_glo" pretag="$ " texto="Valor glosado" valor="0" duracion="1" icono="fa fa-line-chart"></contador-light>
+                    </div>
+                    <div class="col-sm-5">
+                        <contador-light ref="c_percent" texto="% de glosa" valor="0" duracion="1" icono="fa fa-percent"></contador-light>
+                    </div>
+                </div>
             </div>
         </div>
         <div :class="section == 'vertical'? '': 'd-none'">
@@ -114,6 +127,7 @@
                             grosor="2"
                             grilla=".2"
                             leyenda="bottom"
+                            rotar
                             campo_valor="PBS,PM,PAC" 
                             paleta="#179D82,#337CCF,#FC8452"
                             tooltip cursor>
@@ -146,6 +160,7 @@
                             grosor="2"
                             grilla=".2"
                             leyenda="bottom"
+                            rotar
                             campo_valor="PBS,PM,PAC" 
                             paleta="#179D82,#337CCF,#FC8452"
                             tooltip cursor>
@@ -228,6 +243,12 @@ export default {
             }
             return always? Number.parseFloat(num).toFixed(dec): num;
         },
+        sortDesc: function(a, b){
+            if(a == b){
+                return 0;
+            }
+            return (a < b)? 1: -1;
+        },
         prettyPer: function(arg){
             let a = arg.slice(0, 4);
             let b = arg.slice(-2);
@@ -264,20 +285,20 @@ export default {
                 axios.post(this.pathdata).then(res => {
                     this.sum_fac = 0;
                     this.sum_glo = 0;
-                    this.datos = res.data;
+                    this.datos = res.data[0].result;
                     this.datos.forEach(elm => {
                         this.sum_fac += elm.v_facturado;
                         this.sum_glo += elm.v_glosado;
                     });
                     this.$refs.c_per.setValor(this.datos.length);
-                    this.$refs.c_fac.setValor(this.miles(this.sum_fac));
-                    this.$refs.c_glo.setValor(this.miles(this.sum_glo));
+                    this.$refs.c_fac.setValor(this.miles(this.numfixed(this.sum_fac, 2, false)));
+                    this.$refs.c_glo.setValor(this.miles(this.numfixed(this.sum_glo, 2, false)));
                     let xnum = this.numfixed((this.sum_glo / this.sum_fac) * 100);
                     this.$refs.c_percent.setValor(`${xnum} %`);
                     this.setCampo(this.campo);
                     this.$refs.gp_bi.setDatos(this.datos.map(elm => {
                         return {'categoria': this.prettyPer(elm._id), 'Glosado': elm.v_glosado, 'Facturado': elm.v_facturado}
-                    }));
+                    }).sort((a, b) => this.sortDesc(a.categoria, b.categoria)));
                     this.$refs.gp_line.setDatos(this.datos.map(elm => {
                         return {'categoria': this.prettyPer(elm._id), 'Glosado': elm.v_glosado, 'Facturado': elm.v_facturado}
                     }));

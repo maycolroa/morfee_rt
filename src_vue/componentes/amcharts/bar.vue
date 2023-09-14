@@ -177,11 +177,20 @@ export default {
                 }
                 if(this.isCreated){
                     this.chart.data = this.datos;
+                    this.runAnimate();
                 }
                 this.hasData = true;
             }else{
                 console.log('Esto no es un array:');
                 console.log(arg);
+            }
+        },
+        runAnimate: function(){
+            if(this.chart != null){
+                this.chart.appear();
+                this.chart.series.each(function(series) {
+                    series.appear();
+                });
             }
         },
         loadingStatus: function(){

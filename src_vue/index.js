@@ -150,15 +150,6 @@ Vue.component('new-dash-facturas', require('./componentes/dashboards/new-dash-fa
 Vue.component('new-dash-pagos', require('./componentes/dashboards/new-dash-pagos.vue').default);
 Vue.component('new-dash-incapacidades', require('./componentes/dashboards/new-dash-incapacidades.vue').default);
 
-Vue.component('audit-resumen', require('./componentes/audit_resumen.vue').default);
-Vue.component('audit-general', require('./componentes/audit_general.vue').default);
-Vue.component('audit-import-rips', require('./componentes/audit_import_rips.vue').default);
-Vue.component('audit-facturacion', require('./componentes/audit_facturacion.vue').default);
-Vue.component('audit-glosa', require('./componentes/audit_glosa.vue').default);
-Vue.component('audit-estado', require('./componentes/audit_estado.vue').default);
-Vue.component('audit-kpi', require('./componentes/audit_kpi.vue').default);
-
-Vue.component('audit-asignacion', require('./componentes/audit_asignacion.vue').default);
 Vue.component('audit-qr-list', require('./componentes/qr_list.vue').default);
 Vue.component('audit-qr-make', require('./componentes/qr_make_acta.vue').default);
 Vue.component('retec-piramide', require('./componentes/piramide.vue').default);
@@ -183,6 +174,7 @@ Vue.component('get-view-periodo', require('./componentes/get_view_periodo.vue').
 Vue.component('chat-time', require('./componentes/chat.vue').default);
 
 Vue.component('cuentas-medicas', require('./componentes/facturas/cuentas_medicas.vue').default);
+Vue.component('temporizador', require('./componentes/temporizador.vue').default);
 
 window.app = new Vue({
     el: '#mainApp'
