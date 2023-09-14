@@ -16,12 +16,13 @@ def data_cm(request):
     mongo = Mongo('retec_facturas')
     print('Exe query mongodb...')
     datos = mongo.aggregate([
-        {"$addFields": {"vraw": {"$toString": "$fr"}} },
-        {"$project": {"vdo": 1, "vgl": 1,  "prd": {"$substrBytes": ["$vraw", 0, 6]}, "vpbs": 1, "vppm": 1, "vpac": 1, "vrpbs": 1, "vrpm": 1, "vrpac": 1} },
+        # {"$addFields": {"vraw": {"$toString": "$fr"}} },
+        # {"$project": {"vdo": 1, "vgl": 1,  "prd": {"$substrBytes": ["$vraw", 0, 6]}, "vpbs": 1, "vppm": 1, "vpac": 1, "vrpbs": 1, "vrpm": 1, "vrpac": 1} },
+        {"$project": {"vdo": 1, "vgl": 1,  "vr_per": 1, "vpbs": 1, "vppm": 1, "vpac": 1, "vrpbs": 1, "vrpm": 1, "vrpac": 1} },
         {"$facet": {
             "result": [
                 {"$group": {
-                    "_id": "$prd", 
+                    "_id": "$vr_per", 
                     "v_facturado": {"$sum": "$vdo"}, 
                     "v_glosado": {"$sum": "$vgl"},
                     "pag_pbs": {"$sum": "$vpbs"},
