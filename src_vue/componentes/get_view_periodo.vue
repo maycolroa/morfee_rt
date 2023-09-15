@@ -2,7 +2,7 @@
     <div> 
         <div class="input-group me-4">         
             <select v-model="periodo" class="form-control">
-                <option value="">{{ status == state.LOADING? 'Cargando datos...': '' }}</option>
+                <option value="">{{ status == state.LOADING? 'Cargando   datos...': '' }}</option>
                 <optgroup :label="elm.anio == 0? 'Sin periodo': (elm.anio == -1)? 'Todos los registros': elm.anio" v-for="(elm, i) in periodos" :key="i">
                     <option v-for="(mes, m) in elm.meses" :key="m" :value="mes.ym">{{ mes.tx }}</option>
                 </optgroup>
@@ -23,7 +23,6 @@ export default {
             meses: {'01': 'Enero', '02': 'Febrero', '03': 'Marzo', '04': 'Abril', '05': 'Mayo', '06': 'Junio', '07': 'Julio', '08': 'Agosto', '09': 'Septiembre', '10': 'Octubre', '11': 'Noviembre', '12': 'Diciembre'},
             periodos: [],
             periodo: '',
-            mes :['Enero','Febrero','Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
             status: 'ini',
             state: {'INI': 'ini', 'LOADING': 'loading', 'LOADED': 'loaded', 'FAILED': 'failed'}
         }

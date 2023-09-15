@@ -1,0 +1,77 @@
+<ul class="nav navbar-nav side-nav nicescroll-bar">
+    <li class="navigation-header">
+        <span>Reservas Técnicas</span> 
+        <i class="zmdi zmdi-more"></i>
+    </li>
+    <li>
+        <!-- animated wobble -->
+        <a href="{% url 'inicio' %}">
+            <div class="pull-left"><i class="zmdi zmdi-home me-3"></i><span class="right-nav-text">Inicio</span></div><div class="clearfix"></div>
+        </a>
+
+        {% comment %} <a href="{% url 'retec_dashboard' 'contratos' %}" class="{% if request.resolver_match.url_name == 'retec_dashboard' %}active{% endif %} d-none">
+            <div class="pull-left"><i class="zmdi zmdi-inbox me-3"></i><span class="right-nav-text">Dashboards</span></div><div class="clearfix"></div>
+        </a>
+        {% endcomment %}
+        <a href="{% url 'retec_contratos_new' %}" class="{% if request.resolver_match.url_name == 'retec_contratos_new' %}active{% endif %}">
+            <div class="pull-left"><i class="zmdi zmdi-inbox me-3"></i><span class="right-nav-text">Contratos</span></div><div class="clearfix"></div>
+        </a>
+        <a href="{% url 'retec_autorizaciones_new' %}" class="{% if request.resolver_match.url_name == 'retec_autorizaciones_new' %}active{% endif %}">
+            <div class="pull-left"><i class="zmdi zmdi-inbox me-3"></i><span class="right-nav-text">Autorizaciones</span></div><div class="clearfix"></div>
+        </a>
+        <!--
+            <a href="{% url 'retec_facturas_new' %}" class="{% if request.resolver_match.url_name == 'retec_facturas_new' %}active{% endif %}">
+                <div class="pull-left"><i class="zmdi zmdi-inbox me-3"></i><span class="right-nav-text">Facturas</span></div><div class="clearfix"></div>
+            </a>
+        -->
+        <a href="javascript:void(0);" data-toggle="collapse" data-target="#dashboard_dr">
+            <div class="pull-left"><i class="zmdi zmdi-inbox me-3"></i><span class="right-nav-text">Facturas</span></div><div class="pull-right"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div>
+        </a>
+        <ul id="dashboard_dr" class="collapse collapse-level-1">
+            <li>
+                <a href="{% url 'retec_facturas_new' %}">Opcion 1</a>
+            </li>
+            <li>
+                <a href="{% url 'retec_facturas_new' %}">Opcion 2</a>
+            </li>
+        </ul>
+                        
+        <a href="{% url 'retec_incapacidades_new' %}" class="{% if request.resolver_match.url_name == 'retec_incapacidades_new' %}active{% endif %}">
+            <div class="pull-left"><i class="zmdi zmdi-inbox me-3"></i><span class="right-nav-text">Incapacidades</span></div><div class="clearfix"></div>
+        </a>
+        <a href="{% url 'retec_pagos_new' %}" class="{% if request.resolver_match.url_name == 'retec_pagos_new' %}active{% endif %}">
+            <div class="pull-left"><i class="zmdi zmdi-inbox me-3"></i><span class="right-nav-text">Pagos</span></div><div class="clearfix"></div>
+        </a>
+        <a href="{% url 'retec_piramide' %}" class="{% if request.resolver_match.url_name == 'retec_piramide' %}active{% endif %}">
+            <div class="pull-left"><i class="zmdi zmdi-triangle-up me-3"></i><span class="right-nav-text">Triángulos</span></div><div class="clearfix"></div>
+        </a>
+        <a href="{% url 'pro_inicio' %}" class="{% if request.resolver_match.url_name == 'pro_inicio' %}active{% endif %}">
+            <div class="pull-left"><i class="zmdi zmdi-inbox me-3"></i><span class="right-nav-text">Proyecciones</span></div><div class="clearfix"></div>
+        </a>
+
+        {% comment %} <a href="{% url 'pro_chat' %}" class="{% if request.resolver_match.url_name == 'pro_chat' %}active{% endif %}">
+            <div class="pull-left"><i class="zmdi zmdi-inbox me-3"></i><span class="right-nav-text">Chat</span></div><div class="clearfix"></div>
+        </a> {% endcomment %}
+        {% comment %}
+        {% if user.cliente.is_indigena != True %}
+        <a href="{% url 'retec_incapacidades_new' %}" class="{% if request.resolver_match.url_name == 'retec_incapacidades_new' %}active{% endif %}">
+            <div class="pull-left"><i class="zmdi zmdi-inbox me-3"></i><span class="right-nav-text">Incapacidades</span></div><div class="clearfix"></div>
+        </a>
+        {% endif %}
+
+
+        <a href="{% url 'retec_fragment' %}" class="{% if request.resolver_match.url_name == 'retec_fragment' %}active{% endif %}">
+            <div class="pull-left"><i class="zmdi zmdi-view-week me-3"></i><span class="right-nav-text">Periodos</span></div><div class="clearfix"></div>
+        </a>
+        {% if user.cliente.is_indigena != True %}
+        {% endif %}
+        {% if user.cliente.id == 5 %}
+        <a href="{% url 'retec_custom_1' %}" class="{% if request.resolver_match.url_name == 'retec_custom_1' %}active{% endif %}">
+            <div class="pull-left"><i class="zmdi zmdi-star-outline me-3"></i><span class="right-nav-text">Custom 1</span></div><div class="clearfix"></div>
+        </a>
+        <a href="{% url 'retec_custom_2' %}" class="{% if request.resolver_match.url_name == 'retec_custom_2' %}active{% endif %}">
+            <div class="pull-left"><i class="zmdi zmdi-star-outline me-3"></i><span class="right-nav-text">Custom 2</span></div><div class="clearfix"></div>
+        </a>
+        {% endif %} {% endcomment %}
+    </li>
+</ul>

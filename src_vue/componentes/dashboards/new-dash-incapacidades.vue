@@ -13,7 +13,12 @@
                     <input type="text" class="form-control" :value="clock_human">
                 </div>
                 <div :class="status">
-                    <select-periodo ref="xtime" :coleccion="fuente" :alias="krache_time"></select-periodo>
+                    <get-view-periodo collections="retec_incapacidades"></get-view-periodo>
+                    <!-- 
+                        <select-periodo ref="xtime" :coleccion="fuente" :alias="krache_time"></select-periodo>
+                    -->
+                    
+                    
                 </div>
                 <div :class="section == 'basic'? 'btn-group dk-disabled ' + status: 'btn-group ' + status">
                     <button :class="display == 'chart'? 'btn btn-success': 'btn btn-default'" @click="display = 'chart'"><i class="fa fa-bar-chart"></i></button>
