@@ -3,46 +3,10 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from morfee_rt_dev.mongo import Mongo
 from consulta.models import Consulta
+from consulta.views import createConsulta, getConsulta
 from datetime import date
 import json
 # from bson.code import Code
-
-def createConsulta(name, cole, cla, cli, user):
-    print('Generando consulta: ' + name)
-    try:
-        c = Consulta.objects.filter(nombre=name, coleccion=cole, cliente_id=cli, user_id=user).get()
-        c.clave = cla
-        c.estado = 'reopen'
-        c.created_at = date.today()
-        c.save()
-        return c
-    except Consulta.DoesNotExist:
-        cn = Consulta()
-        cn.nombre = name
-        cn.coleccion = cole
-        cn.clave = cla
-        cn.estado = 'open'
-        cn.cliente_id = cli
-        cn.user_id = user
-        cn.save()
-        return cn
-
-def getConsulta(request):
-    keycode = request.POST.get('clave') if request.POST.get('clave') else ''
-    name = request.POST.get('consulta')
-    cli = request.user.cliente_id if request.user.cliente_id else 0
-    uid = request.user.id
-    print('Clave: ' + keycode + ', consulta: ' + name)
-    try:
-        c = Consulta.objects.filter(nombre=name, clave=keycode, cliente_id=cli, user_id=uid).get() if keycode != '' else Consulta.objects.filter(nombre=name, cliente_id=cli, user_id=uid).get()
-        contenido = json.loads(c.contenido) if c.contenido else []
-        print('Consulta encontrada')
-        rs = {'nombre': c.nombre, 'coleccion': c.coleccion, 'contenido': contenido, 'clave': c.clave, 'estado': c.estado, 'created_at': c.created_at}
-        return JsonResponse(rs)
-    except Consulta.DoesNotExist:
-        print('No existe la consulta')
-        rs = {'nombre': name, 'coleccion': '', 'contenido': '', 'clave': keycode, 'estado': 'void', 'created_at': str(date.today())}
-        return JsonResponse(rs)
 
 def inca_panel(request, section):
     if section == 'inicio':
@@ -83,9 +47,8 @@ def raw_facet_inca(request):
     clave = request.POST.get('clave') if request.POST.get('clave') else ''
     rawper = int(request.POST.get('periodo'))
     periodo = {"$exists": False} if rawper == 0 else rawper
-    cliente_id = request.user.cliente_id if request.user.cliente_id else 0
     user_id = request.user.id
-    consulta = createConsulta('raw_inca_dat' + str(rawper), tema, clave, cliente_id, user_id)
+    consulta = createConsulta('raw_inca_dat' + str(rawper), tema, clave, user_id)
     rs0 = {'$group': {'_id': None, 'total': {'$sum': 1}, 'reserva': {'$sum': '$vva'}, 'pagado': {'$sum': '$vdo'}}}
     if tema == 'retec_incapacidades_0':
         rs0 = {'$group': {'_id': None, 'total': {'$sum': 1}, 'reserva': {'$sum': '$vlri'}, 'pagado': {'$sum': '$vlrp'}}}
@@ -126,9 +89,8 @@ def schema_inca(request):
     clave = request.POST.get('clave') if request.POST.get('clave') else ''
     rawper = int(request.POST.get('periodo'))
     periodo = {"$exists": False} if rawper == 0 else rawper
-    cliente_id = request.user.cliente_id if request.user.cliente_id else 0
     user_id = request.user.id
-    consulta = createConsulta('schema_inca' + str(rawper), tema, clave, cliente_id, user_id)
+    consulta = createConsulta('schema_inca' + str(rawper), tema, clave, user_id)
     mongo = Mongo(tema)
     try:    
         datos = mongo.aggregate([

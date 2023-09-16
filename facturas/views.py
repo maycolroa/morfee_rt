@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from morfee_rt_dev.mongo import Mongo
-from consulta.models import Consulta
+from consulta.views import createConsulta, getConsulta
 from datetime import date
 import json
 # from bson.code import Code
@@ -11,8 +11,10 @@ def tpl_cuentas_medicas(request):
     return render(request, 'facturas/cuentas_medicas.html')
 
 def data_cm(request):
-    # vdo:VlrFacturado
-    # vgl:VlrGlosado
+    clave = request.POST.get('clave') if request.POST.get('clave') else ''
+    user_id = request.user.id
+    # rawper = int(request.POST.get('periodo'))
+    consulta = createConsulta('raw_cmed', 'retec_facturas', clave, user_id)
     mongo = Mongo('retec_facturas')
     print('Exe query mongodb...')
     datos = mongo.aggregate([
@@ -38,45 +40,10 @@ def data_cm(request):
         # {"$limit": 99},
     ])
     print('Print result query...')
-    print(datos)
+    consulta.contenido = str(datos)
+    consulta.estado = 'close'
+    consulta.save()
     return HttpResponse(datos, content_type="application/json")
-
-def createConsulta(name, cole, cla, cli, user):
-    print('Generando consulta: ' + name)
-    try:
-        c = Consulta.objects.filter(nombre=name, coleccion=cole, cliente_id=cli, user_id=user).get()
-        c.clave = cla
-        c.estado = 'reopen'
-        c.created_at = date.today()
-        c.save()
-        return c
-    except Consulta.DoesNotExist:
-        cn = Consulta()
-        cn.nombre = name
-        cn.coleccion = cole
-        cn.clave = cla
-        cn.estado = 'open'
-        cn.cliente_id = cli
-        cn.user_id = user
-        cn.save()
-        return cn
-
-def getConsulta(request):
-    keycode = request.POST.get('clave') if request.POST.get('clave') else ''
-    name = request.POST.get('consulta')
-    cli = request.user.cliente_id if request.user.cliente_id else 0
-    uid = request.user.id
-    print('Clave: ' + keycode + ', consulta: ' + name)
-    try:
-        c = Consulta.objects.filter(nombre=name, clave=keycode, cliente_id=cli, user_id=uid).get() if keycode != '' else Consulta.objects.filter(nombre=name, cliente_id=cli, user_id=uid).get()
-        contenido = json.loads(c.contenido) if c.contenido else []
-        print('Consulta encontrada')
-        rs = {'nombre': c.nombre, 'coleccion': c.coleccion, 'contenido': contenido, 'clave': c.clave, 'estado': c.estado, 'created_at': c.created_at}
-        return JsonResponse(rs)
-    except Consulta.DoesNotExist:
-        print('No existe la consulta')
-        rs = {'nombre': name, 'coleccion': '', 'contenido': '', 'clave': keycode, 'estado': 'void', 'created_at': str(date.today())}
-        return JsonResponse(rs)
 
 def fac_panel(request, section):
     if section == 'inicio':
@@ -124,11 +91,10 @@ def raw_facet_fac(request):
     clave = request.POST.get('clave') if request.POST.get('clave') else ''
     rawper = int(request.POST.get('periodo'))
     periodo = {"$exists": False} if rawper == 0 else rawper
-    cliente_id = request.user.cliente_id if request.user.cliente_id else 0
     user_id = request.user.id
     print(tema)
     print(periodo)
-    consulta = createConsulta('raw_facet_fac' + str(rawper), tema, clave, cliente_id, user_id)
+    consulta = createConsulta('raw_facet_fac' + str(rawper), tema, clave, user_id)
     mongo = Mongo(tema)
     print('hola mundo mongo')
     try:
@@ -140,8 +106,8 @@ def raw_facet_fac(request):
                     'rs_1': [ {'$group': {'_id': '$pla', 'total': {'$sum': 1}}} ], 
                     'rs_2': [ {'$group': {'_id': '$tra', 'total': {'$sum': 1}}} ], 
                     'rs_3': [ {'$group': {'_id': '$amb', 'total': {'$sum': 1}}} ], 
-                    'rs_4': [ {'$group': {'_id': '$egl', 'total': {'$sum': 1}}} ],
-                    'pmx':  [ {'$group': {'_id': '$pmx', 'total': {'$sum': 1}}} ],
+                    'rs_4': [ {'$group': {'_id': '$egl', 'total': {'$sum': 1}}} ], 
+                    'pmx':  [ {'$group': {'_id': '$pmx', 'total': {'$sum': 1}}} ], 
                     'gp_ext_01': [{'$group': {'_id': '$tpo', 'total': {'$sum': 1}}}], 
                     'gp_ext_02': [{'$group': {'_id': '$tpp', 'total': {'$sum': 1}}}], 
                     'gp_ext_03': [{'$group': {'_id': '$cov', 'total': {'$sum': 1}}}], 
@@ -204,9 +170,8 @@ def raw_facet_fac_control(request):
     clave = request.POST.get('clave') if request.POST.get('clave') else ''
     rawper = int(request.POST.get('periodo'))
     periodo = {"$exists": False} if rawper == 0 else rawper
-    cliente_id = request.user.cliente_id if request.user.cliente_id else 0
     user_id = request.user.id
-    consulta = createConsulta('raw_fac_ctr' + str(rawper), tema, clave, cliente_id, user_id)
+    consulta = createConsulta('raw_fac_ctr' + str(rawper), tema, clave, user_id)
     print('vigo: ' + tema)
     mongo = Mongo(tema)
     try:
@@ -342,9 +307,8 @@ def schema_factura(request):
     clave = request.POST.get('clave') if request.POST.get('clave') else ''
     rawper = int(request.POST.get('periodo'))
     periodo = {"$exists": False} if rawper == 0 else rawper
-    cliente_id = request.user.cliente_id if request.user.cliente_id else 0
     user_id = request.user.id
-    consulta = createConsulta('schema_factura' + str(rawper), tema, clave, cliente_id, user_id)
+    consulta = createConsulta('schema_factura' + str(rawper), tema, clave, user_id)
     mongo = Mongo(tema)
     try:
         datos = mongo.aggregate([

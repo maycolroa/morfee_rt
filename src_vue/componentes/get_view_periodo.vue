@@ -1,11 +1,15 @@
 <template>
     <div> 
-        <div class="input-group me-4">         
+        <div class="input-group me-4">
+            <div class="input-group-addon df-kan" style="background:#FFF">
+                <i class="fa fa-calendar fs-5"></i>
+            </div>
             <select v-model="periodo" class="form-control">
-                <option value="">{{ status == state.LOADING? 'Cargando   datos...': '' }}</option>
+                <option value="">{{ status == state.LOADING? 'Cargando datos...': '' }}</option>
                 <optgroup :label="elm.anio == 0? 'Sin periodo': (elm.anio == -1)? 'Todos los registros': elm.anio" v-for="(elm, i) in periodos" :key="i">
                     <option v-for="(mes, m) in elm.meses" :key="m" :value="mes.ym">{{ mes.tx }}</option>
                 </optgroup>
+                <option value="-details-" class="df-option">Detalles</option>
             </select>
             <div class="input-group-btn">
                 <button class="btn btn-success" @click="reloadPeriodos" :disabled="status == state.LOADING"><i :class="status == state.LOADING? 'fa fa-refresh fa-spin': 'fa fa-refresh'"></i></button>
@@ -23,6 +27,7 @@ export default {
             meses: {'01': 'Enero', '02': 'Febrero', '03': 'Marzo', '04': 'Abril', '05': 'Mayo', '06': 'Junio', '07': 'Julio', '08': 'Agosto', '09': 'Septiembre', '10': 'Octubre', '11': 'Noviembre', '12': 'Diciembre'},
             periodos: [],
             periodo: '',
+            post_refresh: false,
             status: 'ini',
             state: {'INI': 'ini', 'LOADING': 'loading', 'LOADED': 'loaded', 'FAILED': 'failed'}
         }
@@ -30,25 +35,31 @@ export default {
     watch: {
         periodo: function(val){
             if(this.status == this.state.LOADED){
-                this.$eventBus.$emit('time-select', {'periodo': this.periodo});
+                if(val != '-details-'){
+                    if(this.post_refresh){
+                        this.post_refresh = false;
+                        this.$eventBus.$emit('time-refresh', {'periodo': this.periodo});
+                    }else{
+                        this.$eventBus.$emit('time-select', {'periodo': this.periodo});
+                    }
+                }
             }
         },
     },
-    
     methods: {
         reloadPeriodos: function(){
-            this.CargarPeriodos();
+            this.post_refresh = true;
+            this.cargarPeriodos();
         },
-
         timeSelect: function(per){
             this.periodo = per;
         },
-
-        CargarPeriodos : function(){
+        cargarPeriodos : function(){
             if(this.status != this.state.LOADING){
                 var pam = new FormData();
                 pam.append('collections', this.collections);
                 this.status = this.state.LOADING;
+                this.timeSelect('');
                 axios.post(root_path + "consulta/consultas_view", pam).then(res => {
                     let tmp = {};
                     let zero = null;
@@ -63,14 +74,11 @@ export default {
                             var mes = elm._id.toString().slice(-2);
                             tmp[anio].meses.push({'ym': elm._id, 'mm': mes, 'tx': this.meses[mes]});
                         }
-                    
                     });
-
                     this.periodos = Object.values(tmp).sort((a, b) => b.anio - a.anio);
                     if(zero != null) this.periodos.push(zero);
                     if(this.periodos.length > 1) this.periodos.push({'anio': -1, 'meses': [{'ym': -1, 'mm': 0, 'tx': 'Total registros'}]});
                     this.status = this.state.LOADED;
-
                     if(this.periodos.length > 0){
                         this.timeSelect(this.periodos[0].meses[0].ym);
                     }
@@ -82,7 +90,7 @@ export default {
         },
     },
     mounted() {
-       this.CargarPeriodos();
+       this.cargarPeriodos();
     }
 }
 </script>
@@ -91,4 +99,5 @@ export default {
 .slot.active, .slot:hover {background:#F0C54144}
 .slot + .slot {border-top:1px solid #DEDEDE}
 .bg-super {background: #F0C541 !important; color:#FFF; font-weight: bold; font-family: Arial; letter-spacing: 1px}
+.df-option {background:#E2E2E2; border-top:1px solid #CCC; padding-top:7px; padding-bottom:7px; letter-spacing: 1px;}
 </style>

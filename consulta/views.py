@@ -7,13 +7,12 @@ import json
 
 # Create your views here.
 def getConsulta(request):
-    keycode = request.POST.get('clave') if request.POST.get('clave') else ''
+    keycode = str(request.POST.get('clave')) if request.POST.get('clave') else ''
     name = request.POST.get('consulta')
-    cli = request.user.cliente_id if request.user.cliente_id else 0
     uid = request.user.id
-    print('Clave: ' + keycode + ', consulta: ' + name)
+    print('Claving: ' + keycode + ', consulting: ' + name)
     try:
-        c = Consulta.objects.filter(nombre=name, clave=keycode, cliente_id=cli, user_id=uid).get() if keycode != '' else Consulta.objects.filter(nombre=name, cliente_id=cli, user_id=uid).get()
+        c = Consulta.objects.filter(nombre=name, clave=keycode, user_id=uid).get() if keycode != '' else Consulta.objects.filter(nombre=name, user_id=uid).get()
         contenido = json.loads(c.contenido) if c.contenido else []
         print('Consulta encontrada')
         rs = {'nombre': c.nombre, 'coleccion': c.coleccion, 'contenido': contenido, 'clave': c.clave, 'estado': c.estado, 'created_at': c.created_at}
@@ -23,6 +22,25 @@ def getConsulta(request):
         rs = {'nombre': name, 'coleccion': '', 'contenido': '', 'clave': keycode, 'estado': 'void', 'created_at': str(date.today())}
         return JsonResponse(rs)
 
+def createConsulta(name, cole, cla, user):
+    print('Generando consulta: ' + name)
+    try:
+        c = Consulta.objects.filter(nombre=name, coleccion=cole, cliente_id=0, user_id=user).get()
+        c.clave = cla
+        c.estado = 'reopen'
+        c.created_at = date.today()
+        c.save()
+        return c
+    except Consulta.DoesNotExist:
+        cn = Consulta()
+        cn.nombre = name
+        cn.coleccion = cole
+        cn.clave = cla
+        cn.estado = 'open'
+        cn.cliente_id = 0
+        cn.user_id = user
+        cn.save()
+        return cn
 
 def consultas_view(request):
     #autorizaciones facturas pagos incapacidades
@@ -30,7 +48,7 @@ def consultas_view(request):
     #datos ={}
     x = []
     if cm_colection != '':
-        cm_colection = cm_colection+'_view' 
+        cm_colection = cm_colection + '_view'
         #verificamos la existencia de la coleccion o view
         mongo_v = Mongo()
         listaCM = mongo_v.listarColecciones()
@@ -47,8 +65,3 @@ def consultas_view(request):
         #datos ={'estado' : 'no', 'datos':'', 'view':'no ha enviado coleccion'}
     return HttpResponse(x, content_type="application/json")
     #return JsonResponse(datos)
-
-
-
-
-     

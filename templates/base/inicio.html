@@ -29,76 +29,46 @@
     </div>
     <!-- /Breadcrumb -->
 </div>
-<div class="row ms-1 me-0">
-    <div class="d-flex justify-content-center">
-        <div class="col-xl-5">
-            <img width="40%" src="{% static 'img/logomediano.png' %}" alt="auth-img">
-        </div>
-        <div class="col-xl-5">
-            <img width="80%" src="{% static 'img/logo_min.png' %}" alt="auth-img">
-        </div>
-    </div>    
+<div class="d-flex justify-content-center mb-4">
+    <div>
+        <img width="40%" src="{% static 'img/logomediano.png' %}" alt="auth-img">
+    </div>
+    <div>
+        <img width="80%" src="{% static 'img/logo_min.png' %}" alt="auth-img">
+    </div>
+</div>    
+<div class="row">
     <div class="col-12">
         <div class="d-flex justify-content-center">
-            <a href="{% url 'retec_contratos_new' %}" class="card-view border border-secondary text-center mx-3 my-3 py-2" style="border-radius: 8px !important;  width: 15% !important;">
+            <a href="{% url 'retec_contratos_new' %}" class="card-view border text-center mx-3 py-4" style="border-radius: 8px !important;  width: 15% !important;">
                 <img height="60px" src="{% static 'img/ico/contrato1.png' %}" alt="auth-img">
-                <h6>
-                    CONTRATOS
-                </h6>
-            
+                <h6>CONTRATOS</h6>
             </a>
-            <a href="{% url 'retec_autorizaciones_new' %}" class="card-view border border-secondary text-center mx-3 my-3 py-2" style="border-radius: 8px !important; width: 15% !important;">
+            <a href="{% url 'retec_autorizaciones_new' %}" class="card-view border text-center mx-3 py-4" style="border-radius: 8px !important; width: 15% !important;">
                 <img height="60px" src="{% static 'img/ico/autorizar1.png' %}" alt="auth-img">
-                <h6>
-                    AUTORIZACIONES
-                </h6>
+                <h6>AUTORIZACIONES</h6>
             </a>
-            <a href="{% url 'retec_facturas_new' %}" class="card-view border border-secondary text-center mx-3 my-3 py-1 " style="border-radius: 8px !important;  width: 15% !important;">
-                <span style="font-size: small; display: block; margin: 0; padding: 0;">Facturas</span>
-                <img height="55px" src="{% static 'img/ico/reservas1.png' %}" alt="auth-img">
-                <h6 class="py-0 my-0">
-                    &nbsp;&nbsp;&nbsp;&nbsp;RESERVAS&nbsp;&nbsp;&nbsp;&nbsp;
-                </h6>
+            <a href="{% url 'retec_facturas_new' %}" class="card-view border text-center mx-3 py-4" style="border-radius: 8px !important;  width: 15% !important;">
+                <img height="60px" src="{% static 'img/ico/reservas1.png' %}" alt="auth-img">
+                <h6>FACTURAS</h6>
             </a>
-            <a href="{% url 'fac_cm' %}" class="card-view border border-secondary text-center mx-3 my-3 py-1" style="border-radius: 8px !important;  width: 15% !important;">
-               <span style="font-size: small; display: block; margin: 0; padding: 0;">Facturas</span>
-               <img height="55px" src="{% static 'img/ico/cuentasmedicas1.png' %}" alt="auth-img">
-                <h6>
-                    CUENTAS MEDICAS
-                </h6>
-            </a>  
         </div>
     </div>    
     <div class="col-12">
         <div class="d-flex justify-content-center">
-            <a href="{% url 'retec_incapacidades_new' %}" class="card-view border border-secondary text-center mx-3 my-3 py-2" style="border-radius: 8px !important; width: 15% !important;">
+            <a href="{% url 'retec_incapacidades_new' %}" class="card-view border text-center mx-3 py-4" style="border-radius: 8px !important; width: 15% !important;">
                 <img height="55px" src="{% static 'img/ico/incapacidades1.png' %}" alt="auth-img">
-                <h6>
-                    INCAPACIDADES
-                </h6>
+                <h6>INCAPACIDADES</h6>
             </a>
-            <a href="{% url 'retec_pagos_new' %}" class="card-view border border-secondary text-center mx-3 my-3 py-2" style="border-radius: 8px !important; width: 13%; width: 15% !important;">
+            <a href="{% url 'retec_pagos_new' %}" class="card-view border text-center mx-3 py-4" style="border-radius: 8px !important; width: 13%; width: 15% !important;">
                 <img height="60px" src="{% static 'img/ico/pagos1.png' %}" alt="auth-img">
-                <h6>
-                    PAGOS
-                </h6>
+                <h6>PAGOS</h6>
             </a>
-            <a href="{% url 'retec_piramide' %}" class="card-view border border-secondary text-center mx-3 my-3 py-2" style="border-radius: 8px !important; width: 15% !important;"> 
-                <img src="{% static 'img/ico/triangulos1.png' %}" alt="">
-                <h6>
-                    TRIANGULOS
-                </h6>
-            </a>
-            <a href="{% url 'pro_inicio' %}" class="card-view border border-secondary text-center mx-3 my-3 py-2" style="border-radius: 8px !important; width: 15% !important;">
+            <a href="{% url 'pro_inicio' %}" class="card-view border text-center mx-3 py-4" style="border-radius: 8px !important; width: 15% !important;">
                 <img height="60px" src="{% static 'img/ico/proyecciones1.png' %}" alt="auth-img">
-                <h6>
-                    PROYECCIONES
-                </h6>
+                <h6>PROYECCIONES</h6>
             </a>
         </div>
     </div>
-   
-
-
 </div>
 {% endblock %}

@@ -6,16 +6,11 @@
                 <div style="letter-spacing:3px; color:#555; font:12px Arial">Módulo de reservas técnicas</div>
             </div>
             <div class="d-flex">
-                <div class="input-group me-4" v-if="clock != null">
-                    <div class="input-group-addon" style="background:#FFF">
-                        <i class="icon-clock"></i>
-                    </div>
-                    <input type="text" class="form-control" :value="clock_human">
-                </div>
+                <temporizador ref="timecop"></temporizador>
                 <get-view-periodo collections="retec_facturas"></get-view-periodo>
-                <!-- 
+                <div class="d-none">
                     <select-periodo ref="xtime" :coleccion="fuente" :alias="krache_time"></select-periodo>
-                -->
+                </div>
                 <div :class="section == 'basic'? 'btn-group dk-disabled': 'btn-group'">
                     <button :class="display == 'chart'? 'btn btn-success': 'btn btn-default'" @click="display = 'chart'"><i class="fa fa-bar-chart"></i></button>
                     <button :class="display == 'table'? 'btn btn-success': 'btn btn-default'" @click="display = 'table'"><i class="fa fa-table"></i></button>
@@ -898,7 +893,6 @@ export default {
             mocli: null,
             tokens: {},
             keycode: '',
-            pathsearch: root_path + 'consulta/dash/consulta/auto',
             fuente: 'retec_facturas',
             // fuente: '6_retec_facturas',
             krache: 'dash_factu_' + this.cliente,
@@ -940,10 +934,6 @@ export default {
             df_pm_pen: 0,
             df_pbs_con: 0,
             df_pm_con: 0,
-            clock: null,
-            clock_human: '',
-            seg: 0,
-            runsearch: false,
         }
     },
     computed: {
@@ -958,32 +948,6 @@ export default {
         }
     },
     methods: {
-        clock_up: function(){
-            if(this.clock != null){
-                clearInterval(this.clock);
-                this.clock = null;
-            }
-            this.seg = 0;
-            this.clock = setInterval(() => {
-                this.seg++;
-                this.clock_human = this.getTime();
-            }, 1000);
-        },
-        clock_down: function(){
-            if(this.clock != null){
-                clearInterval(this.clock);
-            }
-            this.clock = null;
-            this.seg = 0;
-        },
-        getTime: function(){
-            let mn = Math.floor(this.seg / 60).toString().padStart(2, '0');
-            let rs = (this.seg % 60).toString().padStart(2, '0');
-            return `${mn}:${rs} segundos`
-        },
-        getTimestamp: function(){
-            return (new Date()).toString().slice(11, 24);
-        },
         makeToken: function(){
             var str = '';
             for(var i = 0; i < 5; i++){
@@ -1035,38 +999,6 @@ export default {
                 this.manager();
             }
         },
-        loadData: function(arg){
-            if(this.status != this.state.LOADING){
-                this.keycode = generatorKey();
-                let pam = new FormData();
-                pam.append('tema', this.fuente);
-                pam.append('periodo', arg);
-                pam.append('clave', this.keycode);
-                // pam.append('tema', '6_retec_facturas');
-                // pam.append('periodo', '202206');
-                console.log('Iniciando: ' + this.getTimestamp());
-                this.status = this.state.LOADING;
-                this.clock_up();
-                // axios.post(this.pathdata + '/data', pam).then(res => {
-                customPost(this.pathdata + '/data', pam).then(res => {
-                    console.log('Terminado: ' + this.getTimestamp());
-                    console.log(res);
-                    this.rawData = (res.length > 0)?  res[0]: {'rs_0': [], 'rs_1': [], 'rs_2': [], 'rs_3': [], 'rs_4': [], 'cores': [], 's0': [], 'v0': [], 's1': [], 'v1': [], 'pmx': [], 'gp_ext_01': [], 'gp_ext_02': [], 'gp_ext_03': [], 'gp_ext_mec': []};
-                    console.log('Raw data');
-                    console.log(this.rawData);
-                    registerJSON(this.krache, this.rawData, 'per_' + arg);
-                    registerJSON(this.krache, arg, 'lastper');
-                    this.writeCards();
-                    this.status = this.state.LOADED;
-                    this.clock_down();
-                }).catch(err => {
-                    this.status = this.state.FAILED;
-                    console.log('Terminado con error: ' + this.getTimestamp());
-                    this.clock_down();
-                    console.log(err);
-                });
-            }
-        },
         loadIndigena: function(arg){
             if(this.status != this.state.LOADING){
                 let pam = new FormData();
@@ -1083,23 +1015,6 @@ export default {
                 })
             }
         },
-        loadControls: function(arg){
-            if(this.status != this.state.LOADING){
-                let pam = new FormData();
-                pam.append('tema', this.fuente);
-                pam.append('periodo', arg);
-                this.status = this.state.LOADING;
-                axios.post(this.pathdata + '/controls', pam).then(res => {
-                    this.rawCtr = res.data;
-                    registerJSON(this.krache_ctr, this.rawCtr, 'per_' + arg);
-                    registerJSON(this.krache_ctr, arg, 'lastper');
-                    this.status = this.state.LOADED;
-                }).catch(err => {
-                    this.status = this.state.FAILED;
-                    console.log(err);
-                });
-            }
-        },        
         writeCards: function(){
             // rs_1: Plan salud
             // rs_2: Tcontra
@@ -1206,81 +1121,20 @@ export default {
                 });
             }
         },
-        loadSchemaParts: function(){
-            this.rawSchema = [];
-            this.pinload = 0;
-            this.loadSchema(this.pinload);
-        },
         getSchema: function(force=false){
             // let tmp = getRegisterJSON(this.krache, 'sch_' + this.periodo);
             // let tmp = localStorage.getItem('sch_' + this.key_history);
             this.status_sch = this.state.LOADING;
-            this.asyncRequest(
+            this.$refs.timecop.dispatchQuery(
                 'schema_factura' + this.periodo,
+                this.pathdata + '/schema',
+                {'tema': this.fuente, 'periodo': this.periodo},
                 res => {
                     this.rawSchema = res[0];
                     this.num_registros = this.rawSchema.total;
                     this.status_sch = this.state.LOADED;
                 },
-                this.pathdata + '/schema',
-                {'tema': this.fuente, 'periodo': this.periodo},
-                true,   // first param
-                '',     // kcode param
-                force   // force param
-            );
-            if(force){
-                // this.loadSchemaParts();
-                // this.loadSchemaTry();
-            }else{
-                // this.rawSchema = tmp;
-                // let num = this.rawSchema.find(elm => elm.field == '_id');
-                // let num = this.rawSchema.total;
-                // this.num_registros = (num == undefined)? -1: num;
-                // this.status_sch = this.state.LOADED;
-            }
-        },
-        loadSchemaTry: function(){
-            var pam = new FormData();
-            pam.append('tema', this.fuente);
-            pam.append('periodo', this.periodo);
-            // pam.append('tema', '6_retec_facturas');
-            // pam.append('periodo', '202206');
-            this.status_sch = this.state.LOADING;
-            this.clock_up();
-            console.log('Iniciando: ' + this.getTimestamp());
-            // axios.post(this.pathdata + '/schema', pam).then(res => {
-            customPost(this.pathdata + '/schema', pam).then(res => {
-                console.log('Terminando: ' + this.getTimestamp());
-                console.log(res);
-                if(res.length > 0){
-                    let rs = res[0];
-                    registerJSON(this.krache, rs, 'sch_' + this.periodo);
-                    this.rawSchema = rs;
-                    this.num_registros = rs.total;
-                    this.status_sch = this.state.LOADED;
-                }else{
-                    this.status_sch = this.state.FAILED;
-                }
-                this.clock_down();
-            }).catch(err => {
-                console.log(err);
-                this.status_sch = this.state.FAILED;
-                this.clock_down();
-                console.log('Terminando con error: ' + this.getTimestamp());
-            })
-        },
-        personal: function(){
-            this.asyncRequest(
-                'try_one_'+ this.periodo,
-                res => {
-
-                },
-                this.pathdata + '/controls/1',
-                {'tema': this.fuente, 'periodo': this.periodo},
-                true,   // first param
-                '',     // kcode param
-                force   // force param
-
+                force
             );
         },
         manager: function(force=false){
@@ -1288,8 +1142,10 @@ export default {
                 this.getSchema(force);
             }else if('controls' == this.section){
                 console.log('In controls section!' + this.fuente);
-                this.asyncRequest(
+                this.$refs.timecop.dispatchQuery(
                     'raw_fac_ctr' + this.periodo,
+                    this.pathdata + '/controls',
+                    {'tema': this.fuente, 'periodo': this.periodo},
                     res => {
                         if(!this.isEmpty(res)){
                             this.rawCtr = (res.length > 0)?  res: null;
@@ -1314,11 +1170,7 @@ export default {
                             console.log('Contenido vacío!');
                         }
                     },
-                    this.pathdata + '/controls',
-                    {'tema': this.fuente, 'periodo': this.periodo},
-                    true,   // first param
-                    '',     // kcode param
-                    force   // force param
+                    force
                 );
             }else if('data-indigena' == this.section){
                 this.rawIndi = getRegisterJSON(this.krache_indi, 'per_' + this.periodo);
@@ -1328,85 +1180,20 @@ export default {
                     console.log('Cargado en memoria!');
                 }
             }else{
-                // this.rawData = getRegisterJSON(this.krache, 'per_' + this.periodo);
-                this.asyncRequest(
-                    'raw_facet_fac' + this.periodo,
+                this.$refs.timecop.dispatchQuery(
+                    'raw_facet_fac' + this.periodo, 
+                    this.pathdata + '/data',
+                    {'tema': this.fuente, 'periodo': this.periodo},
                     res => {
                         this.rawData = (res.length > 0)?  res[0]: {'rs_0': [], 'rs_1': [], 'rs_2': [], 'rs_3': [], 'rs_4': [], 'cores': [], 's0': [], 'v0': [], 's1': [], 'v1': [], 'pmx': []};
                         this.writeCards();
                     },
-                    this.pathdata + '/data',
-                    {'tema': this.fuente, 'periodo': this.periodo},
-                    true,   // first param
-                    '',     // kcode param
-                    force   // force param
+                    force
                 );
             }
         },
         showRecord: function(field){
             this.$eventBus.$emit('open-modal', {'titulo': 'ESTRUCTURA - CAMPOS NO ENCONTRADOS', 'periodo': this.periodo, 'filtros': field + ':exists:false', 'foco': field});
-        },
-        asyncRequest: function(consulta, fun, writepath, params, first=true, kcode='', force=false){
-            console.log('Writepath ' + writepath);
-            let initial = first;
-            if(this.runsearch == false || first == false){
-                if(this.runsearch == false && first){
-                    this.runsearch = true;
-                    this.status = this.state.LOADING;
-                    this.clock_up();
-                    console.log('Se inicia proceso de asyncRequest!');
-                }
-                if(force === true){
-                    this.keycode = generatorKey();
-                    let param = new FormData();
-                    param.append('clave', this.keycode);
-                    Object.entries(params).forEach(par => param.append(par[0], par[1]));
-                    customPostBlind(writepath, param).then(arg => {console.log('Return async write request! (CustomPost)')}).catch(err => {console.log(err)});
-                    setTimeout(() => this.asyncRequest(consulta, fun, writepath, {}, false, this.keycode), 4000);
-                    // axios.post(writepath, param).then(arg => {console.log('Return async write request!')}).catch(err => {console.log(err)});
-                    console.log('Se mandó a crear la consulta mongodb por la fuerza, con la clave: ' + this.keycode);
-                }else{
-                    console.log('async request in else block!');
-                    let pam = new FormData();
-                    pam.append('clave', kcode);
-                    pam.append('consulta', consulta);
-                    axios.post(this.pathsearch, pam).then(res => {
-                        if(res.data.estado == 'void'){
-                            if(initial){
-                                this.keycode = generatorKey();
-                                let param = new FormData();
-                                param.append('clave', this.keycode);
-                                Object.entries(params).forEach(par => param.append(par[0], par[1]));
-                                customPostBlind(writepath, param).then(arg => {console.log('Return async write request! (CustomPost)')}).catch(err => {console.log(err)});
-                                setTimeout(() => this.asyncRequest(consulta, fun, writepath, {}, false, this.keycode), 4000);
-                                // axios.post(writepath, param).then(arg => {console.log('Return async write request!')}).catch(err => {console.log(err)});
-                                console.log('Se mandó a crear la consulta mongodb porque se encontró void, con la clave: ' + this.keycode);
-                            }
-                        }else if(res.data.estado == 'close'){
-                            console.log(`Consulta finalizada, con clave: '${kcode}'`);
-                            console.log(res.data);
-                            fun(res.data.contenido);
-                            this.runsearch = false;
-                            this.status = this.state.LOADED;
-                            this.clock_down();
-                        }else if(res.data.estado == 'failed'){
-                            console.log(`La creación de consulta mongo falló, con clave: '${kcode}'`);
-                            this.runsearch = false;
-                            this.status = this.state.FAILED;
-                            this.clock_down();
-                        }else{
-                            console.log(`El estado de la consulta es: '${res.data.estado}', se verifica dentro de 4 segundos!`);
-                            setTimeout(() => this.asyncRequest(consulta, fun, writepath, {}, false, kcode), 4000);
-                        }
-                    }).catch(err => {
-                        console.log(err);
-                        console.log(`asyncRequest falló, se verifica dentro de 4 segundos!`);
-                        setTimeout(() => this.asyncRequest(consulta, fun, writepath, {}, false, kcode), 4000);
-                    });
-                }
-            }else{
-                console.log('Se desechó la invocación de asyncRequest, porque ya hay un hilo ejecutándose!');
-            }
         },
         listen: function(){
             this.$eventBus.$on('select-tus', arg => {

@@ -154,9 +154,6 @@ Vue.component('audit-qr-list', require('./componentes/qr_list.vue').default);
 Vue.component('audit-qr-make', require('./componentes/qr_make_acta.vue').default);
 Vue.component('retec-piramide', require('./componentes/piramide.vue').default);
 
-Vue.component('retec-custom-a', require('./componentes/custom_1.vue').default);
-Vue.component('retec-custom-b', require('./componentes/custom_2.vue').default);
-
 Vue.component('ia-eps-cuentas', require('./componentes/ia_eps.vue').default);
 Vue.component('ia-search', require('./componentes/ia_search.vue').default);
 Vue.component('ase-geocode', require('./componentes/ase_geocode.vue').default);

@@ -6,13 +6,9 @@
                 <div style="letter-spacing:3px; color:#555; font:12px Arial">Módulo de reservas técnicas</div>
             </div>
             <div class="d-flex">
-                <div class="input-group me-4" v-if="clock != null">
-                    <div class="input-group-addon" style="background:#FFF">
-                        <i class="icon-clock"></i>
-                    </div>
-                    <input type="text" class="form-control" :value="clock_human">
-                </div>
-                <select-periodo ref="xtime" :coleccion="fuente" :alias="krache_time"></select-periodo>
+                <temporizador ref="timecop"></temporizador>
+                <get-view-periodo collections="retec_contratos"></get-view-periodo>
+                <!-- <select-periodo ref="xtime" :coleccion="fuente" :alias="krache_time"></select-periodo> -->
                 <div class="btn-group">
                     <button :class="display == 'chart'? 'btn btn-success': 'btn btn-default'" @click="display = 'chart'"><i class="fa fa-bar-chart"></i></button>
                     <button :class="display == 'table'? 'btn btn-success': 'btn btn-default'" @click="display = 'table'"><i class="fa fa-table"></i></button>
@@ -325,7 +321,6 @@ export default {
         return {
             tokens: {},
             keycode: '',
-            pathsearch: root_path + 'consulta/dash/consulta/auto',
             fuente: 'retec_contratos',
             krache: 'dash_contrato_' + this.cliente,
             krache_time: 'time_contrato_' + this.cliente,
@@ -352,10 +347,6 @@ export default {
             state: {'INI': 'ini', 'LOADING': 'loading', 'LOADED': 'loaded', 'FAILED': 'failed'},
             pinload: 0,
             porcion: [{'a': 0, 'b': 5, 'per': '0'}, {'a': 5, 'b': 10, 'per': '33%'}, {'a': 10, 'b': 15, 'per': '67%'}, {'per': '100%'}],
-            clock: null,
-            clock_human: '',
-            seg: 0,
-            runsearch: false,
         }
     },
     computed: {
@@ -370,29 +361,6 @@ export default {
         }
     },
     methods: {
-        clock_up: function(){
-            if(this.clock != null){
-                clearInterval(this.clock);
-                this.clock = null;
-            }
-            this.seg = 0;
-            this.clock = setInterval(() => {
-                this.seg++;
-                this.clock_human = this.getTime();
-            }, 1000);
-        },
-        clock_down: function(){
-            if(this.clock != null){
-                clearInterval(this.clock);
-            }
-            this.clock = null;
-            this.seg = 0;
-        },
-        getTime: function(){
-            let mn = Math.floor(this.seg / 60).toString().padStart(2, '0');
-            let rs = (this.seg % 60).toString().padStart(2, '0');
-            return `${mn}:${rs} segundos`
-        },
         makeToken: function(){
             var str = '';
             for(var i = 0; i < 5; i++){
@@ -542,15 +510,12 @@ export default {
                 });
             }
         },
-        loadSchemaParts: function(){
-            this.rawSchema = [];
-            this.pinload = 0;
-            this.loadSchema(this.pinload);
-        },
         getSchema: function(force=false){
             this.status_sch = this.state.LOADING;
-            this.asyncRequest(
+            this.$refs.timecop.dispatchQuery(
                 'schema_ctro' + this.periodo,
+                this.pathdata + '/schema',
+                {'tema': this.fuente, 'periodo': this.periodo},
                 res => {
                     console.log('koi');
                     this.rawSchema = res[0];
@@ -558,11 +523,7 @@ export default {
                     this.num_registros = this.rawSchema.total;
                     this.status_sch = this.state.LOADED;
                 },
-                this.pathdata + '/schema',
-                {'tema': this.fuente, 'periodo': this.periodo},
-                true,   // first param
-                '',     // kcode param
-                force   // force param
+                force
             );
         },
         manager: function(force=false){
@@ -575,82 +536,20 @@ export default {
             if('schema' == this.section){
                 this.getSchema(force);
             }else{
-                this.asyncRequest(
+                this.$refs.timecop.dispatchQuery(
                     'raw_ctro_dat' + this.periodo,
+                    this.pathdata + '/data',
+                    {'tema': this.fuente, 'periodo': this.periodo},
                     res => {
                         this.rawData = (res.length > 0)?  res[0]: {'rs_1': [], 'rs_2': [], 'rs_3': [], 'rs_4': [], 'rs_5': [], 'rs_6': [], 'rs_7': []};
                         this.writeCards();
                     },
-                    this.pathdata + '/data',
-                    {'tema': this.fuente, 'periodo': this.periodo},
-                    true,   // first param
-                    '',     // kcode param
-                    force   // force param
+                    force
                 );
             }
         },
         showRecord: function(field){
             this.$eventBus.$emit('open-modal', {'titulo': 'ESTRUCTURA - CAMPOS NO ENCONTRADOS', 'periodo': this.periodo, 'filtros': field + ':exists:false', 'foco': field});
-        },
-        asyncRequest: function(consulta, fun, writepath, params, first=true, kcode='', force=false){
-            let initial = first;
-            if(this.runsearch == false || first == false){
-                if(this.runsearch == false && first){
-                    this.runsearch = true;
-                    this.status = this.state.LOADING;
-                    this.clock_up();
-                    console.log('Se inicia proceso de asyncRequest!');
-                }
-                if(force === true){
-                    this.keycode = generatorKey();
-                    let param = new FormData();
-                    param.append('clave', this.keycode);
-                    Object.entries(params).forEach(par => param.append(par[0], par[1]));
-                    customPostBlind(writepath, param).then(arg => {console.log('Return async write request! (CustomPost)')}).catch(err => {console.log(err)});
-                    setTimeout(() => this.asyncRequest(consulta, fun, writepath, {}, false, this.keycode), 4000);
-                    // axios.post(writepath, param).then(arg => {console.log('Return async write request!')}).catch(err => {console.log(err)});
-                    console.log('Se mandó a crear la consulta mongodb por la fuerza, con la clave: ' + this.keycode);
-                }else{
-                    let pam = new FormData();
-                    pam.append('clave', kcode);
-                    pam.append('consulta', consulta);
-                    axios.post(this.pathsearch, pam).then(res => {
-                        if(res.data.estado == 'void'){
-                            if(initial){
-                                this.keycode = generatorKey();
-                                let param = new FormData();
-                                param.append('clave', this.keycode);
-                                Object.entries(params).forEach(par => param.append(par[0], par[1]));
-                                customPostBlind(writepath, param).then(arg => {console.log('Return async write request! (CustomPost)')}).catch(err => {console.log(err)});
-                                setTimeout(() => this.asyncRequest(consulta, fun, writepath, {}, false, this.keycode), 4000);
-                                // axios.post(writepath, param).then(arg => {console.log('Return async write request!')}).catch(err => {console.log(err)});
-                                console.log('Se mandó a crear la consulta mongodb porque se encontró void, con la clave: ' + this.keycode);
-                            }
-                        }else if(res.data.estado == 'close'){
-                            console.log(`Consulta finalizada, con clave: '${kcode}'`);
-                            console.log(res.data);
-                            fun(res.data.contenido);
-                            this.runsearch = false;
-                            this.status = this.state.LOADED;
-                            this.clock_down();
-                        }else if(res.data.estado == 'failed'){
-                            console.log(`La creación de consulta mongo falló, con clave: '${kcode}'`);
-                            this.runsearch = false;
-                            this.status = this.state.FAILED;
-                            this.clock_down();
-                        }else{
-                            console.log(`El estado de la consulta es: '${res.data.estado}', se verifica dentro de 4 segundos!`);
-                            setTimeout(() => this.asyncRequest(consulta, fun, writepath, {}, false, kcode), 4000);
-                        }
-                    }).catch(err => {
-                        console.log(err);
-                        console.log(`asyncRequest falló, se verifica dentro de 4 segundos!`);
-                        setTimeout(() => this.asyncRequest(consulta, fun, writepath, {}, false, kcode), 4000);
-                    });
-                }
-            }else{
-                console.log('Se desechó la invocación de asyncRequest, porque ya hay un hilo ejecutándose!');
-            }
         },
         listen: function(){
             this.$eventBus.$on('select-estado', arg => {
