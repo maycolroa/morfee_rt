@@ -1,20 +1,37 @@
 <template>
     <div> 
         <div class="input-group me-4">
-            <div class="input-group-addon df-kan" style="background:#FFF">
-                <i class="fa fa-calendar fs-5"></i>
+            <div class="input-group-addon" style="background:#FFF">
+                <a href="javascript:void(0)" @click="openDetails"><i class="fa fa-calendar fs-5"></i></a>
             </div>
             <select v-model="periodo" class="form-control">
                 <option value="">{{ status == state.LOADING? 'Cargando datos...': '' }}</option>
                 <optgroup :label="elm.anio == 0? 'Sin periodo': (elm.anio == -1)? 'Todos los registros': elm.anio" v-for="(elm, i) in periodos" :key="i">
                     <option v-for="(mes, m) in elm.meses" :key="m" :value="mes.ym">{{ mes.tx }}</option>
                 </optgroup>
-                <option value="-details-" class="df-option">Detalles</option>
             </select>
             <div class="input-group-btn">
                 <button class="btn btn-success" @click="reloadPeriodos" :disabled="status == state.LOADING"><i :class="status == state.LOADING? 'fa fa-refresh fa-spin': 'fa fa-refresh'"></i></button>
-            </div>        
-        </div> 
+            </div>
+        </div>
+        <div id="lc_modal_view" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog modal-lgx">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h5 class="modal-title" id="myLargeModalLabel">DETALLES DE LA VISTA</h5>
+                    </div>
+                    <div :class="'modal-body ' + status">
+                        <h5>{{ getCollection() }}</h5>
+                    </div><!-- End modal-body -->
+                    <div :class="'modal-footer ' + status">
+                        <button type="button" class="btn btn-danger text-left" data-dismiss="modal">Cancelar</button>
+                        <!-- <button type="button" class="btn btn-success">Guardar cambios</button> -->
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>        
+        <!-- End modal -->
     </div>
 </template>
 <script>
@@ -35,24 +52,28 @@ export default {
     watch: {
         periodo: function(val){
             if(this.status == this.state.LOADED){
-                if(val != '-details-'){
-                    if(this.post_refresh){
-                        this.post_refresh = false;
-                        this.$eventBus.$emit('time-refresh', {'periodo': this.periodo});
-                    }else{
-                        this.$eventBus.$emit('time-select', {'periodo': this.periodo});
-                    }
+                if(this.post_refresh){
+                    this.post_refresh = false;
+                    this.$eventBus.$emit('time-refresh', {'periodo': this.periodo});
+                }else{
+                    this.$eventBus.$emit('time-select', {'periodo': this.periodo});
                 }
             }
         },
     },
     methods: {
+        openDetails: function(){
+            $('#lc_modal_view').modal('show');
+        },
         reloadPeriodos: function(){
             this.post_refresh = true;
             this.cargarPeriodos();
         },
         timeSelect: function(per){
             this.periodo = per;
+        },
+        getCollection: function(){
+            return this.collections.replace('retec_', '').toUpperCase();
         },
         cargarPeriodos : function(){
             if(this.status != this.state.LOADING){

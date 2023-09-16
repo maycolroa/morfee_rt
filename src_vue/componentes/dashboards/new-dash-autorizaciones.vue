@@ -361,7 +361,7 @@
                     <local-counter ref="a_3" pretag="$ " class="border" texto="DIFERENCIA" valor="0" duracion="1" miles warning></local-counter>
                 </div>
             </div>
-            <h5 class="txt-dark">Controles Presupuestos Máximos</h5>
+            <h5 class="txt-dark">Controles PM</h5>
             <div class="row">
                 <div class="col-sm-4">
                     <local-counter ref="b_1" pretag="$ " class="border" texto="RESERVA CALCULADA" valor="0" duracion="1" miles></local-counter>
@@ -373,6 +373,23 @@
                     <local-counter ref="b_3" pretag="$ " class="border" texto="DIFERENCIA" valor="0" duracion="1" miles warning></local-counter>
                 </div>
             </div>
+            <h5 class="txt-dark">Controles PAC</h5>
+            <div class="row mb-4">
+                <div class="col-sm-4">
+                    <local-counter ref="c_1" pretag="$ " class="border" texto="RESERVA CALCULADA" valor="0" duracion="1" miles></local-counter>
+                </div>
+                <div class="col-sm-4">
+                    <local-counter ref="c_2" pretag="$ " class="border" texto="RESERVA REPORTADA" valor="0" duracion="1" miles></local-counter>
+                </div>
+                <div class="col-sm-4">
+                    <local-counter ref="c_3" pretag="$ " class="border" texto="DIFERENCIA" valor="0" duracion="1" miles warning></local-counter>
+                </div>
+            </div>
+
+
+
+
+
         </div>
         <div :class="section == 'general'? '': 'd-none'">
             <div class="row">
@@ -791,14 +808,6 @@ export default {
                 this.$refs.one.setDatos(this.rawData['facet_pla']);
                 this.$refs.two.setDatos(this.rawData['facet_amb']);
                 this.writeItems();
-                // this.$refs.tb_0_S.setDatos(this.rawData['rs_1']);
-                // this.$refs.gp_0_S.setDatos(this.rawData['rs_1'].slice(0, 30).sort((a, b) => a.valor - b.valor));
-                // this.$refs.tb_0_V.setDatos(this.rawData['rs_2']);
-                // this.$refs.gp_0_V.setDatos(this.rawData['rs_2'].slice(0, 30).sort((a, b) => a.valor - b.valor));
-                // this.$refs.tb_1_S.setDatos(this.rawData['rs_3']);
-                // this.$refs.gp_1_S.setDatos(this.rawData['rs_3'].slice(0, 30).sort((a, b) => a.valor - b.valor));
-                // this.$refs.tb_1_V.setDatos(this.rawData['rs_4']);
-                // this.$refs.gp_1_V.setDatos(this.rawData['rs_4'].slice(0, 30).sort((a, b) => a.valor - b.valor));
             }
             // facet_vbs  facet_vac   facet_vpm
         },
@@ -912,17 +921,30 @@ export default {
                     {'tema': this.fuente, 'periodo': this.periodo},
                     res => {
                         this.rawCtr = (res.length > 0)? res: [];
+                        let a_fac = 0, a_vbs = 0, b_fac = 0, b_vpm = 0, c_fac = 0, c_vac = 0;
                         this.rawCtr.forEach(elm => {
-                            if(elm._id == '0'){
-                                this.$refs.a_1.setValor(this.clearNumber(elm.sum_fac));
-                                this.$refs.a_2.setValor(this.clearNumber(elm.sum_vbs));
-                                this.$refs.a_3.setValor(this.clearNumber(elm.sum_fac - elm.sum_vbs));
-                            }else if(elm._id == '1'){
-                                this.$refs.b_1.setValor(this.clearNumber(elm.sum_fac));
-                                this.$refs.b_2.setValor(this.clearNumber(elm.sum_vpm));
-                                this.$refs.b_3.setValor(this.clearNumber(elm.sum_fac - elm.sum_vpm));
+                            if(elm._id.pla != 'P'){
+                                if(elm._id.pmx == '0'){
+                                    a_fac += elm.sum_fac;
+                                    a_vbs += elm.sum_vbs;
+                                }else if(elm._id.pmx == '1'){
+                                    b_fac += elm.sum_fac;
+                                    b_vpm += elm.sum_vpm;
+                                }
+                            }else{
+                                c_fac += elm.sum_fac;
+                                c_vac += elm.sum_vac;
                             }
                         });
+                        this.$refs.a_1.setValor(this.clearNumber(a_fac));
+                        this.$refs.a_2.setValor(this.clearNumber(a_vbs));
+                        this.$refs.a_3.setValor(this.clearNumber(a_fac - a_vbs));
+                        this.$refs.b_1.setValor(this.clearNumber(b_fac));
+                        this.$refs.b_2.setValor(this.clearNumber(b_vpm));
+                        this.$refs.b_3.setValor(this.clearNumber(b_fac - b_vpm));
+                        this.$refs.c_1.setValor(this.clearNumber(c_fac));
+                        this.$refs.c_2.setValor(this.clearNumber(c_vac));
+                        this.$refs.c_3.setValor(this.clearNumber(c_fac - c_vac));
                     },
                     force
                 );

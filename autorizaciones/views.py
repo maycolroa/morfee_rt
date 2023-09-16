@@ -63,7 +63,7 @@ def raw_facet_auto(request):
     mongo = Mongo('retec_autorizaciones')
     try:
         datos = mongo.aggregate([
-            {'$match': {'crx': periodo} }, 
+            {'$match': {'crx': periodo, 'stt': {"$nin": ['PR', 'AN']}} }, 
             {
                 '$facet': {
                     'rs_1': [
@@ -108,7 +108,6 @@ def raw_facet_auto(request):
         consulta.contenido = str(datos)
         consulta.estado = 'close'
         consulta.save()
-        print(datos)
         return HttpResponse(datos, content_type="application/json")
     except:
         consulta.estado = 'failed'
@@ -125,14 +124,21 @@ def raw_facet_auto_control(request):
     mongo = Mongo(tema)
     try:
         datos = mongo.aggregate([
-            {"$match": {'crx': periodo} },
-            {"$project": {'factor': {"$multiply": ["$can", "$vun"]}, 'vbs': 1, 'vpm': 1, 'pmx': 1} },
-            {"$group": {'_id': '$pmx', 'sum_fac': {"$sum": "$factor"}, 'sum_vbs': {"$sum": "$vbs"}, 'sum_vpm': {"$sum": "$vpm"} } }
+            {"$match": {'crx': periodo, 'stt': {"$nin": ['PR', 'AN']}} },
+            {"$project": {
+                'factor': {"$multiply": ["$can", "$vun"]}, 
+                'vbs': 1,
+                "n_vbs": {"$convert": {"input": "$vbs", "to": "double", "onError": 0, "onNull": 0}},
+                'vpm': 1, 
+                'vac': 1, 
+                'pmx': 1, 
+                'pla': 1,
+            }},
+            {"$group": {'_id': {'pmx': '$pmx', 'pla': '$pla'}, 'sum_vac': {"$sum": "$vac"}, 'sum_fac': {"$sum": "$factor"}, 'sum_vbs': {"$sum": "$n_vbs"}, 'sum_old': {"$sum": "$vbs"}, 'sum_vpm': {"$sum": "$vpm"} } }
         ])
         consulta.contenido = str(datos)
         consulta.estado = 'close'
         consulta.save()
-        print(datos)
         return HttpResponse(datos, content_type="application/json")
     except:
         consulta.estado = 'failed'
