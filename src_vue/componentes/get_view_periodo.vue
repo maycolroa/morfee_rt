@@ -46,7 +46,8 @@ export default {
             periodo: '',
             post_refresh: false,
             status: 'ini',
-            state: {'INI': 'ini', 'LOADING': 'loading', 'LOADED': 'loaded', 'FAILED': 'failed'}
+            state: {'INI': 'ini', 'LOA,}DING': 'loading', 'LOADED': 'loaded', 'FAILED': 'failed'},
+            storage_periodo : ''
         }
     },
     watch: {
@@ -62,6 +63,9 @@ export default {
         },
     },
     methods: {
+        addSchema: function(data){
+            localStorage.setItem(this.storage_periodo, JSON.stringify(data));
+        },
         openDetails: function(){
             $('#lc_modal_view').modal('show');
         },
@@ -75,13 +79,45 @@ export default {
         getCollection: function(){
             return this.collections.replace('retec_', '').toUpperCase();
         },
+        getPeriodoHistory: function(){
+            var tmpp = localStorage.getItem(this.storage_periodo);
+            if(tmpp == null){
+                this.cargarPeriodos();
+            }else{
+                this.timeSelect('');
+                let tmp = {};
+                let zero = null;
+                JSON.parse(tmpp).forEach(elm => {
+                    if(elm._id == null){
+                        zero = {'anio': 0, 'meses': [{'ym': 0, 'mm': 0, 'tx': 'Sin periodo definido'}]};
+                    }else{
+                        var anio = parseInt(elm._id.toString().slice(0, 4));
+                        if(tmp[anio] == undefined){
+                            tmp[anio] = {'anio': anio, 'meses': []}
+                        }
+                        var mes = elm._id.toString().slice(-2);
+                        tmp[anio].meses.push({'ym': elm._id, 'mm': mes, 'tx': this.meses[mes]});
+                    }
+                });
+                
+                this.periodos =Object.values(tmp).sort((a, b) => b.anio - a.anio);
+                if(zero != null) this.periodos.push(zero);
+                if(this.periodos.length > 1) this.periodos.push({'anio': -1, 'meses': [{'ym': -1, 'mm': 0, 'tx': 'Total registros'}]});
+                this.status = this.state.LOADED;
+                if(this.periodos.length > 0){
+                    this.timeSelect(this.periodos[0].meses[0].ym);
+                }
+            }
+        },
         cargarPeriodos : function(){
+            localStorage.removeItem(this.storage_periodo);
             if(this.status != this.state.LOADING){
                 var pam = new FormData();
                 pam.append('collections', this.collections);
                 this.status = this.state.LOADING;
                 this.timeSelect('');
                 axios.post(root_path + "consulta/consultas_view", pam).then(res => {
+                    this.addSchema(res.data);
                     let tmp = {};
                     let zero = null;
                     res.data.forEach(elm => {
@@ -96,7 +132,8 @@ export default {
                             tmp[anio].meses.push({'ym': elm._id, 'mm': mes, 'tx': this.meses[mes]});
                         }
                     });
-                    this.periodos = Object.values(tmp).sort((a, b) => b.anio - a.anio);
+                  
+                    this.periodos =Object.values(tmp).sort((a, b) => b.anio - a.anio);
                     if(zero != null) this.periodos.push(zero);
                     if(this.periodos.length > 1) this.periodos.push({'anio': -1, 'meses': [{'ym': -1, 'mm': 0, 'tx': 'Total registros'}]});
                     this.status = this.state.LOADED;
@@ -111,7 +148,9 @@ export default {
         },
     },
     mounted() {
-       this.cargarPeriodos();
+       this.storage_periodo = 'time_'+this.collections.split('_')[1];
+      // this.cargarPeriodos();
+       this.getPeriodoHistory();
     }
 }
 </script>
