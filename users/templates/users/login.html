@@ -15,121 +15,73 @@
 		
 		<!-- Custom CSS -->
 		<link href="{% static 'philbert/light/dist/css/style.css' %}" rel="stylesheet" type="text/css">
-		<link href="{% static 'dist/css/auth-cover.css' %}" rel="stylesheet" type="text/css">
 		{% block estilo %}
 		{% endblock %}
 		<style>
-			.degradadoX {background:linear-gradient(#FFFFFF, #EAEAEA)}
+			.logo {margin:10% auto; display: flex; vertical-align: middle;}
+			@media only screen and (max-width: 640px)  {.degradadoX{display:none;}}
+			@media only screen and (min-width: 641px)  {.degradadoX{background:radial-gradient(#FFFFFF, #d8d5d5);}}
+			
 		</style>
 	</head>
 	<body>
-
-		<div class="auth-container d-flex d-none">
-			<div class="container mx-auto align-self-center">
-				<div class="row">
-					<div class="col-6 d-lg-flex d-none h-100 my-auto top-0 start-0 text-center justify-content-center flex-column">
-						<div class="auth-cover-bg-image"></div>
-						{% comment %} <div class="auth-overlay" style="background-image:linear-gradient(-225deg, #231557 0%, #44107A 29%, #0070C0 100%) !important"></div> {% endcomment %}
-						<div class="auth-overlay" style="background-image:radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(240,240,240,1) 52%, rgba(193,193,193,1) 100%)"></div>
-						<div class="auth-cover">
-							<div class="position-relative">
-								<img src="{% static 'img/recurso_04.svg' %}" alt="auth-img">
-								{% comment %} <h2 style="color:#000" class="mt-5 text-black font-weight-bolder px-2">Join the community of expert data analytics</h2>
-								<p style="color:#000" class="text-black px-2">It is easy to setup with great customer experience. Start your 7-day free trial</p> {% endcomment %}
-							</div>
-						</div>
-					</div>
-					<div class="col-xxl-4 col-xl-5 col-lg-5 col-md-8 col-12 d-flex flex-column align-self-center ms-lg-auto me-lg-0 mx-auto">
-						<div class="card">
-							<div class="card-body">
-								<form action="{% url 'login' %}" method="POST">
-									{% csrf_token %}
-	
-									<div class="row">
-										<div class="col-md-12 mb-3">
-											<h2 class="mb-0 fw-bold">Iniciar Sesión</h2>
-											<p>Ingrese su usuario y contraseña para iniciar sesión</p>
-										</div>
-										<div class="col-md-12">
-											<div class="mb-3">
-												<label class="form-label">Usuario</label>
-												<input type="text" class="form-control" name="username" autocomplete="off" autofocus>
-											</div>
-										</div>
-										<div class="col-12">
-											<div class="mb-4">
-												<label class="form-label">Contraseña</label>
-												<input type="password" class="form-control" name="password">
-											</div>
-										</div>
-										{% if has_error %}
-											<span class="text-danger mb-3">
-												El <b>Usuario</b> y/o <b>Contraseña</b> son incorrectos!.
-											</span>
-										{% endif %} 
-										<div class="col-12">
-											<div class="mb-4">
-												<button type="submit" class="btn btn-secondary btn-lg w-100">Iniciar sesión</button>
-												<input type="hidden" name="next" value="{% url 'inicio' %}">
-											</div>
-										</div>
-										<div class="col-12">
-											<div class="text-center">
-												<img src="{% static 'img/logoia.svg' %}" alt="auth-img" height="85">
-											</div>
-										</div>
-									</div>
-								</form>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-
-
-
 		<!--Preloader-->
 		<div class="preloader-itx">
 			<div class="la-anim-1x"></div>
 		</div>
 		<!--/Preloader-->
-		
+
 		<div class="wrapper pa-0">
 			<!-- Main Content -->
 			<div class="page-wrapper pa-0 ma-0 auth-page">
 				<div class="container-fluid">
 					<!-- Row -->
 					<div class="table-struct full-width full-height">
-						<div class="table-cell vertical-align-middle auth-form-wrap degradado">
-							<div class="auth-form  ml-auto mr-auto no-float">
+						<div class="table-cell vertical-align-middle degradado">
+							<div class="full-height">
 								<div class="row">
-									<div class="col-sm-12 col-xs-12">
-                                        <div class="sp-logo-wrap text-center pa-0 mb-30">
+									<div class="col-xl-7 col-lg-7 col-sm-12 col-xs-12 full-height degradadoX">
+                                        <div class="">
 											<a href="javascript:void(0);">
-												<img class="brand-img mr-10" src="{% static 'img/logomediano.png' %}" alt="brand"/>
+												<img class="logo" src="{% static 'img/logomediano.png' %}" alt="brand"/>
 											</a>
 										</div>
+									</div>
+									<div class="col-xl-5 col-lg-5 col-sm-12 col-xs-12 full-height px-5">	
                                         <hr class="light-grey-hr ma-0"/>
-										<div class="form-wrap mt-25">
+										<div class="form-wrap">
 											<form method="post" action="{% url 'login' %}">
                                                 {% csrf_token %}
 												<div class="form-group">
+													<div class="mt-5 pt-5 mb-4 ">
+														<h2>Iniciar sesión</h2>
+														<p>Ingrese su usuario y contraseña para iniciar sesión</p>
+													</div>
                                                     <label for="{{ form.username.id_for_label }}" class="control-label mb-10">Usuario</label>
                                                     {{ form.username }}
 													{% if form.username.errors %}
-														<span class="help-block txt-danger">{{ form.username.errors|striptags }}</span>
+													<div class="alert alert-danger alert-dismissable">
+														<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+														{{ form.username.errors|striptags }}
+													</div>
 													{% endif %}
 												</div>
                                                 <div class="form-group">
                                                     <label for="{{ form.password.id_for_label }}" class="control-label mb-10">Contraseña</label>
                                                     {{ form.password }}
 													{% if form.password.errors %}
-														<span class="help-block txt-danger">{{ form.password.errors|striptags }}</span>
+													<div class="alert alert-danger alert-dismissable">
+														<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+														{{ form.password.errors|striptags }} 
+													</div>
 													{% endif %}
                                                 </div>
-												{{ form.errors }}
+												{% if form.errors %}
+												<div class="alert alert-danger alert-dismissable">
+													<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+													{{ form.errors }}
+												</div>
+												{% endif %}
 												<div class="form-group text-center mt-40">
 													<button type="submit" class="btn btn-info btn-success btn-rounded btn-block">Enviar</button>
                                                     <input type="hidden" name="next" value="{% url 'inicio' %}">

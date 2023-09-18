@@ -1,0 +1,170 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<title>{% block titulo %}Morfee Tablero de Analítica de Datos{% endblock %}</title>
+		<meta name="description" content="Morfee es un Tablero & Admin de Analítica de Datos." />
+		<meta name="keywords" content="admin, admin dashboard, admin data, cms, crm, Morfee Admin, Morfeeadmin, premium admin, responsive admin, sass, panel, software, ui, visualization, web app, application" />
+		<meta name="author" content="Adrián Carvajal"/>
+		
+		<!-- Favicon -->
+		<link rel="shortcut icon" href="{% static 'img/favicon.png' %}">
+		<link rel="icon" href="{% static 'img/favicon.png' %}" type="image/x-icon">
+		
+		<!-- Custom CSS -->
+		<link href="{% static 'philbert/light/dist/css/style.css' %}" rel="stylesheet" type="text/css">
+		<link href="{% static 'dist/css/auth-cover.css' %}" rel="stylesheet" type="text/css">
+		{% block estilo %}
+		{% endblock %}
+		<style>
+			.degradadoX {background:linear-gradient(#FFFFFF, #EAEAEA)}
+		</style>
+	</head>
+	<body>
+
+		<div class="auth-container d-flex d-none">
+			<div class="container mx-auto align-self-center">
+				<div class="row">
+					<div class="col-6 d-lg-flex d-none h-100 my-auto top-0 start-0 text-center justify-content-center flex-column">
+						<div class="auth-cover-bg-image"></div>
+						{% comment %} <div class="auth-overlay" style="background-image:linear-gradient(-225deg, #231557 0%, #44107A 29%, #0070C0 100%) !important"></div> {% endcomment %}
+						<div class="auth-overlay" style="background-image:radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(240,240,240,1) 52%, rgba(193,193,193,1) 100%)"></div>
+						<div class="auth-cover">
+							<div class="position-relative">
+								<img src="{% static 'img/recurso_04.svg' %}" alt="auth-img">
+								{% comment %} <h2 style="color:#000" class="mt-5 text-black font-weight-bolder px-2">Join the community of expert data analytics</h2>
+								<p style="color:#000" class="text-black px-2">It is easy to setup with great customer experience. Start your 7-day free trial</p> {% endcomment %}
+							</div>
+						</div>
+					</div>
+					<div class="col-xxl-4 col-xl-5 col-lg-5 col-md-8 col-12 d-flex flex-column align-self-center ms-lg-auto me-lg-0 mx-auto">
+						<div class="card">
+							<div class="card-body">
+								<form action="{% url 'login' %}" method="POST">
+									{% csrf_token %}
+	
+									<div class="row">
+										<div class="col-md-12 mb-3">
+											<h2 class="mb-0 fw-bold">Iniciar Sesión</h2>
+											<p>Ingrese su usuario y contraseña para iniciar sesión</p>
+										</div>
+										<div class="col-md-12">
+											<div class="mb-3">
+												<label class="form-label">Usuarioss¿</label>
+												<input type="text" class="form-control" name="username" autocomplete="off" autofocus>
+											</div>
+										</div>
+										<div class="col-12">
+											<div class="mb-4">
+												<label class="form-label">Contraseña</label>
+												<input type="password" class="form-control" name="password">
+											</div>
+										</div>
+										{% if has_error %}
+											<span class="text-danger mb-3">
+												El <b>Usuario</b> y/o <b>Contraseña</b> son incorrectos!.
+											</span>
+										{% endif %} 
+										<div class="col-12">
+											<div class="mb-4">
+												<button type="submit" class="btn btn-secondary btn-lg w-100">Iniciar sesión</button>
+												<input type="hidden" name="next" value="{% url 'inicio' %}">
+											</div>
+										</div>
+										<div class="col-12">
+											<div class="text-center">
+												<img src="{% static 'img/logoia.svg' %}" alt="auth-img" height="85">
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+
+		<!--Preloader-->
+		<div class="preloader-itx">
+			<div class="la-anim-1x"></div>
+		</div>
+		<!--/Preloader-->
+		
+		<div class="wrapper pa-0">
+			<!-- Main Content -->
+			<div class="page-wrapper pa-0 ma-0 auth-page">
+				<div class="container-fluid">
+					<!-- Row -->
+					<div class="table-struct full-width full-height">
+						<div class="table-cell vertical-align-middle auth-form-wrap degradado">
+							<div class="auth-form  ml-auto mr-auto no-float">
+								<div class="row">
+									<div class="col-sm-12 col-xs-12">
+                                        <div class="sp-logo-wrap text-center pa-0 mb-30">
+											<a href="javascript:void(0);">
+												<img class="brand-img mr-10" src="{% static 'img/logomediano.png' %}" alt="brand"/>
+											</a>
+										</div>
+                                        <hr class="light-grey-hr ma-0"/>
+										<div class="form-wrap mt-25">
+											<form method="post" action="{% url 'login' %}">
+                                                {% csrf_token %}
+												<div class="form-group">
+                                                    <label for="{{ form.username.id_for_label }}" class="control-label mb-10">Usuarioa</label>
+                                                    {{ form.username }}
+													{% if form.username.errors %}
+														<span class="help-block txt-danger">{{ form.username.errors|striptags }}</span>
+													{% endif %}
+												</div>
+                                                <div class="form-group">
+                                                    <label for="{{ form.password.id_for_label }}" class="control-label mb-10">Contraseña</label>
+                                                    {{ form.password }}
+													{% if form.password.errors %}
+														<span class="help-block txt-danger">{{ form.password.errors|striptags }}</span>
+													{% endif %}
+                                                </div>
+												{{ form.errors }}
+												<div class="form-group text-center mt-40">
+													<button type="submit" class="btn btn-info btn-success btn-rounded btn-block">Enviar</button>
+                                                    <input type="hidden" name="next" value="{% url 'inicio' %}">
+												</div>
+											</form>
+										</div>
+										<div>
+											<div class="d-flex align-items-center justify-content-center">
+												<img src="{% static 'img/logo_min.png' %}" alt="" height="30px">
+												<span class="ms-3" style="letter-spacing: 1px; font: 11px Arial;">Innovación Analítica S.A.S.</span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- /Row -->	
+				</div>
+			</div>
+			<!-- /Main Content -->
+		</div>
+		<!-- jQuery -->
+		<script src="{% static 'vendors/bower_components/jquery/dist/jquery.min.js' %}"></script>
+		
+		<!-- Bootstrap Core JavaScript -->
+		<script src="{% static 'vendors/bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+		<script src="{% static 'vendors/bower_components/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>
+		
+		<!-- Slimscroll JavaScript -->
+		<script src="{% static 'dist/js/jquery.slimscroll.js' %}"></script>
+		
+		<!-- Init JavaScript -->
+		<script src="{% static 'dist/js/init.js' %}"></script>
+		{% block logica %}
+		{% endblock %}
+	</body>
+</html>
