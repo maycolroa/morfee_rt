@@ -19,8 +19,8 @@
 		{% endblock %}
 		<style>
 			.logo {margin:10% auto; display: flex; vertical-align: middle;}
-			@media only screen and (max-width: 640px)  {.degradadoX{display:none;}}
-			@media only screen and (min-width: 641px)  {.degradadoX{background:radial-gradient(#FFFFFF, #d8d5d5);}}
+			@media only screen and (max-width: 1200px)  {.degradadoX{display:none;}}
+			@media only screen and (min-width: 1201px)  {.degradadoX{background:radial-gradient(#FFFFFF, #d8d5d5);}}
 			
 		</style>
 	</head>
@@ -54,7 +54,7 @@
                                                 {% csrf_token %}
 												<div class="form-group">
 													<div class="mt-5 pt-5 mb-4 ">
-														<h2>Iniciar sesión</h2>
+														<h3><strong class="text-dark">Iniciar sesión</strong></h3>
 														<p>Ingrese su usuario y contraseña para iniciar sesión</p>
 													</div>
                                                     <label for="{{ form.username.id_for_label }}" class="control-label mb-10">Usuario</label>
