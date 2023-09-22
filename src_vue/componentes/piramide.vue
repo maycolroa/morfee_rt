@@ -1,8 +1,163 @@
 <template>
     <div>
-        <div class="row mb-4">
+        <div class="panel panel-default card-view border" v-if="enable_controls">
+            <div class="panel-wrapper collapse in">
+                <div  class="panel-body">
+                    <!-- ***************** -->
+                    <!-- CONTROLES SECTION -->
+                    <!-- ***************** -->
+                    <div v-if="enable_controls && hot_status && 'CALOR' == getTriangleInfo('code')">
+                        <!-- TABLA DE CONTROL OCULTA -->
+                        <div class="table-responsive">
+                            <table class="table table-bordered mt-4">
+                                <thead>
+                                    <tr>
+                                        <th class="cel-hide py-2"></th>
+                                        <th class="df-grey text-bold fs-5 py-2" v-for="(per, i) in periodos" :key="i">{{ i + 1 }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(elm, i) in pridata" :key="i">
+                                        <td class="colmin df-grey py-2">{{ elm.tx }}</td>
+                                        <td class="py-2" v-for="(rad, r) in periodos" :key="r">{{ clearNumber(getDataMM(rad.num, elm.src), 4) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div><!-- End table-responsive -->
+                        <!-- TABLA IBNR promedio -->
+                        <div class="table-responsive mt-4">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr class="bg-primary"><th class="text-center text-bold fs-5 py-2" style="color:#FFF !important" colspan="6">IBNR PROMEDIO</th></tr>
+                                    <tr class="df-grey">
+                                        <th class="py-2">PERIODO DE PRESTACIÓN</th>
+                                        <th class="py-2">PERIODO DE DESARROLLO</th>
+                                        <th class="py-2">PRESTACIONES ACUMULADAS</th>
+                                        <th class="py-2">FDA PROMEDIO</th>
+                                        <th class="py-2">ÚLTIMA PRESTACIÓN ESPERADA</th>
+                                        <th class="py-2">UPE-PA</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(per, i) in periodos" :key="i">
+                                        <td class="py-1">{{ per.num }}</td>
+                                        <td class="py-1 text-center">{{ 36 - i }}</td>
+                                        <td class="py-1"></td>
+                                        <td class="py-1"></td>
+                                        <td class="py-1"></td>
+                                        <td class="py-1"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div><!-- End table-responsive -->
+                        <div class="table-responsive mt-4">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr class="bg-primary"><th class="text-center text-bold fs-5 py-2" style="color:#FFF !important" colspan="6">IBNR CHAIN LADDER</th></tr>
+                                    <tr class="df-grey">
+                                        <th class="py-2">PERIODO DE PRESTACIÓN</th>
+                                        <th class="py-2">PERIODO DE DESARROLLO</th>
+                                        <th class="py-2">PRESTACIONES ACUMULADAS</th>
+                                        <th class="py-2">FDA CHAIN LADDER</th>
+                                        <th class="py-2">ÚLTIMA PRESTACIÓN ESPERADA</th>
+                                        <th class="py-2">UPE-PA</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(per, i) in periodos" :key="i">
+                                        <td class="py-1">{{ per.num }}</td>
+                                        <td class="py-1 text-center">{{ 36 - i }}</td>
+                                        <td class="py-1"></td>
+                                        <td class="py-1"></td>
+                                        <td class="py-1"></td>
+                                        <td class="py-1"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div><!-- End table-responsive -->
+                        <div class="table-responsive mt-4">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr class="bg-primary"><th class="text-center text-bold fs-5 py-2" style="color:#FFF !important" colspan="6">IBNR MIN</th></tr>
+                                    <tr class="df-grey">
+                                        <th class="py-2">PERIODO DE PRESTACIÓN</th>
+                                        <th class="py-2">PERIODO DE DESARROLLO</th>
+                                        <th class="py-2">PRESTACIONES ACUMULADAS</th>
+                                        <th class="py-2">FDA MIN</th>
+                                        <th class="py-2">ÚLTIMA PRESTACIÓN ESPERADA</th>
+                                        <th class="py-2">UPE-PA</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(per, i) in periodos" :key="i">
+                                        <td class="py-1">{{ per.num }}</td>
+                                        <td class="py-1 text-center">{{ 36 - i }}</td>
+                                        <td class="py-1"></td>
+                                        <td class="py-1"></td>
+                                        <td class="py-1"></td>
+                                        <td class="py-1"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div><!-- End table-responsive -->
+                        <div class="table-responsive mt-4">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr class="bg-primary"><th class="text-center text-bold fs-5 py-2" style="color:#FFF !important" colspan="6">IBNR MAX</th></tr>
+                                    <tr class="df-grey">
+                                        <th class="py-2">PERIODO DE PRESTACIÓN</th>
+                                        <th class="py-2">PERIODO DE DESARROLLO</th>
+                                        <th class="py-2">PRESTACIONES ACUMULADAS</th>
+                                        <th class="py-2">FDA MAX</th>
+                                        <th class="py-2">ÚLTIMA PRESTACIÓN ESPERADA</th>
+                                        <th class="py-2">UPE-PA</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(per, i) in periodos" :key="i">
+                                        <td class="py-1">{{ per.num }}</td>
+                                        <td class="py-1 text-center">{{ 36 - i }}</td>
+                                        <td class="py-1"></td>
+                                        <td class="py-1"></td>
+                                        <td class="py-1"></td>
+                                        <td class="py-1"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div><!-- End table-responsive -->
+                        <div class="table-responsive mt-4">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr class="bg-primary"><th class="text-center text-bold fs-5 py-2" style="color:#FFF !important" colspan="6">IBNR PROM -MIN -MAX</th></tr>
+                                    <tr class="df-grey">
+                                        <th class="py-2">PERIODO DE PRESTACIÓN</th>
+                                        <th class="py-2">PERIODO DE DESARROLLO</th>
+                                        <th class="py-2">PRESTACIONES ACUMULADAS</th>
+                                        <th class="py-2">FDA PROM -MIN -MAX</th>
+                                        <th class="py-2">ÚLTIMA PRESTACIÓN ESPERADA</th>
+                                        <th class="py-2">UPE-PA</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(per, i) in periodos" :key="i">
+                                        <td class="py-1">{{ per.num }}</td>
+                                        <td class="py-1 text-center">{{ 36 - i }}</td>
+                                        <td class="py-1"></td>
+                                        <td class="py-1"></td>
+                                        <td class="py-1"></td>
+                                        <td class="py-1"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div><!-- End table-responsive -->
+                    </div><!-- End controles section -->
+                </div>
+            </div>
+        </div>
+        <div :class="enable_controls? 'd-none': 'row mb-4'">
             <div class="col-sm-6">
                 <div :class="status + '-wait'">
+                    <get-view-periodo collections="retec_autorizaciones,retec_facturas,retec_pagos" storage="timecop"></get-view-periodo>
                     <div class="form-group mb-0">
                         <div class="input-group">
                             <select class="form-control" v-model="targetPeriodoDB" :disabled="hasAnyData()">
@@ -22,22 +177,7 @@
                 <load-and-time ref="timer" :pathsearch="pathsearch"></load-and-time>
             </div>
         </div>
-        <div :class="status + '-wait mb-4 d-none'" style="margin-left:-5px; margin-right:-5px">
-            <div class="form-group mb-0">
-                <div class="input-group">
-                    <select class="form-control" v-model="targetPeriodoDB" :disabled="hasAnyData()">
-                        <option :value="null">Seleccione el periodo de corte de la base de datos:</option>
-                        <optgroup :label="elm.anio" v-for="(elm, i) in periodos_select" :key="i">
-                            <option :value="mes" v-for="(mes, k) in elm.meses" :key="k">{{ mes.tx }} de {{ elm.anio }}</option>
-                        </optgroup>
-                    </select>
-                    <div class="input-group-btn">
-                        <button class="btn btn-success" :disabled="!hasAnyData()" @click="preReset"><i class="fa fa-refresh"></i></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
+        <div :class="enable_controls? 'd-none': 'row'">
             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                 <div :class="getClassHeading('aut')">
                     <div class="panel-heading py-3">
@@ -180,7 +320,7 @@
                 </div>
             </div>
         </div>
-        <div class="panel panel-default card-view border" v-else-if="getTriangleInfo('ori') != ''">
+        <div :class="enable_controls? 'd-none': 'panel panel-default card-view border'" v-else-if="getTriangleInfo('ori') != ''">
             <div class="panel-heading">
                 <div class="d-flex justify-content-between">
                     <div>
@@ -218,46 +358,59 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="table-responsive mt-4" v-else>
-                        <table class="table table-bordered">
-                            <thead v-if="getTriangleInfo('head') == 'num'">
-                                <tr>
-                                    <th class="cel-hide py-2" colspan="2"></th>
-                                    <th class="df-grey text-bold fs-5 py-2" v-for="(per, i) in periodos" :key="i">{{ i + 1 }}</th>
-                                </tr>
-                            </thead>
-                            <thead v-else>
-                                <tr>
-                                    <th class="cel-hide" colspan="2"></th>
-                                    <th class="df-grey text-bold" v-for="(per, i) in periodos" :key="i">{{ per.num }}</th>
-                                </tr>
-                            </thead>
-                            <tbody :class="f_guia? 'df-guia': ''" v-if="getTriangleInfo('code') == 'DESARROLLO'">
-                                <tr :class="'triangle-' + getTriangleInfo('align')" v-for="(pre, i) in periodos" :key="i">
-                                    <td class="colmin df-grey text-bold">{{ i + 1 }}</td>
-                                    <td class="colmin df-grey text-bold">{{ pre.num }}</td>
-                                    <td :class="getClass(pre.num, rad.num) + ' text-center df-rel'" @click="openCellAcum(pre.num, rad.num, i + 1, (k + 1) - i)" v-for="(rad, k) in periodos" :key="k">
-                                        {{ getValorAcum(pre.num, rad.num).valor }}
-                                        <div class="info-left">{{ pre.num }}</div>
-                                        <div class="info-top">{{ getTriangleInfo('head') == 'num'? (k + 1) - i: rad.num }}</div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                            <tbody :class="f_guia? 'df-guia': ''" v-else>
-                                <tr :class="'triangle-' + getTriangleInfo('align')" v-for="(pre, i) in periodos" :key="i">
-                                    <td class="colmin df-grey text-bold">{{ i + 1 }}</td>
-                                    <td class="colmin df-grey text-bold">{{ pre.num }}</td>
-                                    <td :class="getClass(pre.num, rad.num) + ' text-center df-rel'" @click="openCell(pre.num, rad.num, i + 1, (k + 1) - i, getTriangleInfo('ori'))" v-for="(rad, k) in periodos" :key="k">
-                                        {{ getValor(pre.num, rad.num, getTriangleInfo('ori')) }}
-                                        <div class="info-left">{{ pre.num }}</div>
-                                        <div class="info-top">{{ getTriangleInfo('head') == 'num'? (k + 1) - i: rad.num }}</div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="mt-4" v-else>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead v-if="getTriangleInfo('head') == 'num'">
+                                    <tr>
+                                        <th class="cel-hide py-2" colspan="2"></th>
+                                        <th class="df-grey text-bold fs-5 py-2" v-for="(per, i) in periodos" :key="i">{{ i + 1 }}</th>
+                                    </tr>
+                                </thead>
+                                <thead v-else>
+                                    <tr>
+                                        <th class="cel-hide" colspan="2"></th>
+                                        <th class="df-grey text-bold" v-for="(per, i) in periodos" :key="i">{{ per.num }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody :class="f_guia? 'df-guia': ''" v-if="'DESARROLLO' == getTriangleInfo('code')">
+                                    <tr :class="'triangle-' + getTriangleInfo('align')" v-for="(pre, i) in periodos" :key="i">
+                                        <td class="colmin df-grey text-bold">{{ i + 1 }}</td>
+                                        <td class="colmin df-grey text-bold">{{ pre.num }}</td>
+                                        <td :class="getClass(pre.num, rad.num) + ' text-center df-rel'" @click="openCellAcum(pre.num, rad.num, i + 1, (k + 1) - i)" v-for="(rad, k) in periodos" :key="k">
+                                            {{ clearNumber(getValorAcumHot(pre.num, rad.num)) }}
+                                            <div class="info-left">{{ pre.num }}</div>
+                                            <div class="info-top">{{ getTriangleInfo('head') == 'num'? (k + 1) - i: rad.num }}</div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody :class="f_guia? 'df-guia': ''" v-else-if="'CALOR' == getTriangleInfo('code')">
+                                    <tr :class="'triangle-' + getTriangleInfo('align')" v-for="(pre, i) in periodos" :key="i">
+                                        <td class="colmin df-grey text-bold">{{ i + 1 }}</td>
+                                        <td class="colmin df-grey text-bold">{{ pre.num }}</td>
+                                        <td :class="getClass(pre.num, rad.num) + ' text-center df-rel'" :title="getValorAcumFac(pre.num, rad.num)" @click="openCellAcum(pre.num, rad.num, i + 1, (k + 1) - i)" v-for="(rad, k) in periodos" :key="k">
+                                            {{ clearNumber(getValorAcumFac(pre.num, rad.num), 4) }}
+                                            <div class="info-left">{{ pre.num }}</div>
+                                            <div class="info-top">{{ getTriangleInfo('head') == 'num'? (k + 1) - i: rad.num }}</div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody :class="f_guia? 'df-guia': ''" v-else>
+                                    <tr :class="'triangle-' + getTriangleInfo('align')" v-for="(pre, i) in periodos" :key="i">
+                                        <td class="colmin df-grey text-bold">{{ i + 1 }}</td>
+                                        <td class="colmin df-grey text-bold">{{ pre.num }}</td>
+                                        <td :class="getClass(pre.num, rad.num) + ' text-center df-rel'" @click="openCell(pre.num, rad.num, i + 1, (k + 1) - i, getTriangleInfo('ori'))" v-for="(rad, k) in periodos" :key="k">
+                                            {{ getValor(pre.num, rad.num, getTriangleInfo('ori')) }}
+                                            <div class="info-left">{{ pre.num }}</div>
+                                            <div class="info-top">{{ getTriangleInfo('head') == 'num'? (k + 1) - i: rad.num }}</div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </div><!-- End panel-body -->
+            </div><!-- End panel-wrapper -->
         </div><!-- End card-view -->
 
         <!-- *********************** -->
@@ -389,12 +542,27 @@ export default {
             mss: ['', 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
             mssi: ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
             col_asc: ["#F8696B","#F8766D","#F98370","#FA9072","#FA9D75","#FBAA77","#FCB77A","#FCC47C","#FDD17F","#FEDE81","#FFEB84","#F0E784","#E0E383","#D1DE82","#C1D981","#B1D580","#A2D07F","#92CC7E","#83C77D","#73C37C","#63BE7B"],
-            col_desc: ["#63BE7B","#73C37C","#83C77D","#92CC7E","#A2D07F","#B1D580","#C1D981","#D1DE82","#E0E383","#F0E784","#FFEB84","#FEDE81","#FDD17F","#FCC47C","#FCB77A","#FBAA77","#FA9D75","#FA9072","#F98370","#F8766D","#F8696B"],            
+            col_desc: ["#63BE7B","#73C37C","#83C77D","#92CC7E","#A2D07F","#B1D580","#C1D981","#D1DE82","#E0E383","#F0E784","#FFEB84","#FEDE81","#FDD17F","#FCC47C","#FCB77A","#FBAA77","#FA9D75","#FA9072","#F98370","#F8766D","#F8696B"],
+            pridata: [
+                {'tx': 'FD PROMEDIO', 'src': 'calc_01'},
+                {'tx': 'FDA PROM', 'src': 'calc_02'},
+                {'tx': 'MIN', 'src': 'min'},
+                {'tx': 'FDA MIN', 'src': ''},
+                {'tx': 'MAX', 'src': 'max'},
+                {'tx': 'FDA MAX', 'src': ''},
+                {'tx': 'CHAIN LADDER', 'src': ''},
+                {'tx': 'FDA CH.LADDER', 'src': ''},
+                {'tx': 'PROM SIN MIN SIN MAX', 'src': ''},
+                {'tx': 'FDA PROM - MIN - MAX', 'src': ''},
+                {'tx': 'PROM ÚLTIMO AÑO', 'src': ''},
+                {'tx': 'PROM ÚLTIMS DOS AÑOS', 'src': ''},
+            ],
+            fun_dymclass: () => true,
             fuente: (this.cliente == '0')? 'retec_facturas_0': this.cliente + '_retec_facturas',
             fuentes: {
-                'aut': this.cliente + '_retec_autorizacion', 
-                'fac': this.cliente + '_retec_facturas', 
-                'pag': this.cliente + '_retec_pagos'
+                'aut': 'retec_autorizaciones',
+                'fac': 'retec_facturas', 
+                'pag': 'retec_pagos'
             },
             fuentes_tx: {'aut': 'Autorizaciones', 'fac': 'Facturas', 'pag': 'Pagos'},
             from: '',
@@ -402,6 +570,8 @@ export default {
             periodos: [],   // {num: 202303, anio: 2023, mes: 03, tx: 'Marzo'}
             periodos_db: [],    // {num: 202303, anio: 2023, mes: 03, tx: 'Marzo', match: {aut: false, fac: false, pag: false}}
             periodos_select: [],
+            per_first: 0,
+            per_last: 0,
             targetPeriodoDB: null,
             targetFuente: '',
             targetTriangle: null,
@@ -430,6 +600,12 @@ export default {
             rcol: [],
             akey: [],
             head: [],
+            sumcol: {},
+            hot_acum: {},
+            hot_fac: {},
+            hot_mm: {},
+            hot_status: false,
+            enable_controls: false,
             status: 'ini',
             status_per: 'ini',
             status_src: {
@@ -470,6 +646,27 @@ export default {
         }
     },
     methods: {
+        getDataMM: function(ym, atr){
+            if(atr == '' || [undefined, null].includes(this.hot_mm[ym])){
+                return '';
+            }
+            if(atr == 'calc_01'){
+                // SUMA(C5:C39)/(35-C4+1)
+                return this.hot_mm[ym].suma / (35 - this.hot_mm[ym].periodo);
+            }
+            return this.hot_mm[ym][atr];
+        },
+        switchControl: function(){
+            window.addEventListener('keydown', e => {
+                if(e.key === 'F4'){
+                    if(this.hot_status && 'CALOR' == this.getTriangleInfo('code')){
+                        this.enable_controls = !this.enable_controls;
+                    }else{
+                        this.enable_controls = false;
+                    }
+                }
+            });
+        },
         isEmpty: function(arg){
             return ['', undefined, null].includes(arg);
         },
@@ -525,10 +722,17 @@ export default {
             }
         },
         getClass: function(r, c){
-            if(r == c){
-                return this.f_cross;
-            }
-            return (c < r)? this.f_out + this.f_left: this.f_in;
+            // if(r == c){
+            //     return this.f_cross;
+            // }
+            // return (c < r)? this.f_out + this.f_left: this.f_in;
+            return this.fun_dymclass(r, c);
+        },
+        getColorCell: function(r, c){
+            // let azar = parseInt(Math.random() * 21);
+            let tm = this.hot_col[`${r}_${c}`];
+            return tm;
+            // return 'bg-' + azar;
         },
         getIcon: function(src){
             if(this.status_src[src].load){
@@ -553,22 +757,117 @@ export default {
         formatMiles: function(num){
             return num.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
         },
-        clearNumber: function(num){
+        getSumColumn: function(col, tipo){
+            if(this.sumcol[col] == undefined){
+                this.sumcol[col] = {'pac': 0, 'pbs': 0, 'pm': 0, 'all': 0};
+                this.periodos.forEach(elm => {
+                    let ref = elm.num + '_' + col;
+                    this.hash[ref].forEach(arg => {
+                        this.sumcol[col][arg.tipo] += arg.valor;
+                        this.sumcol[col].all += arg.valor;
+                    });
+                });
+            }
+            return this.sumcol[col][tipo];
+        },
+        clearNumber: function(num, len=2){
             if(num % 1 == 0){
                 return this.formatMiles(num);
             }else{
-                return this.formatMiles(parseFloat(num).toFixed(2));
+                return this.formatMiles(parseFloat(num).toFixed(len));
             }
         },
         getMes: function(ym){
             let m = parseInt(ym.toString().slice(-2));
             return this.mss[m];
         },
+        resetHotData: function(){
+            this.hot_status = false;
+            this.hot_acum = {};
+            this.hot_fac = {};
+            this.hot_mm = {};
+            this.hot_col = {};
+            let back = 0;
+            let per01 = this.periodos[0].num;
+            this.periodos.forEach(pre => {
+                this.periodos.forEach(rad => {
+                    this.hot_acum[`${pre.num}_${rad.num}`] = this.getValorAcum(pre.num, rad.num).valor;
+                });
+            });
+            this.periodos.forEach((pre, pi) => {
+                this.periodos.slice(pi).forEach((rad, ri) => {
+                    let ranum = this.periodos[ri].num;
+                    let tm1 = `${pre.num}_${rad.num}`;
+                    if(ri == 0){
+                        this.hot_fac[tm1] = '';
+                    }else{
+                        back = this.periodos[(ri - 1) + pi].num
+                        let tm0 = `${pre.num}_${back}`;
+                        if(this.hot_acum[tm1] >= this.hot_acum[tm0]){
+                            let fac = (this.hot_acum[tm0] > 0)? this.hot_acum[tm1] / this.hot_acum[tm0]: 1;
+                            this.hot_fac[tm1] = fac;
+                            if(this.hot_mm[ranum] == undefined){
+                                this.hot_mm[ranum] = {'min': fac, 'max': fac, 'periodo': ri + 1, 'data': [], 'suma': 0};
+                            }
+                            this.hot_mm[ranum].min = Math.min(this.hot_mm[ranum].min, fac);
+                            this.hot_mm[ranum].max = Math.max(this.hot_mm[ranum].max, fac);
+                            this.hot_mm[ranum].data.push(fac);
+                            this.hot_mm[ranum].suma += fac;
+                        }else{
+                            // console.log('El actual debería ser mayor que el anterior.');
+                            // console.log();
+                        }
+                    }
+                });
+            });
+            console.log('roneke');
+            console.log(this.hot_mm);
+            this.periodos.forEach((pre, pi) => {
+                this.periodos.slice(pi).forEach((rad, ri) => {
+                    let refmm = this.periodos[ri].num;
+                    let namei = `${pre.num}_${rad.num}`;
+                    if(ri == 0){
+                        this.hot_col[namei] = 'd-nonex';
+                    }else{
+                        if(!this.isEmpty(this.hot_mm[refmm]) && !this.isEmpty(this.hot_fac[namei])){
+                            let rango = this.hot_mm[refmm].max - this.hot_mm[refmm].min;
+                            if(rango == 0){
+                                this.hot_col[namei] = 'bg-0';
+                            }else{
+                                let num = (this.hot_fac[namei] - this.hot_mm[refmm].min) / rango;
+                                this.hot_col[namei] = 'bg-' + Math.round(num * 20);
+                            }
+                        }
+                    }
+                });
+            });
+            this.hot_status = true;
+        },
         setTriangle: function(elm){
+            this.enable_controls = false;
             this.targetTriangle = elm;
+            this.setDymclass(elm.code);
+            if(['CALOR', 'DESARROLLO'].includes(elm.code)){
+                this.resetHotData();
+            }
             if(elm.ori != 'all' && this.status_src[elm.ori].load == false){
                 this.loadBridge(elm.ori);
                 // this.loadFuente(elm.ori);
+            }
+        },
+        setDymclass: function(code){
+            if(code == 'CALOR'){
+                this.fun_dymclass = (r, c) => {
+                    let cs = (c < r)? this.f_out + ' ': '';
+                    return cs + this.getColorCell(r, c);
+                }
+            }else{
+                this.fun_dymclass = (r, c) => {
+                    if(r == c){
+                        return this.f_cross;
+                    }
+                    return (c < r)? this.f_out + this.f_left: this.f_in;
+                }
             }
         },
         getTriangleInfo: function(arg){
@@ -605,6 +904,8 @@ export default {
                 });
                 m--;
             }
+            this.per_first = this.periodos[0].num;
+            this.per_last = this.periodos.at(-1).num;
         },
         setFilter: function(arg){
             this.f_filtro = arg;
@@ -677,15 +978,13 @@ export default {
                 });
             }
             let data = Object.values(aux);
-            return {'valor': this.clearNumber(rs), 'data': data};
+            return {'valor': rs, 'data': data};
         },
-        getValueDiff: function(row, col){
-
+        getValorAcumHot: function(row, col){
+            return this.hot_acum[`${row}_${col}`];
         },
-        makeFilter: function(){
-            if(this.f_filtro == 'all'){
-
-            }
+        getValorAcumFac: function(row, col){
+            return this.hot_fac[`${row}_${col}`];
         },
         makeParams: function(arg){
             if(this.status != this.state.LOADING){
@@ -803,22 +1102,21 @@ export default {
             }
         },
         fillPeriodos: function(arr, src){
-            // periodos_db: [],    
+            // periodos_db: [],
             // {num: 202303, anio: 2023, mes: 03, tx: 'Marzo', match: {aut: false, fac: false, pag: false}}
             arr.forEach(elm => {
                 let aux = this.periodos_db.find(per => per.num == elm);
                 if(this.isEmpty(aux)){
                     this.periodos_db.push({
-                        'num': elm, 
-                        'anio': String(elm).slice(0, 4), 
-                        'mes': String(elm).slice(-2), 
-                        'tx': this.mss[parseInt(String(elm).slice(-2))], 
+                        'num': elm,
+                        'anio': String(elm).slice(0, 4),
+                        'mes': String(elm).slice(-2),
+                        'tx': this.mss[parseInt(String(elm).slice(-2))],
                         'match': {'aut': src == 'aut', 'fac': src == 'fac', 'pag': src == 'pag'}
                     });
                 }else{
                     aux.match[src] = true;
                 }
-
             });
         },
         loadPeriodos: function(){
@@ -899,14 +1197,22 @@ export default {
                 this.status_src[elm].load = false;
                 this.status_src[elm].status = 'ini';
             });
+            this.enable_controls = false;
             this.status_src.crx = null;
             this.status = this.state.INI;
             this.hash = {};
+            this.sumcol = {};
             this.targetPeriodoDB = null;
             this.targetTriangle = null;
             this.warnings = {'aut': [], 'fac': [], 'pag': []};
         },
         listen: function(){
+            this.$eventBus.$on('time-refresh', arg => {
+                this.targetPeriodoDB = arg.info;
+            });
+            this.$eventBus.$on('time-select', arg => {
+                this.targetPeriodoDB = arg.info;
+            });
             this.$eventBus.$on('end-load', arg => {
                 let origen = arg.origen;
                 let contenido = arg.contenido;
@@ -930,10 +1236,12 @@ export default {
                     this.status = this.state.FAILED;
                 }
             });
-        }
+        },
     },
     mounted() {
+        this.switchControl();
         this.listen();
+        this.setDymclass('self');
         let ki = new Date();
         this.anio = ki.getFullYear();
         this.mes = ki.getMonth() + 1;
@@ -988,4 +1296,26 @@ tbody.df-guia td {position: relative}
 tbody.df-guia td:hover {background:#92D050}
 tbody.df-guia td:hover > .info-left {display: block; pointer-events:none !important}
 tbody.df-guia td:hover > .info-top {display: block; pointer-events:none !important}
+
+.table.table-bordered td.bg-20 {background-color: #F8696B !important; border-color:#FFF !important}
+.table.table-bordered td.bg-19 {background-color: #F8766D !important; border-color:#FFF !important}
+.table.table-bordered td.bg-18 {background-color: #F98370 !important; border-color:#FFF !important}
+.table.table-bordered td.bg-17 {background-color: #FA9072 !important; border-color:#FFF !important}
+.table.table-bordered td.bg-16 {background-color: #FA9D75 !important; border-color:#FFF !important}
+.table.table-bordered td.bg-15 {background-color: #FBAA77 !important; border-color:#FFF !important}
+.table.table-bordered td.bg-14 {background-color: #FCB77A !important; border-color:#FFF !important}
+.table.table-bordered td.bg-13 {background-color: #FCC47C !important; border-color:#FFF !important}
+.table.table-bordered td.bg-12 {background-color: #FDD17F !important; border-color:#FFF !important}
+.table.table-bordered td.bg-11 {background-color: #FEDE81 !important; border-color:#FFF !important}
+.table.table-bordered td.bg-10 {background-color: #FFEB84 !important; border-color:#FFF !important}
+.table.table-bordered td.bg-9 {background-color: #F0E784 !important; border-color:#FFF !important}
+.table.table-bordered td.bg-8 {background-color: #E0E383 !important; border-color:#FFF !important}
+.table.table-bordered td.bg-7 {background-color: #D1DE82 !important; border-color:#FFF !important}
+.table.table-bordered td.bg-6 {background-color: #C1D981 !important; border-color:#FFF !important}
+.table.table-bordered td.bg-5 {background-color: #B1D580 !important; border-color:#FFF !important}
+.table.table-bordered td.bg-4 {background-color: #A2D07F !important; border-color:#FFF !important}
+.table.table-bordered td.bg-3 {background-color: #92CC7E !important; border-color:#FFF !important}
+.table.table-bordered td.bg-2 {background-color: #83C77D !important; border-color:#FFF !important}
+.table.table-bordered td.bg-1 {background-color: #73C37C !important; border-color:#FFF !important}
+.table.table-bordered td.bg-0 {background-color: #63BE7B !important; border-color:#FFF !important}
 </style>

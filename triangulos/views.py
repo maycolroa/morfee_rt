@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from morfee_rt_dev.mongo import Mongo
 from consulta.models import Consulta
+from consulta.views import createConsulta, getConsulta
 from datetime import date
 import json
 # from bson.code import Code
@@ -320,10 +321,8 @@ def mng_fuente_pyr(request):
     crx = request.POST.get('crx')
     alias = request.POST.get('consulta')
     clave = request.POST.get('clave')
-    cliente_id = request.user.cliente_id if request.user.cliente_id else 0
     user_id = request.user.id
-
-    consulta = createConsulta(alias, coleccion, clave, cliente_id, user_id)
+    consulta = createConsulta(alias, coleccion, clave, user_id)
     etapas = [
         {"$match": {"crx": int(crx)}},
         {"$addFields": {"f_pre": {"$substr": ["$fp", 0, 6]}, "f_rad": {"$substr": ["$fr", 0, 6]}}},
@@ -340,7 +339,7 @@ def mng_fuente_pyr(request):
     if fuente == 'aut':
         etapas = [
             {"$match": {"crx": int(crx)}},
-            {"$addFields": {"f_pre": {"$substr": ["$fav", 0, 6]}, "f_rad": {"$substr": ["$fav", 0, 6]}}},
+            {"$addFields": {"f_pre": {"$substrBytes": [{"$toString": "$fau"}, 0, 6]}, "f_rad": {"$substrBytes": [{"$toString": "$fau"}, 0, 6]}}},
             {"$project": {"f_pre": 1, "f_rad": 1, "vbs": 1, "vac": 1, "vpm": 1}},
             {'$facet': {'datos': [
                 {"$group": {
@@ -366,6 +365,8 @@ def mng_fuente_pyr(request):
             ]}}
         ]
     mongo = Mongo(coleccion)
+    print(f"Fuente: {fuente}, colección: {coleccion}, crx: {crx}")
+    print(etapas)
     try:
         datos = mongo.aggregate(etapas)
         consulta.contenido = str(datos)
