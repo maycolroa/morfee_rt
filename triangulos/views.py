@@ -319,10 +319,11 @@ def mng_fuente_pyr(request):
     desde = request.POST.get('desde')
     hasta = request.POST.get('hata')
     crx = request.POST.get('crx')
-    alias = request.POST.get('consulta')
+    qname = request.POST.get('consulta')
     clave = request.POST.get('clave')
     user_id = request.user.id
-    consulta = createConsulta(alias, coleccion, clave, user_id)
+    # qname = 'PYME_' + str(fuente) + '_' + str(crx)
+    consulta = createConsulta(qname, coleccion, clave, user_id)
     etapas = [
         {"$match": {"crx": int(crx)}},
         {"$addFields": {"f_pre": {"$substr": ["$fp", 0, 6]}, "f_rad": {"$substr": ["$fr", 0, 6]}}},

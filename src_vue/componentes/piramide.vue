@@ -42,7 +42,7 @@
                                     <tr v-for="(per, i) in periodos" :key="i">
                                         <td class="py-1">{{ per.num }}</td>
                                         <td class="py-1 text-center">{{ 36 - i }}</td>
-                                        <td class="py-1"></td>
+                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.num)) }}</td>
                                         <td class="py-1"></td>
                                         <td class="py-1"></td>
                                         <td class="py-1"></td>
@@ -67,7 +67,7 @@
                                     <tr v-for="(per, i) in periodos" :key="i">
                                         <td class="py-1">{{ per.num }}</td>
                                         <td class="py-1 text-center">{{ 36 - i }}</td>
-                                        <td class="py-1"></td>
+                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.num)) }}</td>
                                         <td class="py-1"></td>
                                         <td class="py-1"></td>
                                         <td class="py-1"></td>
@@ -92,7 +92,7 @@
                                     <tr v-for="(per, i) in periodos" :key="i">
                                         <td class="py-1">{{ per.num }}</td>
                                         <td class="py-1 text-center">{{ 36 - i }}</td>
-                                        <td class="py-1"></td>
+                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.num)) }}</td>
                                         <td class="py-1"></td>
                                         <td class="py-1"></td>
                                         <td class="py-1"></td>
@@ -117,7 +117,7 @@
                                     <tr v-for="(per, i) in periodos" :key="i">
                                         <td class="py-1">{{ per.num }}</td>
                                         <td class="py-1 text-center">{{ 36 - i }}</td>
-                                        <td class="py-1"></td>
+                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.num)) }}</td>
                                         <td class="py-1"></td>
                                         <td class="py-1"></td>
                                         <td class="py-1"></td>
@@ -142,7 +142,7 @@
                                     <tr v-for="(per, i) in periodos" :key="i">
                                         <td class="py-1">{{ per.num }}</td>
                                         <td class="py-1 text-center">{{ 36 - i }}</td>
-                                        <td class="py-1"></td>
+                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.num)) }}</td>
                                         <td class="py-1"></td>
                                         <td class="py-1"></td>
                                         <td class="py-1"></td>
@@ -174,6 +174,7 @@
                 </div>
             </div>
             <div class="col-sm-6">
+                <temporizador ref="timecop"></temporizador>
                 <load-and-time ref="timer" :pathsearch="pathsearch"></load-and-time>
             </div>
         </div>
@@ -547,11 +548,11 @@ export default {
                 {'tx': 'FD PROMEDIO', 'src': 'calc_01'},
                 {'tx': 'FDA PROM', 'src': 'calc_02'},
                 {'tx': 'MIN', 'src': 'min'},
-                {'tx': 'FDA MIN', 'src': ''},
+                {'tx': 'FDA MIN', 'src': 'min_prod'},
                 {'tx': 'MAX', 'src': 'max'},
-                {'tx': 'FDA MAX', 'src': ''},
-                {'tx': 'CHAIN LADDER', 'src': ''},
-                {'tx': 'FDA CH.LADDER', 'src': ''},
+                {'tx': 'FDA MAX', 'src': 'max_prod'},
+                {'tx': 'CHAIN LADDER', 'src': 'ladder'},
+                {'tx': 'FDA CH.LADDER', 'src': 'ladder_prod'},
                 {'tx': 'PROM SIN MIN SIN MAX', 'src': ''},
                 {'tx': 'FDA PROM - MIN - MAX', 'src': ''},
                 {'tx': 'PROM ÚLTIMO AÑO', 'src': ''},
@@ -650,8 +651,45 @@ export default {
             if(atr == '' || [undefined, null].includes(this.hot_mm[ym])){
                 return '';
             }
+            if(atr == 'min_prod'){
+                let ind = this.periodos.findIndex(elm => elm.num == ym);
+                if(ind >= 0){
+                    let rsl = this.periodos.slice(ind).map(elm => this.hot_mm[elm.num].min).reduce((ac, elm) => ac * elm, 1);
+                    return rsl;
+                }
+                return '';
+            }
+            if(atr == 'max_prod'){
+                let ind = this.periodos.findIndex(elm => elm.num == ym);
+                if(ind >= 0){
+                    let rsl = this.periodos.slice(ind).map(elm => this.hot_mm[elm.num].max).reduce((ac, elm) => ac * elm, 1);
+                    return rsl;
+                }
+                return '';
+            }
+            if(atr == 'ladder'){
+                let c1 = this.hot_mm[ym].num;
+                let c0 = this.hot_mm[ym].numback;
+                return (c1 == c0)? '': this.hot_mm[c1].total / this.hot_mm[c0].total;
+            }
+            if(atr == 'ladder_prod'){
+                let ind = this.periodos.findIndex(elm => elm.num == ym);
+                if(ind > 0){
+                    let map = this.periodos.slice(ind).map(elm => {
+                        return this.hot_mm[elm.num].total / this.hot_mm[this.hot_mm[elm.num].numback].total;
+                    });
+                    return map.reduce((ac, elm) => ac * elm, 1);
+                }
+                return '';
+            }
             if(atr == 'calc_01'){
                 // SUMA(C5:C39)/(35-C4+1)
+                if(ym == '202305'){
+                    console.log('Is match column!');
+                    console.log(this.hot_mm[ym].suma);
+                    console.log(35 - this.hot_mm[ym].periodo);
+                    console.log(this.hot_mm[ym]);
+                }
                 return this.hot_mm[ym].suma / (35 - this.hot_mm[ym].periodo);
             }
             return this.hot_mm[ym][atr];
@@ -722,10 +760,6 @@ export default {
             }
         },
         getClass: function(r, c){
-            // if(r == c){
-            //     return this.f_cross;
-            // }
-            // return (c < r)? this.f_out + this.f_left: this.f_in;
             return this.fun_dymclass(r, c);
         },
         getColorCell: function(r, c){
@@ -755,7 +789,11 @@ export default {
             return false;
         },
         formatMiles: function(num){
-            return num.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+            try {
+                return num.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+            } catch {
+                return '';
+            }
         },
         getSumColumn: function(col, tipo){
             if(this.sumcol[col] == undefined){
@@ -781,6 +819,18 @@ export default {
             let m = parseInt(ym.toString().slice(-2));
             return this.mss[m];
         },
+        secureMin: function(a, b){
+            if(a === null){
+                return b;
+            }
+            return Math.min(a, b);
+        },
+        secureMax: function(a, b){
+            if(a === null){
+                return b;
+            }
+            return Math.max(a, b);
+        },
         resetHotData: function(){
             this.hot_status = false;
             this.hot_acum = {};
@@ -788,9 +838,9 @@ export default {
             this.hot_mm = {};
             this.hot_col = {};
             let back = 0;
-            let per01 = this.periodos[0].num;
-            this.periodos.forEach(pre => {
-                this.periodos.forEach(rad => {
+            // Acumulaciones en posición real
+            this.periodos.forEach((pre, pi) => {
+                this.periodos.forEach((rad, ri) => {
                     this.hot_acum[`${pre.num}_${rad.num}`] = this.getValorAcum(pre.num, rad.num).valor;
                 });
             });
@@ -798,6 +848,9 @@ export default {
                 this.periodos.slice(pi).forEach((rad, ri) => {
                     let ranum = this.periodos[ri].num;
                     let tm1 = `${pre.num}_${rad.num}`;
+                    if(this.hot_mm[ranum] == undefined){
+                        this.hot_mm[ranum] = {'min': null, 'max': null, 'periodo': ri + 1, 'data': [], 'suma': 0, 'total': 0};
+                    }
                     if(ri == 0){
                         this.hot_fac[tm1] = '';
                     }else{
@@ -806,11 +859,11 @@ export default {
                         if(this.hot_acum[tm1] >= this.hot_acum[tm0]){
                             let fac = (this.hot_acum[tm0] > 0)? this.hot_acum[tm1] / this.hot_acum[tm0]: 1;
                             this.hot_fac[tm1] = fac;
-                            if(this.hot_mm[ranum] == undefined){
-                                this.hot_mm[ranum] = {'min': fac, 'max': fac, 'periodo': ri + 1, 'data': [], 'suma': 0};
-                            }
-                            this.hot_mm[ranum].min = Math.min(this.hot_mm[ranum].min, fac);
-                            this.hot_mm[ranum].max = Math.max(this.hot_mm[ranum].max, fac);
+                            // if(this.hot_mm[ranum] == undefined){
+                            //     this.hot_mm[ranum] = {'min': fac, 'max': fac, 'periodo': ri + 1, 'data': [], 'suma': 0, 'total': 0};
+                            // }
+                            this.hot_mm[ranum].min = this.secureMin(this.hot_mm[ranum].min, fac);
+                            this.hot_mm[ranum].max = this.secureMax(this.hot_mm[ranum].max, fac);
                             this.hot_mm[ranum].data.push(fac);
                             this.hot_mm[ranum].suma += fac;
                         }else{
@@ -818,10 +871,9 @@ export default {
                             // console.log();
                         }
                     }
+                    this.hot_mm[ranum].total += this.hot_acum[tm1];
                 });
             });
-            console.log('roneke');
-            console.log(this.hot_mm);
             this.periodos.forEach((pre, pi) => {
                 this.periodos.slice(pi).forEach((rad, ri) => {
                     let refmm = this.periodos[ri].num;
@@ -841,6 +893,18 @@ export default {
                     }
                 });
             });
+            back = 0;
+            this.periodos.forEach(per => {
+                if(this.hot_mm[per.num] == undefined){
+                    console.log(`hot_mm ${per.num} no encontrado`);
+                }else{
+                    this.hot_mm[per.num].num = per.num;
+                    this.hot_mm[per.num].numback = (back == 0)? per.num: back;
+                }
+                back = per.num;
+            });
+            console.log('Bakiri sam');
+            console.log(this.hot_mm);
             this.hot_status = true;
         },
         setTriangle: function(elm){
@@ -852,7 +916,6 @@ export default {
             }
             if(elm.ori != 'all' && this.status_src[elm.ori].load == false){
                 this.loadBridge(elm.ori);
-                // this.loadFuente(elm.ori);
             }
         },
         setDymclass: function(code){
@@ -986,6 +1049,10 @@ export default {
         getValorAcumFac: function(row, col){
             return this.hot_fac[`${row}_${col}`];
         },
+        getValorAcumRow: function(row){
+            let col = this.per_last;
+            return this.hot_acum[`${row}_${col}`];
+        },
         makeParams: function(arg){
             if(this.status != this.state.LOADING){
                 if(this.status_src[arg].load === false){
@@ -1029,59 +1096,22 @@ export default {
                     let desde = this.periodos[0].num;
                     let hasta = this.periodos[35].num;
                     let pam = {'fuente': arg, 'tema': this.fuentes[arg], 'desde': desde, 'hasta': hasta, 'crx': crx};
-                    let origen = arg;
-                    let tname = this.cliente + '_try_' + arg + '_' + crx;
+                    let tname = 'PYME_' + arg + '_' + crx;
                     console.log('Empezando a cargar...');
-                    this.$refs.timer.loadData(tname, arg, this.pathfuente, pam, force);
-                }
-            }
-        },
-        loadFuente: function(arg){
-            if(this.status != this.state.LOADING){
-                if(this.status_src[arg].load === false){
-                    this.status_src[arg].status = this.state.LOADING;
-                    this.status = this.state.LOADING;
-                    let crx = this.targetPeriodoDB.num;
-                    let yyyy = parseInt(String(crx).slice(0, 4));
-                    let mm = parseInt(String(crx).slice(-2));
-                    if(this.status_src.crx != crx){
-                        ['aut', 'fac', 'pag'].forEach(elm => this.status_src[elm].load = false);
-                        this.status_src.crx = crx;
-                        this.targetTriangle = null;
-                        this.makePyramid(yyyy, mm);
-                    }
-                    let desde = this.periodos[0].num;
-                    let hasta = this.periodos[35].num;
-                    let pam = new FormData();
-                    pam.append('fuente', arg);
-                    pam.append('tema', this.fuentes[arg]);
-                    pam.append('desde', desde);
-                    pam.append('hasta', hasta);
-                    pam.append('crx', crx);
-                    let origen = arg;
-                    console.log('Empezando a cargar...');
-                    axios.post(this.pathfuente, pam).then(res => {
-                        if(Array.isArray(res.data)){
-                            res.data[0].datos.forEach(elm => {
-                                this.pushValue(elm, origen);
-                            });
-                            if(this.targetTriangle == null){
-                                this.setTriangle(this.status_src[origen].list[0]);
-                            }
-                            this.status_src[arg].load = true;
-                            this.status_src[arg].status = this.state.LOADED;
-                            this.status = this.state.LOADED;
-                            if(this.status_src.aut.load && this.status_src.fac.load && this.status_src.pag.load){
-                                this.status_src.all.load = true;
-                            }
-                        }else{
-                            this.status_src[arg].status = this.state.FAILED;
-                            this.status = this.state.FAILED;
-                        }
-                    }).catch(err => {
-                        console.log(err);
-                        this.status = this.state.FAILED;
-                    });
+                    // this.$refs.timer.loadData(tname, arg, this.pathfuente, pam, force);
+                    this.$refs.timecop.dispatchQuery(
+                        tname,
+                        this.pathfuente,
+                        pam,
+                        (res, ori) => {
+                            console.log('Listo mi hermano!');
+                            console.log(res);
+                            console.log('Origen: ' + ori);
+                            this.endLoad(res, ori);
+                        },
+                        force,
+                        arg
+                    );
                 }
             }
         },
@@ -1205,6 +1235,26 @@ export default {
             this.targetPeriodoDB = null;
             this.targetTriangle = null;
             this.warnings = {'aut': [], 'fac': [], 'pag': []};
+        },
+        endLoad: function(contenido, origen){
+            console.log('Resultado en end-load');
+            if(Array.isArray(contenido)){
+                contenido[0].datos.forEach(elm => {
+                    this.pushValue(elm, origen);
+                });
+                if(this.targetTriangle == null){
+                    this.setTriangle(this.status_src[origen].list[0]);
+                }
+                this.status_src[origen].load = true;
+                this.status_src[origen].status = this.state.LOADED;
+                this.status = this.state.LOADED;
+                if(this.status_src.aut.load && this.status_src.fac.load && this.status_src.pag.load){
+                    this.status_src.all.load = true;
+                }
+            }else{
+                this.status_src[origen].status = this.state.FAILED;
+                this.status = this.state.FAILED;
+            }
         },
         listen: function(){
             this.$eventBus.$on('time-refresh', arg => {

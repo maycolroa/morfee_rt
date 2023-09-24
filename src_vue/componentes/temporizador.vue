@@ -55,11 +55,11 @@ export default {
             let rs = (this.seg % 60).toString().padStart(2, '0');
             this.clock_human = `${mn}:${rs} segundos`;
         },
-        dispatchQuery: function(consulta, writepath, params, fun, force=false){
+        dispatchQuery: function(consulta, writepath, params, fun, force=false, origen=""){
             console.log('This is Sparta!');
-            this.asyncRequest(consulta, writepath, params, fun, true, '', force);
+            this.asyncRequest(consulta, writepath, params, fun, true, '', force, origen);
         },
-        asyncRequest: function(consulta, writepath, params, fun=null, first=true, kcode='', force=false){
+        asyncRequest: function(consulta, writepath, params, fun=null, first=true, kcode='', force=false, origen=""){
             let initial = first;
             if(this.runsearch == false || first == false){
                 if(this.runsearch == false && first){
@@ -71,25 +71,27 @@ export default {
                 if(force === true){
                     this.keycode = generatorKey();
                     let param = new FormData();
+                    param.append('consulta', consulta);
                     param.append('clave', this.keycode);
                     Object.entries(params).forEach(par => param.append(par[0], par[1]));
                     customPostBlind(writepath, param).then(arg => {console.log('Return async write request! (CustomPost)')}).catch(err => {console.log(err)});
-                    setTimeout(() => this.asyncRequest(consulta, writepath, {}, fun, false, this.keycode), 4000);
+                    setTimeout(() => this.asyncRequest(consulta, writepath, {}, fun, false, this.keycode, false, origen), 4000);
                     console.log('Se mandó a crear la consulta mongodb por la fuerza, con la clave: ' + this.keycode);
                 }else{
                     console.log('async request in else block!');
                     let pam = new FormData();
-                    pam.append('clave', kcode);
                     pam.append('consulta', consulta);
+                    pam.append('clave', kcode);
                     axios.post(this.pathsearch, pam).then(res => {
                         if(res.data.estado == 'void'){
                             if(initial){
                                 this.keycode = generatorKey();
                                 let param = new FormData();
+                                param.append('consulta', consulta);
                                 param.append('clave', this.keycode);
                                 Object.entries(params).forEach(par => param.append(par[0], par[1]));
                                 customPostBlind(writepath, param).then(arg => {console.log('Return async write request! (CustomPost)')}).catch(err => {console.log(err)});
-                                setTimeout(() => this.asyncRequest(consulta, writepath, {}, fun, false, this.keycode), 4000);
+                                setTimeout(() => this.asyncRequest(consulta, writepath, {}, fun, false, this.keycode, false, origen), 4000);
                                 console.log('Se mandó a crear la consulta mongodb porque se encontró void, con la clave: ' + this.keycode);
                             }
                         }else if(res.data.estado == 'close'){
@@ -99,7 +101,7 @@ export default {
                             this.status = this.state.LOADED;
                             this.clock_down();
                             if(fun != null){
-                                fun(res.data.contenido);
+                                fun(res.data.contenido, origen);
                             }
                             this.$eventBus.$emit('search-finish', {'status': 'success', 'consulta': consulta, 'contenido': res.data.contenido});
                         }else if(res.data.estado == 'failed'){
@@ -109,7 +111,7 @@ export default {
                             this.clock_down();
                         }else{
                             console.log(`El estado de la consulta es: '${res.data.estado}', se verifica dentro de 4 segundos!`);
-                            setTimeout(() => this.asyncRequest(consulta, writepath, {}, fun, false, kcode), 4000);
+                            setTimeout(() => this.asyncRequest(consulta, writepath, {}, fun, false, kcode, false, origen), 4000);
                         }
                     }).catch(err => {
                         console.log(err);

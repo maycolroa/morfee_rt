@@ -54,7 +54,6 @@ urlpatterns = [
 
     # path('mng/raw', views.raw_facet, name='retec_raw'),
     # path('piramide', views.piramide, name='retec_piramide'),
-    # path('piramide/data', views.pyr_data, name='retec_pyr_data'),
 
     # path('custom/1', views.custom_1, name='retec_custom_1'),
     # path('custom/2', views.custom_2, name='retec_custom_2'),
