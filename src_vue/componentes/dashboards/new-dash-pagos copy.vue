@@ -23,34 +23,32 @@
                 </div>
             </a>
         </div>
-        <!-- contadores -->
-        <div class="row">
-            <div class="col-sm-7">
-                <div class="row">
-                    <div class="col-sm-4">
-                        <local-counter ref="cnt_all" class="border" texto="REGISTROS" valor="0" fontsize="20px" duracion="1" miles></local-counter>
+        <div :class="section == 'basic'? '': 'd-none'">
+            <div class="row">
+                <div class="col-sm-7">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <local-counter ref="cnt_all" class="border" texto="REGISTROS" valor="0" duracion="1" miles></local-counter>
+                        </div>
+                        <div class="col-sm-4">
+                            <local-counter ref="cnt_vdo" class="border" texto="Total VLRFACTURADO" valor="0" duracion="1" miles></local-counter>
+                        </div>
+                        <div class="col-sm-4">
+                            <local-counter ref="cnt_gde" class="border" texto="Total GLOSADEFINITIVA" valor="0" duracion="1" miles></local-counter>
+                        </div>
                     </div>
-                    <div class="col-sm-4">
-                        <local-counter ref="cnt_vdo" class="border" texto="Total VLRFACTURADO" fontsize="20px" valor="0" duracion="1" miles></local-counter>
-                    </div>
-                    <div class="col-sm-4">
-                        <local-counter ref="cnt_gde" class="border" texto="Total GLOSADEFINITIVA" fontsize="20px" valor="0" duracion="1" miles></local-counter>
+                </div>
+                <div class="col-sm-5">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <local-counter ref="cnt_pbs" class="border" texto="VALOR PAGADO PBS" valor=" " duracion="1" miles></local-counter>
+                        </div>
+                        <div class="col-sm-6">
+                            <local-counter ref="cnt_pm" class="border" texto="VALOR PAGADO PM" valor=" " duracion="1" miles></local-counter>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-5">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <local-counter ref="cnt_pbs" class="border" texto="VALOR PAGADO PBS" fontsize="20px" valor=" " duracion="1" miles></local-counter>
-                    </div>
-                    <div class="col-sm-6">
-                        <local-counter ref="cnt_pm" class="border" texto="VALOR PAGADO PM" fontsize="20px" valor=" " duracion="1" miles></local-counter>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- fin contadores-->     
-        <div :class="section == 'basic' ? '': 'd-none'">
             <div class="row">
                 <div class="col-sm-4">
                     <div class="panel panel-default card-view border">
@@ -284,223 +282,6 @@
                 </div>
             </div>
         </div>
-        <!-- Ranking RS-->
-        <div :class="section == 'ranking-rs'? '': 'd-none'">
-            <div class="panel panel-default card-view border">
-                <div class="panel-heading">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h6 class="panel-title txt-dark text-bold text-upper mb-0">RANKING DE PAGOS PBS - RÉGIMEN SUBSIDIADO<i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
-                            <span class="txt-dark">{{ human_period }}</span>
-                        </div>
-                        <div>
-                            <a href="javascript:void(0)" class="me-2" @click="$refs.ran_1a.exportar()" v-if="display == 'chart'"><i class="zmdi zmdi-download"></i></a>
-                            <a href="#" class="full-screen"><i class="zmdi zmdi-fullscreen"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel-wrapper collapse in">
-                    <div :class="status == state.LOADING? 'panel-body opaco': 'panel-body'">
-                        <table-data :class="altCss(display == 'table')" ref="tb_1a" cols="_id:PRESTADOR,valor:TOTAL:$ " compact counter lastright sumar="valor"></table-data>
-                        <am-ver :class="altCss(display == 'chart')" 
-                            ref="ran_1a" 
-                            pretag="$ " 
-                            grilla="0" 
-                            multicolor 
-                            campo_categoria="_id" 
-                            campo_valor="valor" 
-                            etiquetas 
-                            tooltip 
-                            sin_valores 
-                            altura_minima="100" 
-                            unidad="30" 
-                            custom="Valor: {valueX}, Registros: {total}" 
-                            custom_label="{valueX} ({total} registros)" 
-                            empty_data="No hay datos para graficar."></am-ver>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-default card-view border">
-                <div class="panel-heading">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h6 class="panel-title txt-dark text-bold text-upper mb-0">RANKING DE PAGOS PM - RÉGIMEN SUBSIDIADO<i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
-                            <span class="txt-dark">{{ human_period }}</span>
-                        </div>
-                        <div>
-                            <a href="javascript:void(0)" class="me-2" @click="$refs.ran_1b.exportar()" v-if="display == 'chart'"><i class="zmdi zmdi-download"></i></a>
-                            <a href="#" class="full-screen"><i class="zmdi zmdi-fullscreen"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel-wrapper collapse in">
-                    <div :class="status == state.LOADING? 'panel-body opaco': 'panel-body'">
-                        <table-data :class="altCss(display == 'table')" ref="tb_1b" cols="_id:PRESTADOR,valor:TOTAL:$ " compact counter lastright sumar="valor"></table-data>
-                        <am-ver :class="altCss(display == 'chart')" 
-                            ref="ran_1b" 
-                            pretag="$ " 
-                            grilla="0" 
-                            multicolor 
-                            campo_categoria="_id" 
-                            campo_valor="valor" 
-                            etiquetas 
-                            tooltip 
-                            sin_valores 
-                            altura_minima="100" 
-                            unidad="30" 
-                            custom="Valor: {valueX}, Registros: {total}" 
-                            custom_label="{valueX} ({total} registros)" 
-                            empty_data="No hay datos para graficar."></am-ver>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End Ranking RS-->
-        <!-- Ranking RC-->
-         <div :class="section == 'ranking-rc'? '': 'd-none'">
-            <div class="panel panel-default card-view border">
-                <div class="panel-heading">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h6 class="panel-title txt-dark text-bold text-upper mb-0">RANKING DE PAGOS PBS - RÉGIMEN CONTRIBUTIVO<i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
-                            <span class="txt-dark">{{ human_period }}</span>
-                        </div>
-                        <div>
-                            <a href="javascript:void(0)" class="me-2" @click="$refs.ran_2a.exportar()" v-if="display == 'chart'"><i class="zmdi zmdi-download"></i></a>
-                            <a href="#" class="full-screen"><i class="zmdi zmdi-fullscreen"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel-wrapper collapse in">
-                    <div :class="status == state.LOADING? 'panel-body opaco': 'panel-body'">
-                        <table-data :class="altCss(display == 'table')" ref="tb_2a" cols="_id:PRESTADOR,valor:TOTAL:$ " compact counter lastright sumar="valor"></table-data>
-                        <am-ver :class="altCss(display == 'chart')" 
-                            ref="ran_2a" 
-                            pretag="$ " 
-                            grilla="0" 
-                            multicolor 
-                            campo_categoria="_id" 
-                            campo_valor="valor" 
-                            etiquetas 
-                            tooltip 
-                            sin_valores 
-                            altura_minima="100" 
-                            unidad="30" 
-                            custom="Valor: {valueX}, Registros: {total}" 
-                            custom_label="{valueX} ({total} registros)" 
-                            empty_data="No hay datos para graficar."></am-ver>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-default card-view border">
-                <div class="panel-heading">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h6 class="panel-title txt-dark text-bold text-upper mb-0">RANKING DE PAGOS PM - RÉGIMEN CONTRIBUTIVO<i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
-                            <span class="txt-dark">{{ human_period }}</span>
-                        </div>
-                        <div>
-                            <a href="javascript:void(0)" class="me-2" @click="$refs.ran_2b.exportar()" v-if="display == 'chart'"><i class="zmdi zmdi-download"></i></a>
-                            <a href="#" class="full-screen"><i class="zmdi zmdi-fullscreen"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel-wrapper collapse in">
-                    <div :class="status == state.LOADING? 'panel-body opaco': 'panel-body'">
-                        <table-data :class="altCss(display == 'table')" ref="tb_2b" cols="_id:PRESTADOR,valor:TOTAL:$ " compact counter lastright sumar="valor"></table-data>
-                        <am-ver :class="altCss(display == 'chart')" 
-                            ref="ran_2b" 
-                            pretag="$ " 
-                            grilla="0" 
-                            multicolor 
-                            campo_categoria="_id" 
-                            campo_valor="valor" 
-                            etiquetas 
-                            tooltip 
-                            sin_valores 
-                            altura_minima="100" 
-                            unidad="30" 
-                            custom="Valor: {valueX}, Registros: {total}" 
-                            custom_label="{valueX} ({total} registros)" 
-                            empty_data="No hay datos para graficar."></am-ver>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End Ranking RC-->
-        <!-- Ranking PAC-->
-        <div :class="section == 'ranking-pac'? '': 'd-none'">
-            <div class="panel panel-default card-view border">
-                <div class="panel-heading">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h6 class="panel-title txt-dark text-bold text-upper mb-0">RANKING DE PAGOS PBS - PAC<i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
-                            <span class="txt-dark">{{ human_period }}</span>
-                        </div>
-                        <div>
-                            <a href="javascript:void(0)" class="me-2" @click="$refs.ran_3a.exportar()" v-if="display == 'chart'"><i class="zmdi zmdi-download"></i></a>
-                            <a href="#" class="full-screen"><i class="zmdi zmdi-fullscreen"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel-wrapper collapse in">
-                    <div :class="status == state.LOADING? 'panel-body opaco': 'panel-body'">
-                        <table-data :class="altCss(display == 'table')" ref="tb_3a" cols="_id:PRESTADOR,valor:TOTAL:$ " compact counter lastright sumar="valor"></table-data>
-                        <am-ver :class="altCss(display == 'chart')" 
-                            ref="ran_3a" 
-                            pretag="$ " 
-                            grilla="0" 
-                            multicolor 
-                            campo_categoria="_id" 
-                            campo_valor="valor" 
-                            etiquetas 
-                            tooltip 
-                            sin_valores 
-                            altura_minima="100" 
-                            unidad="30" 
-                            custom="Valor: {valueX}, Registros: {total}" 
-                            custom_label="{valueX} ({total} registros)" 
-                            empty_data="No hay datos para graficar."></am-ver>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-default card-view border">
-                <div class="panel-heading">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h6 class="panel-title txt-dark text-bold text-upper mb-0">RANKING DE PAGOS PRESUPUESTOS MÁXIMOS - PAC<i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
-                            <span class="txt-dark">{{ human_period }}</span>
-                        </div>
-                        <div>
-                            <a href="javascript:void(0)" class="me-2" @click="$refs.ran_3b.exportar()" v-if="display == 'chart'"><i class="zmdi zmdi-download"></i></a>
-                            <a href="#" class="full-screen"><i class="zmdi zmdi-fullscreen"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel-wrapper collapse in">
-                    <div :class="status == state.LOADING? 'panel-body opaco': 'panel-body'">
-                        <table-data :class="altCss(display == 'table')" ref="tb_3b" cols="_id:PRESTADOR,valor:TOTAL:$ " compact counter lastright sumar="valor"></table-data>
-                        <am-ver :class="altCss(display == 'chart')" 
-                            ref="ran_3b" 
-                            pretag="$ " 
-                            grilla="0" 
-                            multicolor 
-                            campo_categoria="_id" 
-                            campo_valor="valor" 
-                            etiquetas 
-                            tooltip 
-                            sin_valores 
-                            altura_minima="100" 
-                            unidad="30" 
-                            custom="Valor: {valueX}, Registros: {total}" 
-                            custom_label="{valueX} ({total} registros)" 
-                            empty_data="No hay datos para graficar."></am-ver>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End Ranking PAC-->
-
         <div :class="section == 'schema'? '': 'd-none'">
             <div class="row">
                 <div class="col-sm-3">
@@ -779,9 +560,8 @@ export default {
             display: 'chart',       // table | chart
             opt: [
                 {'tx': 'General', 'code': 'basic'}, 
-                {'tx': 'Pagos RS', 'code': 'ranking-rs'}, //ranking-1
-                {'tx': 'Pagos RC', 'code': 'ranking-rc'},
-                {'tx': 'Pagos PAC', 'code': 'ranking-pac'}, 
+                {'tx': 'Pagos RS', 'code': 'ranking-1'}, 
+                {'tx': 'Ranking pagos RC', 'code': 'ranking-2'}, 
                 {'tx': 'Estructura', 'code': 'schema'}, 
                 {'tx': 'Pagos por plan', 'code': 'controls'}, 
                 {'tx': 'Importar', 'code': 'import'}
@@ -871,10 +651,10 @@ export default {
                     console.log('No se encontraron datos!');
                 }else{
                     this.$refs.cnt_all.setValor(this.rawData['rs_0'][0].total);
-                    this.$refs.cnt_vdo.setValor(Math.round(this.clearNumber(this.rawData['rs_0'][0].sum_vdo)));
-                    this.$refs.cnt_gde.setValor(Math.round(this.clearNumber(this.rawData['rs_0'][0].sum_gde)));
-                    this.$refs.cnt_pbs.setValor(this.clearNumber(Math.round(this.rawData['rs_0'][0].r_pbs)));
-                    this.$refs.cnt_pm.setValor(this.clearNumber(Math.round(this.rawData['rs_0'][0].r_pm)));
+                    this.$refs.cnt_vdo.setValor(this.clearNumber(this.rawData['rs_0'][0].sum_vdo));
+                    this.$refs.cnt_gde.setValor(this.clearNumber(this.rawData['rs_0'][0].sum_gde));
+                    this.$refs.cnt_pbs.setValor(this.clearNumber(this.rawData['rs_0'][0].r_pbs));
+                    this.$refs.cnt_pm.setValor(this.clearNumber(this.rawData['rs_0'][0].r_pm));
                 }
                 this.$refs.gp_1.setDatos(this.rawData['rs_1']); // Plan salud
                 this.$refs.gp_2.setDatos(this.rawData['rs_2']); // TContra
@@ -882,24 +662,6 @@ export default {
                 this.$refs.gp_4.setDatos(this.rawData['rs_4']); // TIPO USUARIO
                 this.$refs.gp_new_1.setDatos(this.rawData['new_1']); // TIPO ID PRESTADOR
                 this.$refs.gp_new_2.setDatos(this.rawData['new_2']); // MECANISMO DE PAGO
-                //Ranking RS
-                this.$refs.tb_1a.setDatos(this.parseNull(this.rawData['ran_1a']), '$ ');
-                this.$refs.ran_1a.setDatos(this.rawData['ran_1a'].slice(0, 30).sort((a, b) => a.valor - b.valor), '$ '); //grafico 1a
-                this.$refs.tb_1b.setDatos(this.parseNull(this.rawData['ran_1b']), '$ ');
-                this.$refs.ran_1b.setDatos(this.rawData['ran_1b'].slice(0, 30).sort((a, b) => a.valor - b.valor), '$ '); //grafico 1b
-                //End Ranking RS
-                //Ranking RC
-                this.$refs.tb_2a.setDatos(this.parseNull(this.rawData['ran_2a']), '$ ');
-                this.$refs.ran_2a.setDatos(this.rawData['ran_2a'].slice(0, 30).sort((a, b) => a.valor - b.valor), '$ '); //grafico 1a
-                this.$refs.tb_2b.setDatos(this.parseNull(this.rawData['ran_2b']), '$ ');
-                this.$refs.ran_2b.setDatos(this.rawData['ran_2b'].slice(0, 30).sort((a, b) => a.valor - b.valor), '$ '); //grafico 1b
-                //End Ranking RC
-                //Ranking PAC
-                this.$refs.tb_3a.setDatos(this.parseNull(this.rawData['ran_3a']), '$ ');
-                this.$refs.ran_3a.setDatos(this.rawData['ran_3a'].slice(0, 30).sort((a, b) => a.valor - b.valor), '$ '); //grafico 1a
-                this.$refs.tb_3b.setDatos(this.parseNull(this.rawData['ran_3b']), '$ ');
-                this.$refs.ran_3b.setDatos(this.rawData['ran_3b'].slice(0, 30).sort((a, b) => a.valor - b.valor), '$ '); //grafico 1b
-                //End Ranking PAC
                 if(Array.isArray(this.rawData['pmx'])){
                     let aux = {};
                     this.rawData['pmx'].forEach(elm => {
@@ -912,14 +674,6 @@ export default {
                     this.$refs.gp_pmx.setDatos(Object.values(aux));
                 }
             }
-        },
-        parseNull: function(arg) {
-            return arg.map(elm => {
-                if(elm._id == null){
-                    elm._id = 'SIN NOMBRE PRESTADOR';
-                }
-                return elm;
-            });
         },
         getSchema: function(force=false){
             this.status_sch = this.state.LOADING;
@@ -944,8 +698,9 @@ export default {
                     this.pathdata + '/data',
                     {'tema': this.fuente, 'periodo': this.periodo},
                     res => {
+                        console.log('mane');
                         console.log(res);
-                        this.rawData = (res.length > 0)?  res[0]: {'rs_0': [], 'rs_1': [], 'rs_2': [], 'rs_3': [], 'rs_4': [], 'rs_5': [], 'pmx': [], 'ran_1a':[], 'ran_1b':[], 'ran_2a':[], 'ran_2b':[], 'ran_3a':[], 'ran_3b':[]};
+                        this.rawData = (res.length > 0)?  res[0]: {'rs_0': [], 'rs_1': [], 'rs_2': [], 'rs_3': [], 'rs_4': [], 'rs_5': [], 'pmx': []};
                         this.writeCards();
                     },
                     force
@@ -999,7 +754,6 @@ export default {
         }
     },
     mounted() {
-        
         this.listen();
         if(this.urol == 'Consultor'){
             this.opt.pop();

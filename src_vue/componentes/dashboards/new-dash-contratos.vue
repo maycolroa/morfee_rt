@@ -46,6 +46,17 @@
                 </div>
             </div>
         </div>
+        <!-- isaias-->
+        <div :class="section == 'service'? 'row':'d-none'">           
+            <div class="col-sm-6">
+                <local-counter ref="contador_x2" pretag=" " class="border" texto="REGISTROS" valor="0" duracion="1" miles></local-counter>
+            </div>
+            <div class="col-sm-6">
+                <local-counter ref="contador_x3" pretag=" " class="border" texto="# DE SERVICIOS ÚNICOS" valor="0" duracion="1" miles></local-counter>
+            </div>
+        </div>
+        <!-- isaias fin-->
+
         <div :class="section == 'basic'? '': 'd-none'">
             <div class="panel panel-default card-view border">
                 <div class="panel-heading">
@@ -159,6 +170,29 @@
                         </div>
                     </div>
                     <!-- END MICRO TABLE -->
+                </div>
+            </div>
+        </div>
+        <div :class="section == 'service'? '': 'd-none'">
+            <div class="panel panel-default card-view border">
+                <div class="panel-heading">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="panel-title txt-dark text-bold text-upper mb-0">Primeros 20 servicios <i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
+                            <span class="txt-dark">{{ human_period }}</span>
+                        </div>
+                        <div>
+                            <a href="javascript:void(0)" class="me-2" @click="$refs.gp_6.exportar()" v-if="display == 'chart'"><i class="zmdi zmdi-download"></i></a>
+                            <a href="#" class="full-screen"><i class="zmdi zmdi-fullscreen"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-wrapper collapse in">
+                    <div :class="status == state.LOADING? 'panel-body opaco': 'panel-body'">
+                        <table-data :class="altCss(display == 'table')" ref="table_10" cols="_id:SERVICIOS,promedio:VALOR:$ ,total:REGISTROS" compact counter lastright sumar="total"></table-data>
+                        <!-- <am-pie :class="altCss(display == 'chart')" ref="gp_60" campo_categoria="_id" campo_valor="total" sin_valores altura="500"></am-pie> -->
+                        <am-ver :class="altCss(display == 'chart')" ref="gp_10" pretag="$ " grilla="0" multicolor campo_categoria="_id" campo_valor="promedio" etiquetas tooltip sin_valores altura_minima="100" unidad="30"></am-ver>
+                    </div>
                 </div>
             </div>
         </div>
@@ -328,7 +362,8 @@ export default {
             display: 'chart',       // table | chart
             opt: [
                 {'tx': 'General', 'code': 'general'}, 
-                {'tx': 'Prestadores', 'code': 'basic'}, 
+                {'tx': 'Prestadores', 'code': 'basic'},
+                {'tx': 'Servicios', 'code': 'service'}, 
                 // {'tx': 'Detalles', 'code': 'detail'}, 
                 // {'tx': 'Consulta', 'code': 'list'}, 
                 {'tx': 'Estructura', 'code': 'schema'}, 
@@ -449,7 +484,7 @@ export default {
                 this.$refs.table_1.setDatos(this.rawData['rs_1']);
                 this.$refs.table_2.setDatos(this.rawData['rs_2']);
                 this.$refs.table_3.setDatos(this.rawData['rs_3']);
-                this.$refs.table_6.setDatos(this.rawData['rs_6']);
+                this.$refs.table_6.setDatos(this.parseNull(this.rawData['rs_6']));
                 this.$refs.table_suma.setDatos(smx);
                 this.$refs.gp_1.setDatos(this.rawData['rs_1']);
                 this.$refs.gp_2.setDatos(this.rawData['rs_2']);
@@ -459,7 +494,24 @@ export default {
                 console.log(this.rawData['rs_8']);
                 this.$refs.sumas.setDatos(this.rawData['rs_8']);
                 this.$refs.contador_4.setValor(this.rawData['rs_7'].length);
+                //Servicios
+                this.$refs.contador_x3.setValor(this.rawData['rs_9'].length);
+                this.$refs.contador_x2.setValor(this.rawData['rs_5'][0].alldoc);
+                this.$refs.gp_10.setDatos(this.rawData['rs_10'].map(elm => {
+                    elm.promedio = Math.round(elm.promedio);
+                    return elm;
+                 }).sort((a, b) => a.promedio - b.promedio));
+                this.$refs.table_10.setDatos(this.rawData['rs_10'].sort((a, b) => b.total - a.total));
+                
             }
+        },
+        parseNull: function(arg) {
+            return arg.map(elm => {
+                if(elm._id == null){
+                    elm._id = 'SIN NOMBRE PRESTADOR';
+                }
+                return elm;
+            });
         },
         loadSchema: function(tload){
             // facets.unshift("x_id:group:none:1");

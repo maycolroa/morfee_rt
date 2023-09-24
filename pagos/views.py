@@ -21,6 +21,9 @@ def pag_panel(request, section):
 def pag_inicio(request):
     return render(request, 'pagos/pag_inicio.html')
 
+def tpl_cuentas_medicas(request):
+    return render(request, 'pagos/cuentas_medicas.html')
+
 def pag_table(request):
     coleccion = 'retec_pagos'
     return render(request, 'pagos/pag_table.html', {'coleccion': coleccion})
@@ -28,6 +31,39 @@ def pag_table(request):
 def pag_import(request):
     coleccion = 'retec_pagos'
     return render(request, 'pagos/pag_import.html', {'coleccion': coleccion})
+
+def data_cm(request):
+    clave = request.POST.get('clave') if request.POST.get('clave') else ''
+    user_id = request.user.id
+    # rawper = int(request.POST.get('periodo'))
+    consulta = createConsulta('raw_cmed', 'retec_facturas', clave, user_id)
+    mongo = Mongo('retec_pagos')
+    print('Exe query mongodb...')
+    datos = mongo.aggregate([
+        # {"$addFields": {"vraw": {"$toString": "$fr"}} },
+        # {"$project": {"vdo": 1, "vgl": 1,  "prd": {"$substrBytes": ["$vraw", 0, 6]}, "vpbs": 1, "vppm": 1, "vpac": 1, "vrpbs": 1, "vrpm": 1, "vrpac": 1} },
+        {"$project": {"vdo": 1, "gde": 1, "vr_per": 1, "vpbs": 1, "vppm": 1, "vpac": 1} },
+        {"$facet": {
+            "result": [
+                {"$group": {
+                    "_id": "$vr_per", 
+                    "v_facturado": {"$sum": "$vdo"}, 
+                    "g_definitiva": {"$sum": "$gde"},
+                    "pag_pbs": {"$sum": "$vpbs"},
+                    "pag_pm": {"$sum": "$vppm"},
+                    "pag_pac": {"$sum": "$vpac"},
+                }},
+                {"$sort": { "_id": 1} },
+            ]
+        }},
+        # {"$limit": 99},
+    ])
+    print('Print result query...')
+    consulta.contenido = str(datos)
+    consulta.estado = 'close'
+    consulta.save()
+    return HttpResponse(datos, content_type="application/json")
+
 
 def pag_dash(request):
     coleccion = 'retec_pagos'
@@ -76,8 +112,41 @@ def raw_facet_pay(request):
                     'rs_3': [ {'$group': {'_id': '$amb', 'total': {'$sum': 1}}} ],
                     'rs_4': [ {'$group': {'_id': '$tus', 'total': {'$sum': 1}}} ],
                     'pmx':  [ {'$group': {'_id': '$pmx', 'total': {'$sum': 1}}} ],
-                    'new_1': [ {'$group': {'_id': '$tpp', 'total': {'$sum': 1}}} ],
-                    'new_2': [ {'$group': {'_id': '$mpa', 'total': {'$sum': 1}}} ],
+                    'new_1': [ {'$group': {'_id': '$tpp', 'total': {'$sum': 1}}}],
+                    'new_2': [ {'$group': {'_id': '$mpa', 'total': {'$sum': 1}}}],
+                    #query  pendiente revizar variables y condiciones.
+                    #query para Pagos RS (Ranking)
+                    'ran_1a': [
+                        {'$match': {'pmx': {"$in": ['0', 0]},  'pla': {'$in': ['S', 'M']}}}, 
+                        {'$group': {'_id': '$nmp', 'valor': {'$sum': '$vpbs'}, 'total': {'$sum': 1} }},
+                        {'$sort': {'valor': -1}}
+                    ], 
+                    'ran_1b': [
+                        {'$match': {'pmx': {"$in": ['1', 1]}, 'pla': {'$in': ['S', 'M']}}}, 
+                        {'$group': {'_id': '$nmp', 'valor': {'$sum': '$vppm'}, 'total': {'$sum': 1} }},
+                        {'$sort': {'valor': -1}}
+                    ],
+                    'ran_2a': [
+                        {'$match': {'pmx': {"$in": ['0', 0]}, 'pla':{ '$in':['V', 'C']}}}, 
+                        {'$group': {'_id': '$nmp', 'valor': {'$sum': '$vpbs'}, 'total': {'$sum': 1} }},
+                        {'$sort': {'valor': -1}}
+                    ],                      
+                    'ran_2b': [
+                        {'$match': {'pmx': {"$in": ['1', 1]}, 'pla':{ '$in':['V', 'C']}}}, 
+                        {'$group': {'_id': '$nmp', 'valor': {'$sum': '$vppm'}, 'total': {'$sum': 1} }},
+                        {'$sort': {'valor': -1}}
+                    ],
+                    'ran_3a': [
+                        {'$match': {'pmx': {"$in": ['0', 0]}, 'pla':'P'}}, 
+                        {'$group': {'_id': '$nmp', 'valor': {'$sum': '$vpac'}, 'total': {'$sum': 1} }},
+                        {'$sort': {'valor': -1}}
+                    ],
+                    'ran_3b': [
+                        {'$match': {'pmx': {"$in": ['1', 1]}, 'pla':'P'}}, 
+                        {'$group': {'_id': '$nmp', 'valor': {'$sum': '$vpac'}, 'total': {'$sum': 1} }},
+                        {'$sort': {'valor': -1}}
+                    ], 
+
                     # 'rs_5': [
                     #     {'$match': {'crx': periodo}}, 
                     #     {'$group': {'_id': {'tm_tra': '$tra', 'tm_tus': '$tus'}, 'total': {'$sum': 1}}}

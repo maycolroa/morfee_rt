@@ -32,25 +32,26 @@
         </div>
         <div :class="status == state.LOADING? 'd-none': ''">
             <div class="row">
-                <div class="col-sm-2">
-                    <contador-light ref="c_per" texto="Periodos FRAD" valor="0" duracion="1" icono="fa fa-calendar"></contador-light>
+                <div class="col-sm-6">
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <contador-light ref="c_per" texto="Periodos FRAD" valor="0" duracion="1" icono="fa fa-calendar"></contador-light>
+                        </div>
+                        <div class="col-sm-7">
+                            <contador-light ref="c_fac" pretag="$ " texto="Valor facturado" valor="0" duracion="1" icono="fa fa-line-chart"></contador-light>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-sm-3">
-                    <contador-light ref="c_fac" pretag="$ " texto="Valor facturado" valor="0" duracion="1" icono="fa fa-line-chart"></contador-light>
+                <div class="col-sm-6">
+                    <div class="row">
+                        <div class="col-sm-7">
+                            <contador-light ref="c_glo" pretag="$ " texto="Valor glosado" valor="0" duracion="1" icono="fa fa-line-chart"></contador-light>
+                        </div>
+                        <div class="col-sm-5">
+                            <contador-light ref="c_percent" texto="% de glosa" valor="0" duracion="1" icono="fa fa-percent"></contador-light>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-sm-3">
-                    <contador-light ref="c_glo" pretag="$ " texto="Valor glosado" valor="0" duracion="1" icono="fa fa-line-chart"></contador-light>
-                </div>
-                <div class="col-sm-2">
-                    <contador-light ref="c_percent" texto="% glosa" valor="0" duracion="1" icono="fa fa-percent"></contador-light>
-                </div>
-                <div class="col-sm-2">
-                    <contador-light ref="c_ratificado" texto="% glosa rat" valor="0" duracion="1" icono="fa fa-percent"></contador-light>
-                </div>
-
-                
-                
-               
             </div>
             <div :class="section == 'vertical'? '': 'd-none'">
                 <div class="panel panel-default card-view border">
@@ -236,7 +237,6 @@ export default {
             numper: 0,
             sum_fac: 0,
             sum_glo: 0,
-            sum_rat: 0,
             status: 'ini',
             state: {'INI': 'ini', 'LOADING': 'loading', 'LOADED': 'loaded', 'FAILED': 'failed'}
         }
@@ -296,22 +296,16 @@ export default {
         postResult: function(res){
             this.sum_fac = 0;
             this.sum_glo = 0;
-            this.sum_rat = 0;
             this.datos = res[0].result;
             this.datos.forEach(elm => {
                 this.sum_fac += elm.v_facturado;
                 this.sum_glo += elm.v_glosado;
-                this.sum_rat += elm.v_ratificado;
             });
             this.$refs.c_per.setValor(this.datos.length);
             this.$refs.c_fac.setValor(this.miles(this.numfixed(this.sum_fac, 2, false)));
             this.$refs.c_glo.setValor(this.miles(this.numfixed(this.sum_glo, 2, false)));
             let xnum = this.numfixed((this.sum_glo / this.sum_fac) * 100);
-            let g_rat = this.numfixed((this.sum_rat / this.sum_fac) * 100);
-
             this.$refs.c_percent.setValor(`${xnum} %`);
-            this.$refs.c_ratificado.setValor(`${g_rat} %`);
-
             this.setCampo(this.campo);
             this.$refs.gp_bi.setDatos(this.datos.map(elm => {
                 return {'categoria': this.prettyPer(elm._id), 'Glosado': elm.v_glosado, 'Facturado': elm.v_facturado}

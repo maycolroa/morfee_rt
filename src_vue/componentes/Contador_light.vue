@@ -35,7 +35,7 @@ export default {
         miles: {type: Boolean, default: false},
         canal: {type: String, default: ''},
         pretag: {type: String, default: ''},
-        fontsize: {type: String, default: '24px'},
+        fontsize: {type: String, default: '22px'},
         warning: {type: Boolean, default: false}
     },
     data() {

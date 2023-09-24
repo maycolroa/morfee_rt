@@ -171,7 +171,9 @@ Vue.component('get-view-periodo', require('./componentes/get_view_periodo.vue').
 Vue.component('chat-time', require('./componentes/chat.vue').default);
 
 Vue.component('cuentas-medicas', require('./componentes/facturas/cuentas_medicas.vue').default);
+Vue.component('cuentas-medicas-pagos', require('./componentes/pagos/cuentas_medicas_pagos.vue').default);
 Vue.component('temporizador', require('./componentes/temporizador.vue').default);
+
 
 window.app = new Vue({
     el: '#mainApp'

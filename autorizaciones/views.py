@@ -67,25 +67,37 @@ def raw_facet_auto(request):
             {
                 '$facet': {
                     'rs_1': [
-                        {'$match': {'pmx': {"$in": ['0', 0]}, 'pla': 'S'}}, 
+                        {'$match': {'pmx': {"$in": ['0', 0]},  'pla': {'$in': ['S', 'M']}}}, 
                         {'$group': {'_id': '$nmp', 'valor': {'$sum': '$vbs'}, 'total': {'$sum': 1} }},
                         {'$sort': {'valor': -1}}
                     ], 
                     'rs_2': [
-                        {'$match': {'pmx': {"$in": ['0', 0]}, 'pla': 'V'}}, 
+                        {'$match': {'pmx': {"$in": ['0', 0]}, 'pla':{ '$in':['V', 'C']}}}, 
                         {'$group': {'_id': '$nmp', 'valor': {'$sum': '$vbs'}, 'total': {'$sum': 1} }},
                         {'$sort': {'valor': -1}}
                     ], 
                     'rs_3': [
-                        {'$match': {'pmx': {"$in": ['1', 1]}, 'pla': 'S'}}, 
+                        {'$match': {'pmx': {"$in": ['1', 1]}, 'pla': {'$in': ['S', 'M']}}}, 
                         {'$group': {'_id': '$nmp', 'valor': {'$sum': '$vpm'}, 'total': {'$sum': 1} }},
                         {'$sort': {'valor': -1}}
                     ], 
                     'rs_4': [
-                        {'$match': {'pmx': {"$in": ['1', 1]}, 'pla': 'V'}}, 
+                        {'$match': {'pmx': {"$in": ['1', 1]}, 'pla':{ '$in':['V', 'C']}}}, 
                         {'$group': {'_id': '$nmp', 'valor': {'$sum': '$vpm'}, 'total': {'$sum': 1} }},
                         {'$sort': {'valor': -1}}
                     ],
+                    'rs_5': [
+                        {'$match': {'pmx': {"$in": ['0', 0]}, 'pla':'P'}}, 
+                        {'$group': {'_id': '$nmp', 'valor': {'$sum': '$vac'}, 'total': {'$sum': 1} }},
+                        {'$sort': {'valor': -1}}
+                    ],
+                    'rs_6': [
+                        {'$match': {'pmx': {"$in": ['1', 1]}, 'pla':'P'}}, 
+                        {'$group': {'_id': '$nmp', 'valor': {'$sum': '$vac'}, 'total': {'$sum': 1} }},
+                        {'$sort': {'valor': -1}}
+                    ], 
+                    
+
                     'pmx': [{'$group': {'_id': '$pmx', 'total': {'$sum': 1} } }],
                     'facet_amb': [{"$sortByCount": "$amb"}],
                     'facet_pla': [{"$sortByCount": "$pla"}],

@@ -348,6 +348,80 @@
                 </div>
             </div>
         </div>
+        <!--isaias-->
+        <div  :class="section == 'data-3'? '': 'd-none'">
+            <div class="panel panel-default card-view border">
+                <div class="panel-heading">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="panel-title txt-dark text-bold text-upper mb-0">isa RANKING DE AUTORIZACIONES PBS - PAC<i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
+                            <span class="txt-dark">{{ human_period }}</span>
+                        </div>
+                        <div>
+                            <a href="javascript:void(0)" class="me-2" @click="$refs.gp_5_V.exportar()" v-if="display == 'chart'"><i class="zmdi zmdi-download"></i></a>
+                            <a href="#" class="full-screen"><i class="zmdi zmdi-fullscreen"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-wrapper collapse in">
+                    <div :class="status == state.LOADING? 'panel-body opaco': 'panel-body'">
+                        <table-data :class="altCss(display == 'table')" ref="tb_5_V" cols="_id:PRESTADOR,valor:TOTAL:$ " compact counter lastright sumar="valor"></table-data>
+                        <am-ver :class="altCss(display == 'chart')" 
+                            ref="gp_5_V" 
+                            pretag="$ " 
+                            grilla="0" 
+                            multicolor 
+                            campo_categoria="_id" 
+                            campo_valor="valor" 
+                            etiquetas 
+                            tooltip 
+                            sin_valores 
+                            altura_minima="100" 
+                            unidad="30" 
+                            custom="Valor: {valueX}, Registros: {total}" 
+                            custom_label="{category}: {valueX} ({total} registros)" 
+                            empty_data="No hay datos para graficar."></am-ver>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default card-view border">
+                <div class="panel-heading">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="panel-title txt-dark text-bold text-upper mb-0">RANKING DE AUTORIZACIONES PRESUPUESTOS MÁXIMOS  - PAC<i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
+                            <span class="txt-dark">{{ human_period }}</span>
+                        </div>
+                        <div>
+                            <a href="javascript:void(0)" class="me-2" @click="$refs.gp_6_V.exportar()" v-if="display == 'chart'"><i class="zmdi zmdi-download"></i></a>
+                            <a href="#" class="full-screen"><i class="zmdi zmdi-fullscreen"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-wrapper collapse in">
+                    <div :class="status == state.LOADING? 'panel-body opaco': 'panel-body'">
+                        <table-data :class="altCss(display == 'table')" ref="tb_6_V" cols="_id:PRESTADOR,valor:TOTAL:$ " compact counter lastright sumar="valor"></table-data>
+                        <am-ver :class="altCss(display == 'chart')" 
+                            ref="gp_6_V" 
+                            pretag="$ " 
+                            grilla="0" 
+                            multicolor 
+                            campo_categoria="_id" 
+                            campo_valor="valor" 
+                            etiquetas 
+                            tooltip 
+                            sin_valores 
+                            altura_minima="100" 
+                            unidad="30" 
+                            custom="Valor: {valueX}, Registros: {total}" 
+                            custom_label="{category}: {valueX} ({total} registros)" 
+                            empty_data="No hay datos para graficar."></am-ver>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        <!-- isaias fin-->
+        
         <div :class="section == 'controls'? '': 'd-none'">
             <h5 class="txt-dark">Controles PBS</h5>
             <div class="row mb-4">
@@ -653,8 +727,9 @@ export default {
             taritem: 'suma',        // suma | total
             opt: [
                 {'tx': 'General', 'code': 'basic'}, 
-                {'tx': 'Ranking Servicios RS', 'code': 'data-1'}, 
-                {'tx': 'Ranking Servicios RC', 'code': 'data-2'}, 
+                {'tx': 'Servicios RS', 'code': 'data-1'}, 
+                {'tx': 'Servicios RC', 'code': 'data-2'}, 
+                {'tx': 'Servicios PAC', 'code': 'data-3'}, 
                 {'tx': 'Reservas', 'code': 'controls'}, 
                 {'tx': 'Estructura', 'code': 'schema'}, 
                 {'tx': 'Importar', 'code': 'import'}
@@ -787,10 +862,10 @@ export default {
             // rs_5: Actual
             // rs_6: Listado (20)
             if(this.rawData != null){
-                this.rawData['facet_total'].length > 0? this.$refs.cnt_1.setValor(this.rawData['facet_total'][0].n): this.$refs.cnt_1.setValor('');
-                this.rawData['facet_vbs'].length > 0? this.$refs.cnt_vbs.setValor(this.rawData['facet_vbs'][0].n): this.$refs.cnt_vbs.setValor('');
-                this.rawData['facet_vac'].length > 0? this.$refs.cnt_vac.setValor(this.rawData['facet_vac'][0].n): this.$refs.cnt_vac.setValor('');
-                this.rawData['facet_vpm'].length > 0? this.$refs.cnt_vpm.setValor(this.rawData['facet_vpm'][0].n): this.$refs.cnt_vpm.setValor('');
+                this.rawData['facet_total'].length > 0? this.$refs.cnt_1.setValor(Math.round(this.rawData['facet_total'][0].n)): this.$refs.cnt_1.setValor('');
+                this.rawData['facet_vbs'].length > 0? this.$refs.cnt_vbs.setValor(Math.round(this.rawData['facet_vbs'][0].n)): this.$refs.cnt_vbs.setValor('');
+                this.rawData['facet_vac'].length > 0? this.$refs.cnt_vac.setValor(Math.round(this.rawData['facet_vac'][0].n)): this.$refs.cnt_vac.setValor('');
+                this.rawData['facet_vpm'].length > 0? this.$refs.cnt_vpm.setValor(Math.round(this.rawData['facet_vpm'][0].n)): this.$refs.cnt_vpm.setValor('');
                 this.$refs.gp_doc.setDatos(this.rawData['facet_doc']);
                 if(Array.isArray(this.rawData['pmx'])){
                     let aux = {};
@@ -814,14 +889,20 @@ export default {
         writeItems: function(){
             if(this.rawData != null){
                 if(this.taritem == 'suma'){
-                    this.$refs.tb_0_S.setDatos(this.rawData['rs_1'], '$ ');
+                    this.$refs.tb_0_S.setDatos(this.parseNull(this.rawData['rs_1']), '$ ');
                     this.$refs.gp_0_S.setDatos(this.rawData['rs_1'].slice(0, 30).sort((a, b) => a.valor - b.valor), '$ ');
-                    this.$refs.tb_0_V.setDatos(this.rawData['rs_2'], '$ ');
+                    this.$refs.tb_0_V.setDatos(this.parseNull(this.rawData['rs_2']), '$ ');
                     this.$refs.gp_0_V.setDatos(this.rawData['rs_2'].slice(0, 30).sort((a, b) => a.valor - b.valor), '$ ');
-                    this.$refs.tb_1_S.setDatos(this.rawData['rs_3'], '$ ');
+                    this.$refs.tb_1_S.setDatos(this.parseNull(this.rawData['rs_3']), '$ ');
                     this.$refs.gp_1_S.setDatos(this.rawData['rs_3'].slice(0, 30).sort((a, b) => a.valor - b.valor), '$ ');
-                    this.$refs.tb_1_V.setDatos(this.rawData['rs_4'], '$ ');
+                    this.$refs.tb_1_V.setDatos(this.parseNull(this.rawData['rs_4']), '$ ');
                     this.$refs.gp_1_V.setDatos(this.rawData['rs_4'].slice(0, 30).sort((a, b) => a.valor - b.valor), '$ ');
+                    //isaias 
+                    this.$refs.tb_5_V.setDatos(this.parseNull(this.rawData['rs_5']), '$ ');
+                    this.$refs.gp_5_V.setDatos(this.rawData['rs_5'].slice(0, 30).sort((a, b) => a.valor - b.valor), '$ ');
+                    this.$refs.tb_6_V.setDatos(this.parseNull(this.rawData['rs_6']), '$ ');
+                    this.$refs.gp_6_V.setDatos(this.rawData['rs_6'].slice(0, 30).sort((a, b) => a.valor - b.valor), '$ ');
+
                 }else{
                     this.$refs.tb_0_S.setDatos(this.rawData['rs_1'].map(elm => this.makeItem(elm)), '');
                     this.$refs.gp_0_S.setDatos(this.rawData['rs_1'].map(elm => this.makeItem(elm)).sort((a, b) => b.valor - a.valor).slice(0, 30).sort((a, b) => a.valor - b.valor), '');
@@ -831,8 +912,23 @@ export default {
                     this.$refs.gp_1_S.setDatos(this.rawData['rs_3'].map(elm => this.makeItem(elm)).sort((a, b) => b.valor - a.valor).slice(0, 30).sort((a, b) => a.valor - b.valor), '');
                     this.$refs.tb_1_V.setDatos(this.rawData['rs_4'].map(elm => this.makeItem(elm)), '');
                     this.$refs.gp_1_V.setDatos(this.rawData['rs_4'].map(elm => this.makeItem(elm)).sort((a, b) => b.valor - a.valor).slice(0, 30).sort((a, b) => a.valor - b.valor), '');
+
+                    /*isaias
+                    this.$refs.tb_5_V.setDatos(this.rawData['rs_5'], '$ ');
+                    this.$refs.gp_5_V.setDatos(this.rawData['rs_5'].slice(0, 30).sort((a, b) => a.valor - b.valor), '$ ');
+                    this.$refs.tb_6_V.setDatos(this.rawData['rs_6'], '$ ');
+                    this.$refs.gp_6_V.setDatos(this.rawData['rs_6'].slice(0, 30).sort((a, b) => a.valor - b.valor), '$ ');
+                    */
                 }
             }
+        },
+        parseNull: function(arg) {
+            return arg.map(elm => {
+                if(elm._id == null){
+                    elm._id = 'SIN NOMBRE PRESTADOR';
+                }
+                return elm;
+            });
         },
         makeItem: function(elm){
             return {'_id': elm._id, 'valor': elm.total};

@@ -1062,15 +1062,23 @@ export default {
                     this.$refs.cnt_vgl.setValor('');
                     this.$refs.cnt_gde.setValor('');
                 }
-                this.$refs.tb_0_S.setDatos(this.rawData['s0']);
+                this.$refs.tb_0_S.setDatos(this.parseNull(this.rawData['s0']));
                 this.$refs.gp_0_S.setDatos(this.rawData['s0'].slice(0, 30).sort((a, b) => a.suma - b.suma));
-                this.$refs.tb_0_V.setDatos(this.rawData['v0']);
+                this.$refs.tb_0_V.setDatos(this.parseNull(this.rawData['v0']));
                 this.$refs.gp_0_V.setDatos(this.rawData['v0'].slice(0, 30).sort((a, b) => a.suma - b.suma));
-                this.$refs.tb_1_S.setDatos(this.rawData['s1']);
+                this.$refs.tb_1_S.setDatos(this.parseNull(this.rawData['s1']));
                 this.$refs.gp_1_S.setDatos(this.rawData['s1'].slice(0, 30).sort((a, b) => a.suma - b.suma));
-                this.$refs.tb_1_V.setDatos(this.rawData['v1']);
+                this.$refs.tb_1_V.setDatos(this.parseNull(this.rawData['v1']));
                 this.$refs.gp_1_V.setDatos(this.rawData['v1'].slice(0, 30).sort((a, b) => a.suma - b.suma));
             }
+        },
+        parseNull: function(arg) {
+            return arg.map(elm => {
+                if(elm._id == null){
+                    elm._id = 'SIN NOMBRE PRESTADOR';
+                }
+                return elm;
+            });
         },
         loadSchema: function(tload){
             // facets.unshift("x_id:group:none:1");

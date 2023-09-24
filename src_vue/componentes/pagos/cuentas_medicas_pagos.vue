@@ -2,7 +2,7 @@
     <div>
         <div class="d-flex justify-content-between mt-2 mb-3">
             <div>
-                <h5 class="txt-dark mb-0">CUENTAS MÉDICAS</h5>
+                <h5 class="txt-dark mb-0">CUENTAS MÉDICAS PAGOS</h5>
                 <div style="letter-spacing:3px; color:#555; font:12px Arial">Módulo de reservas técnicas</div>
             </div>
             <div class="d-flex">
@@ -38,16 +38,13 @@
                 <div class="col-sm-3">
                     <contador-light ref="c_fac" pretag="$ " texto="Valor facturado" valor="0" duracion="1" icono="fa fa-line-chart"></contador-light>
                 </div>
+                <div class="col-sm-4">
+                    <contador-light ref="c_definitiva" pretag="$ " texto="Valor glosa definitiva" valor="0" duracion="1" icono="fa fa-line-chart"></contador-light>
+                </div>
                 <div class="col-sm-3">
-                    <contador-light ref="c_glo" pretag="$ " texto="Valor glosado" valor="0" duracion="1" icono="fa fa-line-chart"></contador-light>
+                    <contador-light ref="c_ratificado" pretag=" " texto="% glosa definitiva" valor="0" duracion="1" icono="fa fa-percent"></contador-light>
                 </div>
-                <div class="col-sm-2">
-                    <contador-light ref="c_percent" texto="% glosa" valor="0" duracion="1" icono="fa fa-percent"></contador-light>
-                </div>
-                <div class="col-sm-2">
-                    <contador-light ref="c_ratificado" texto="% glosa rat" valor="0" duracion="1" icono="fa fa-percent"></contador-light>
-                </div>
-
+                
                 
                 
                
@@ -149,39 +146,6 @@
                     </div>
                 </div><!-- End panel -->
             </div>
-            <div :class="section == 'line-3'? '': 'd-none'">
-                <div class="panel panel-default card-view border">
-                    <div class="panel-heading">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <h6 class="panel-title txt-dark text-bold text-upper mb-0">VALORES EN RESERVA<i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
-                                <div class="txt-dark">FAMISANAR</div>
-                            </div>
-                            <div>
-                                <a href="javascript:void(0)" class="me-2" click="$refs.gp_1.exportar()"><i class="zmdi zmdi-download"></i></a>
-                                <a href="#" class="full-screen"><i class="zmdi zmdi-fullscreen"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel-wrapper collapse in">
-                        <div class="panel-body">
-                            <amchart-linea 
-                                ref="gp_res" 
-                                altura="450" 
-                                min="0"
-                                enmarcado
-                                grosor="2"
-                                grilla=".2"
-                                leyenda="bottom"
-                                rotar
-                                campo_valor="PBS,PM,PAC" 
-                                paleta="#179D82,#337CCF,#FC8452"
-                                tooltip cursor>
-                            </amchart-linea>
-                        </div>
-                    </div>
-                </div><!-- End panel -->
-            </div>
         </div>
         <!-- Desechos -->
         <div class="panel panel-default card-view border d-none">
@@ -228,7 +192,6 @@ export default {
                 {'tx': 'Facturado vs Glosado', 'code': 'vertical'}, 
                 {'tx': 'Tendencia (F vs G)', 'code': 'line-1'}, 
                 {'tx': 'Valores pagados', 'code': 'line-2'}, 
-                {'tx': 'Valores reserva', 'code': 'line-3'},
             ],
             titles: {'facturado': 'VALORES FACTURADOS POR PERIODOS', 'glosado': 'GLOSAS POR PERIODO', 'relacion': 'PORCENTAJE DE GLOSAS EN RELACIÓN CON VALORES FACTURADOS'},
             campo: 'facturado',     // facturado | glosado | relacion
@@ -295,35 +258,27 @@ export default {
         },
         postResult: function(res){
             this.sum_fac = 0;
-            this.sum_glo = 0;
             this.sum_rat = 0;
             this.datos = res[0].result;
             this.datos.forEach(elm => {
                 this.sum_fac += elm.v_facturado;
-                this.sum_glo += elm.v_glosado;
-                this.sum_rat += elm.v_ratificado;
-            });
+                this.sum_rat += elm.g_definitiva;
+            });         
             this.$refs.c_per.setValor(this.datos.length);
             this.$refs.c_fac.setValor(this.miles(this.numfixed(this.sum_fac, 2, false)));
-            this.$refs.c_glo.setValor(this.miles(this.numfixed(this.sum_glo, 2, false)));
-            let xnum = this.numfixed((this.sum_glo / this.sum_fac) * 100);
             let g_rat = this.numfixed((this.sum_rat / this.sum_fac) * 100);
-
-            this.$refs.c_percent.setValor(`${xnum} %`);
             this.$refs.c_ratificado.setValor(`${g_rat} %`);
+            this.$refs.c_definitiva.setValor(this.miles(this.numfixed(this.sum_rat,2,false)));
 
             this.setCampo(this.campo);
             this.$refs.gp_bi.setDatos(this.datos.map(elm => {
-                return {'categoria': this.prettyPer(elm._id), 'Glosado': elm.v_glosado, 'Facturado': elm.v_facturado}
+                return {'categoria': this.prettyPer(elm._id), 'Glosado': elm.g_definitiva, 'Facturado': elm.v_facturado}
             }).sort((a, b) => this.sortDesc(a.categoria, b.categoria)));
             this.$refs.gp_line.setDatos(this.datos.map(elm => {
-                return {'categoria': this.prettyPer(elm._id), 'Glosado': elm.v_glosado, 'Facturado': elm.v_facturado}
+                return {'categoria': this.prettyPer(elm._id), 'Glosado': elm.g_definitiva, 'Facturado': elm.v_facturado}
             }));
             this.$refs.gp_pag.setDatos(this.datos.map(elm => {
                 return {'categoria': this.prettyPer(elm._id), 'PBS': elm.pag_pbs, 'PM': elm.pag_pm, 'PAC': elm.pag_pac}
-            }));
-            this.$refs.gp_res.setDatos(this.datos.map(elm => {
-                return {'categoria': this.prettyPer(elm._id), 'PBS': elm.res_pbs, 'PM': elm.res_pm, 'PAC': elm.res_pac}
             }));
         },
         exeQuery: function(force){
