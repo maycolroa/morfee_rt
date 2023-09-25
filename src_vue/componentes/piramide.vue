@@ -39,15 +39,20 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(per, i) in periodos" :key="i">
-                                        <td class="py-1">{{ per.num }}</td>
-                                        <td class="py-1 text-center">{{ 36 - i }}</td>
-                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.num)) }}</td>
-                                        <td class="py-1"></td>
-                                        <td class="py-1"></td>
-                                        <td class="py-1"></td>
+                                    <tr v-for="(per, i) in getReverse()" :key="i + 50">
+                                        <td class="py-1">{{ per.ordered }}</td>
+                                        <td class="py-1 text-center">{{ per.iback + 1 }}</td>
+                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.ordered)) }}</td>
+                                        <td class="py-1">{{ clearNumber(hot_mm[per.reverse].pro_p, 4) }}</td>
+                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.ordered) * hot_mm[per.reverse].pro_p) }}</td>
+                                        <td class="py-1">
+                                            {{ clearNumber((getValorAcumRow(per.ordered) * hot_mm[per.reverse].pro_p) - getValorAcumRow(per.ordered)) }}
+                                        </td>
                                     </tr>
                                 </tbody>
+                                <tfoot>
+                                    <tr><th colspan="5">TOTAL:</th><th class="fs-5 text-bold">{{ clearNumber(getIBNR('prom')) }}</th></tr>
+                                </tfoot>
                             </table>
                         </div><!-- End table-responsive -->
                         <div class="table-responsive mt-4">
@@ -64,15 +69,20 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(per, i) in periodos" :key="i">
-                                        <td class="py-1">{{ per.num }}</td>
-                                        <td class="py-1 text-center">{{ 36 - i }}</td>
-                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.num)) }}</td>
-                                        <td class="py-1"></td>
-                                        <td class="py-1"></td>
-                                        <td class="py-1"></td>
+                                    <tr v-for="(per, i) in getReverse()" :key="i + 50">
+                                        <td class="py-1">{{ per.ordered }}</td>
+                                        <td class="py-1 text-center">{{ per.iback + 1 }}</td>
+                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.ordered)) }}</td>
+                                        <td class="py-1">{{ clearNumber(hot_mm[per.reverse].ladder_p, 4) }}</td>
+                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.ordered) * hot_mm[per.reverse].ladder_p) }}</td>
+                                        <td class="py-1">
+                                            {{ clearNumber((getValorAcumRow(per.ordered) * hot_mm[per.reverse].ladder_p) - getValorAcumRow(per.ordered)) }}
+                                        </td>
                                     </tr>
                                 </tbody>
+                                <tfoot>
+                                    <tr><th colspan="5">TOTAL:</th><th class="fs-5 text-bold">{{ clearNumber(getIBNR('ladder')) }}</th></tr>
+                                </tfoot>
                             </table>
                         </div><!-- End table-responsive -->
                         <div class="table-responsive mt-4">
@@ -89,15 +99,20 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(per, i) in periodos" :key="i">
-                                        <td class="py-1">{{ per.num }}</td>
-                                        <td class="py-1 text-center">{{ 36 - i }}</td>
-                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.num)) }}</td>
-                                        <td class="py-1"></td>
-                                        <td class="py-1"></td>
-                                        <td class="py-1"></td>
+                                    <tr v-for="(per, i) in getReverse()" :key="i + 50">
+                                        <td class="py-1">{{ per.ordered }}</td>
+                                        <td class="py-1 text-center">{{ per.iback + 1 }}</td>
+                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.ordered)) }}</td>
+                                        <td class="py-1">{{ clearNumber(hot_mm[per.reverse].min_p, 4) }}</td>
+                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.ordered) * hot_mm[per.reverse].min_p) }}</td>
+                                        <td class="py-1">
+                                            {{ clearNumber((getValorAcumRow(per.ordered) * hot_mm[per.reverse].min_p) - getValorAcumRow(per.ordered)) }}
+                                        </td>
                                     </tr>
                                 </tbody>
+                                <tfoot>
+                                    <tr><th colspan="5">TOTAL:</th><th class="fs-5 text-bold">{{ clearNumber(getIBNR('min')) }}</th></tr>
+                                </tfoot>
                             </table>
                         </div><!-- End table-responsive -->
                         <div class="table-responsive mt-4">
@@ -114,15 +129,20 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(per, i) in periodos" :key="i">
-                                        <td class="py-1">{{ per.num }}</td>
-                                        <td class="py-1 text-center">{{ 36 - i }}</td>
-                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.num)) }}</td>
-                                        <td class="py-1"></td>
-                                        <td class="py-1"></td>
-                                        <td class="py-1"></td>
+                                    <tr v-for="(per, i) in getReverse()" :key="i + 50">
+                                        <td class="py-1">{{ per.ordered }}</td>
+                                        <td class="py-1 text-center">{{ per.iback + 1 }}</td>
+                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.ordered)) }}</td>
+                                        <td class="py-1">{{ clearNumber(hot_mm[per.reverse].max_p, 4) }}</td>
+                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.ordered) * hot_mm[per.reverse].max_p) }}</td>
+                                        <td class="py-1">
+                                            {{ clearNumber((getValorAcumRow(per.ordered) * hot_mm[per.reverse].max_p) - getValorAcumRow(per.ordered)) }}
+                                        </td>
                                     </tr>
                                 </tbody>
+                                <tfoot>
+                                    <tr><th colspan="5">TOTAL:</th><th class="fs-5 text-bold">{{ clearNumber(getIBNR('max')) }}</th></tr>
+                                </tfoot>
                             </table>
                         </div><!-- End table-responsive -->
                         <div class="table-responsive mt-4">
@@ -139,15 +159,20 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(per, i) in periodos" :key="i">
-                                        <td class="py-1">{{ per.num }}</td>
-                                        <td class="py-1 text-center">{{ 36 - i }}</td>
-                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.num)) }}</td>
-                                        <td class="py-1"></td>
-                                        <td class="py-1"></td>
-                                        <td class="py-1"></td>
+                                    <tr v-for="(per, i) in getReverse()" :key="i + 50">
+                                        <td class="py-1">{{ per.ordered }}</td>
+                                        <td class="py-1 text-center">{{ per.iback + 1 }}</td>
+                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.ordered)) }}</td>
+                                        <td class="py-1">{{ clearNumber(hot_mm[per.reverse].smx_p, 4) }}</td>
+                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.ordered) * hot_mm[per.reverse].smx_p) }}</td>
+                                        <td class="py-1">
+                                            {{ clearNumber((getValorAcumRow(per.ordered) * hot_mm[per.reverse].smx_p) - getValorAcumRow(per.ordered)) }}
+                                        </td>
                                     </tr>
                                 </tbody>
+                                <tfoot>
+                                    <tr><th colspan="5">TOTAL:</th><th class="fs-5 text-bold">{{ clearNumber(getIBNR('smx')) }}</th></tr>
+                                </tfoot>
                             </table>
                         </div><!-- End table-responsive -->
                     </div><!-- End controles section -->
@@ -545,18 +570,18 @@ export default {
             col_asc: ["#F8696B","#F8766D","#F98370","#FA9072","#FA9D75","#FBAA77","#FCB77A","#FCC47C","#FDD17F","#FEDE81","#FFEB84","#F0E784","#E0E383","#D1DE82","#C1D981","#B1D580","#A2D07F","#92CC7E","#83C77D","#73C37C","#63BE7B"],
             col_desc: ["#63BE7B","#73C37C","#83C77D","#92CC7E","#A2D07F","#B1D580","#C1D981","#D1DE82","#E0E383","#F0E784","#FFEB84","#FEDE81","#FDD17F","#FCC47C","#FCB77A","#FBAA77","#FA9D75","#FA9072","#F98370","#F8766D","#F8696B"],
             pridata: [
-                {'tx': 'FD PROMEDIO', 'src': 'calc_01'},
-                {'tx': 'FDA PROM', 'src': 'calc_02'},
+                {'tx': 'FD PROMEDIO', 'src': 'pro'},
+                {'tx': 'FDA PROM', 'src': 'pro_p'},
                 {'tx': 'MIN', 'src': 'min'},
-                {'tx': 'FDA MIN', 'src': 'min_prod'},
+                {'tx': 'FDA MIN', 'src': 'min_p'},
                 {'tx': 'MAX', 'src': 'max'},
-                {'tx': 'FDA MAX', 'src': 'max_prod'},
+                {'tx': 'FDA MAX', 'src': 'max_p'},
                 {'tx': 'CHAIN LADDER', 'src': 'ladder'},
-                {'tx': 'FDA CH.LADDER', 'src': 'ladder_prod'},
-                {'tx': 'PROM SIN MIN SIN MAX', 'src': ''},
-                {'tx': 'FDA PROM - MIN - MAX', 'src': ''},
-                {'tx': 'PROM ÚLTIMO AÑO', 'src': ''},
-                {'tx': 'PROM ÚLTIMS DOS AÑOS', 'src': ''},
+                {'tx': 'FDA CH.LADDER', 'src': 'ladder_p'},
+                {'tx': 'PROM SIN MIN SIN MAX', 'src': 'smx'},
+                {'tx': 'FDA PROM - MIN - MAX', 'src': 'smx_p'},
+                {'tx': 'PROM ÚLTIMO AÑO', 'src': 'pro_12'},
+                {'tx': 'PROM ÚLTIMS DOS AÑOS', 'src': 'pro_24'},
             ],
             fun_dymclass: () => true,
             fuente: (this.cliente == '0')? 'retec_facturas_0': this.cliente + '_retec_facturas',
@@ -573,6 +598,8 @@ export default {
             periodos_select: [],
             per_first: 0,
             per_last: 0,
+            per_12: 0,
+            per_24: 0,
             targetPeriodoDB: null,
             targetFuente: '',
             targetTriangle: null,
@@ -651,48 +678,54 @@ export default {
             if(atr == '' || [undefined, null].includes(this.hot_mm[ym])){
                 return '';
             }
-            if(atr == 'min_prod'){
-                let ind = this.periodos.findIndex(elm => elm.num == ym);
-                if(ind >= 0){
-                    let rsl = this.periodos.slice(ind).map(elm => this.hot_mm[elm.num].min).reduce((ac, elm) => ac * elm, 1);
-                    return rsl;
-                }
-                return '';
-            }
-            if(atr == 'max_prod'){
-                let ind = this.periodos.findIndex(elm => elm.num == ym);
-                if(ind >= 0){
-                    let rsl = this.periodos.slice(ind).map(elm => this.hot_mm[elm.num].max).reduce((ac, elm) => ac * elm, 1);
-                    return rsl;
-                }
-                return '';
-            }
-            if(atr == 'ladder'){
-                let c1 = this.hot_mm[ym].num;
-                let c0 = this.hot_mm[ym].numback;
-                return (c1 == c0)? '': this.hot_mm[c1].total / this.hot_mm[c0].total;
-            }
-            if(atr == 'ladder_prod'){
-                let ind = this.periodos.findIndex(elm => elm.num == ym);
-                if(ind > 0){
-                    let map = this.periodos.slice(ind).map(elm => {
-                        return this.hot_mm[elm.num].total / this.hot_mm[this.hot_mm[elm.num].numback].total;
-                    });
-                    return map.reduce((ac, elm) => ac * elm, 1);
-                }
-                return '';
-            }
-            if(atr == 'calc_01'){
-                // SUMA(C5:C39)/(35-C4+1)
-                if(ym == '202305'){
-                    console.log('Is match column!');
-                    console.log(this.hot_mm[ym].suma);
-                    console.log(35 - this.hot_mm[ym].periodo);
-                    console.log(this.hot_mm[ym]);
-                }
-                return this.hot_mm[ym].suma / (35 - this.hot_mm[ym].periodo);
-            }
             return this.hot_mm[ym][atr];
+        },
+        getIBNR: function(tipo){
+            let sum = 0;
+            if(tipo == 'prom'){
+                this.getReverse().forEach(per => {
+                    let a = this.getValorAcumRow(per.ordered);
+                    let b = this.hot_mm[per.reverse].pro_p;
+                    let c = a * b;
+                    sum += c - a;
+                });
+            }
+            if(tipo == 'ladder'){
+                this.getReverse().forEach(per => {
+                    let a = this.getValorAcumRow(per.ordered);
+                    let b = this.hot_mm[per.reverse].ladder_p;
+                    let c = a * b;
+                    sum += c - a;
+                });
+            }
+            if(tipo == 'min'){
+                this.getReverse().forEach(per => {
+                    let a = this.getValorAcumRow(per.ordered);
+                    let b = this.hot_mm[per.reverse].min_p;
+                    let c = a * b;
+                    sum += c - a;
+                });
+            }
+            if(tipo == 'max'){
+                this.getReverse().forEach(per => {
+                    let a = this.getValorAcumRow(per.ordered);
+                    let b = this.hot_mm[per.reverse].max_p;
+                    let c = a * b;
+                    sum += c - a;
+                });
+            }
+            if(tipo == 'smx'){
+                this.getReverse().forEach(per => {
+                    let a = this.getValorAcumRow(per.ordered);
+                    let b = this.hot_mm[per.reverse].smx_p;
+                    let c = a * b;
+                    sum += c - a;
+                });
+            }
+            return sum;
+        },
+        makeRango: function(num){	// Version 3
+            return [...Array(num).keys()];
         },
         switchControl: function(){
             window.addEventListener('keydown', e => {
@@ -704,6 +737,25 @@ export default {
                     }
                 }
             });
+        },
+        getRangoPeriodo: function(ym){
+            let ind = this.periodos.findIndex(elm => elm.num == ym);
+            if(ind >= 0){
+                return this.periodos.slice(ind).map(elm => elm.num);
+            }
+            return [];
+        },
+        getReverse: function(){
+            let arr = [];
+            this.periodos.forEach((elm, i) => {
+                arr.push({
+                    'ordered': elm.num,
+                    'reverse': this.periodos[35 - i].num,
+                    'iback': 35 - i,
+                });
+            });
+            return arr;
+            // return this.periodos.map(elm => elm.num).reverse();
         },
         isEmpty: function(arg){
             return ['', undefined, null].includes(arg);
@@ -849,7 +901,7 @@ export default {
                     let ranum = this.periodos[ri].num;
                     let tm1 = `${pre.num}_${rad.num}`;
                     if(this.hot_mm[ranum] == undefined){
-                        this.hot_mm[ranum] = {'min': null, 'max': null, 'periodo': ri + 1, 'data': [], 'suma': 0, 'total': 0};
+                        this.hot_mm[ranum] = {'min': null, 'min_p': null, 'max': null, 'max_p': null, 'periodo': ri + 1, 'data': [], 'data12': [], 'data24': [], 'suma': 0, 'total': 0, 'pro': null, 'pro_p': null, 'pro_12': '', 'pro_24': '', 'ladder': '', 'ladder_p': '', 'smx': '', 'smx_p': ''};
                     }
                     if(ri == 0){
                         this.hot_fac[tm1] = '';
@@ -865,6 +917,12 @@ export default {
                             this.hot_mm[ranum].min = this.secureMin(this.hot_mm[ranum].min, fac);
                             this.hot_mm[ranum].max = this.secureMax(this.hot_mm[ranum].max, fac);
                             this.hot_mm[ranum].data.push(fac);
+                            if(pre.num >= this.per_24){
+                                this.hot_mm[ranum].data24.push(fac);
+                                if(pre.num >= this.per_12){
+                                    this.hot_mm[ranum].data12.push(fac);
+                                }
+                            }
                             this.hot_mm[ranum].suma += fac;
                         }else{
                             // console.log('El actual debería ser mayor que el anterior.');
@@ -874,6 +932,7 @@ export default {
                     this.hot_mm[ranum].total += this.hot_acum[tm1];
                 });
             });
+            // Para organizar los colores
             this.periodos.forEach((pre, pi) => {
                 this.periodos.slice(pi).forEach((rad, ri) => {
                     let refmm = this.periodos[ri].num;
@@ -894,14 +953,37 @@ export default {
                 });
             });
             back = 0;
+            // Relleno de variables adicionales
             this.periodos.forEach(per => {
                 if(this.hot_mm[per.num] == undefined){
                     console.log(`hot_mm ${per.num} no encontrado`);
                 }else{
                     this.hot_mm[per.num].num = per.num;
                     this.hot_mm[per.num].numback = (back == 0)? per.num: back;
+                    this.hot_mm[per.num].pro = this.hot_mm[per.num].suma / (37 - this.hot_mm[per.num].periodo);
+                    let cx1 = this.hot_mm[per.num].num;
+                    let cx0 = this.hot_mm[per.num].numback;
+                    this.hot_mm[per.num].ladder = (cx1 == cx0)? '': this.hot_mm[cx1].total / this.hot_mm[cx0].total;
+                    this.hot_mm[per.num].smx = (this.hot_mm[per.num].suma - this.hot_mm[per.num].min - this.hot_mm[per.num].max) / (37 - this.hot_mm[per.num].periodo);
                 }
                 back = per.num;
+            });
+            // Relleno de productos
+            this.periodos.forEach(per => {
+                if(this.hot_mm[per.num] == undefined){
+                    console.log(`hot_mm ${per.num} no encontrado`);
+                }else{
+                    let pers = this.getRangoPeriodo(per.num);
+                    if(pers.length > 0){
+                        this.hot_mm[per.num].pro_p = pers.map(num => this.hot_mm[num].pro).reduce((ac, elm) => ac * elm, 1);
+                        this.hot_mm[per.num].min_p = pers.map(num => this.hot_mm[num].min).reduce((ac, elm) => ac * elm, 1);
+                        this.hot_mm[per.num].max_p = pers.map(num => this.hot_mm[num].max).reduce((ac, elm) => ac * elm, 1);
+                        this.hot_mm[per.num].pro_12 = this.hot_mm[per.num].data12.reduce((ac, elm) => ac + elm, 0) / this.hot_mm[per.num].data12.length;
+                        this.hot_mm[per.num].pro_24 = this.hot_mm[per.num].data24.reduce((ac, elm) => ac + elm, 0) / this.hot_mm[per.num].data24.length;
+                        this.hot_mm[per.num].ladder_p = pers.map(num => this.hot_mm[num].ladder).reduce((ac, elm) => ac * elm, 1);
+                        this.hot_mm[per.num].smx_p = (this.hot_mm[per.num].suma - this.hot_mm[per.num].min - this.hot_mm[per.num].max) / (37 - this.hot_mm[per.num].periodo);
+                    }
+                }
             });
             console.log('Bakiri sam');
             console.log(this.hot_mm);
@@ -969,6 +1051,8 @@ export default {
             }
             this.per_first = this.periodos[0].num;
             this.per_last = this.periodos.at(-1).num;
+            this.per_12 = this.periodos.at(-12).num;
+            this.per_24 = this.periodos.at(-24).num;
         },
         setFilter: function(arg){
             this.f_filtro = arg;
