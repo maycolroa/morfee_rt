@@ -605,7 +605,7 @@ export default {
         },
         listen: function(){
             this.$eventBus.$on('select-estado', arg => {
-                console.log(arg);
+                console.log('Mirar aquí', arg);
                 this.$eventBus.$emit('open-modal', {'titulo': 'ESTADO', 'periodo': this.periodo, 'filtros': 'stt:' + arg._id, 'foco': 'stt'});
             });
             this.$eventBus.$on('select-plan', arg => {

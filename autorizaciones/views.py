@@ -63,7 +63,7 @@ def raw_facet_auto(request):
     mongo = Mongo('retec_autorizaciones')
     try:
         datos = mongo.aggregate([
-            {'$match': {'crx': periodo, 'stt': {"$nin": ['PR', 'AN']}} }, 
+            {'$match': {'crx': periodo} },
             {
                 '$facet': {
                     'rs_1': [
@@ -113,7 +113,7 @@ def raw_facet_auto(request):
                     ],
                     'facet_doc': [{"$sortByCount": "$tus"}],
                     'gp_esti': [{'$group': {'_id': '$est', 'total': {'$sum': 1}}}],
-                    'gp_stt': [{'$group': {'_id': '$stt', 'total': {'$sum': 1}}}]
+                    'gp_stt': [{'$group': {'_id': '$stt', 'total': {'$sum': 1}}}],
                 }
             }
         ])

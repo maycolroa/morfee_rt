@@ -9,7 +9,7 @@
                 <temporizador ref="timecop"></temporizador>
                 <get-view-periodo collections="retec_facturas"></get-view-periodo>
                 <div class="d-none">
-                    <select-periodo ref="xtime" :coleccion="fuente" :alias="krache_time"></select-periodo>
+                    <!-- <select-periodo ref="xtime" :coleccion="fuente" :alias="krache_time"></select-periodo> -->
                 </div>
                 <div :class="section == 'basic'? 'btn-group dk-disabled': 'btn-group'">
                     <button :class="display == 'chart'? 'btn btn-success': 'btn btn-default'" @click="display = 'chart'"><i class="fa fa-bar-chart"></i></button>
@@ -294,7 +294,7 @@
                 <div class="panel-heading">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <h6 class="panel-title txt-dark text-bold text-upper mb-0">RANKING DE FACTURAS PBS - RÉGIMEN SUBSIDIADO<i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
+                            <h6 class="panel-title txt-dark text-bold text-upper mb-0">RANKING DE FACTURAS PBS - MOVILIDAD SUBSIDIADO<i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
                             <span class="txt-dark">{{ human_period }}</span>
                         </div>
                         <div>
@@ -327,7 +327,7 @@
                 <div class="panel-heading">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <h6 class="panel-title txt-dark text-bold text-upper mb-0">RANKING DE FACTURAS PRESUPUESTOS MÁXIMOS - RÉGIMEN SUBSIDIADO <i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
+                            <h6 class="panel-title txt-dark text-bold text-upper mb-0">RANKING DE FACTURAS PRESUPUESTOS MÁXIMOS - MOVILIDAD SUBSIDIADO <i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
                             <span class="txt-dark">{{ human_period }}</span>
                         </div>
                         <div>
@@ -349,7 +349,7 @@
                 <div class="panel-heading">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <h6 class="panel-title txt-dark text-bold text-upper mb-0">RANKING DE FACTURAS PBS - MOVILIDAD CONTRIBUTIVO<i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
+                            <h6 class="panel-title txt-dark text-bold text-upper mb-0">RANKING DE FACTURAS PBS - CONTRIBUTIVO<i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
                             <span class="txt-dark">{{ human_period }}</span>
                         </div>
                         <div>
@@ -369,7 +369,7 @@
                 <div class="panel-heading">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <h6 class="panel-title txt-dark text-bold text-upper mb-0">RANKING DE FACTURAS PRESUPUESTOS MÁXIMOS - MOVILIDAD CONTRIBUTIVO<i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
+                            <h6 class="panel-title txt-dark text-bold text-upper mb-0">RANKING DE FACTURAS PRESUPUESTOS MÁXIMOS - CONTRIBUTIVO<i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
                             <span class="txt-dark">{{ human_period }}</span>
                         </div>
                         <div>
@@ -386,6 +386,52 @@
                 </div>
             </div>
         </div>
+        <div :class="section == 'data-3'? '': 'd-none'">
+            <div class="panel panel-default card-view border">
+                <div class="panel-heading">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="panel-title txt-dark text-bold text-upper mb-0">RANKING DE FACTURAS PBS - PAC<i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
+                            <span class="txt-dark">{{ human_period }}</span>
+                        </div>
+                        <div>
+                            <a href="javascript:void(0)" class="me-2" @click="$refs.gp_pac_0.exportar()" v-if="display == 'chart'"><i class="zmdi zmdi-download"></i></a>
+                            <a href="#" class="full-screen"><i class="zmdi zmdi-fullscreen"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-wrapper collapse in">
+                    <div :class="status == state.LOADING? 'panel-body opaco': 'panel-body'">
+                        <table-data :class="altCss(display == 'table')" ref="tb_pac_0" cols="_id:PRESTADOR,suma:TOTAL:$ " compact counter lastright sumar="suma"></table-data>
+                        <am-ver :class="altCss(display == 'chart')" ref="gp_pac_0" pretag="$ " grilla="0" multicolor campo_categoria="_id" campo_valor="suma" etiquetas tooltip sin_valores altura_minima="100" unidad="30" empty_data="No hay datos para graficar." custom="{valueX} ({total} registros)"></am-ver>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default card-view border">
+                <div class="panel-heading">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="panel-title txt-dark text-bold text-upper mb-0">RANKING DE FACTURAS PRESUPUESTOS MÁXIMOS - PAC<i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
+                            <span class="txt-dark">{{ human_period }}</span>
+                        </div>
+                        <div>
+                            <a href="javascript:void(0)" class="me-2" @click="$refs.gp_pac_1.exportar()" v-if="display == 'chart'"><i class="zmdi zmdi-download"></i></a>
+                            <a href="#" class="full-screen"><i class="zmdi zmdi-fullscreen"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-wrapper collapse in">
+                    <div :class="status == state.LOADING? 'panel-body opaco': 'panel-body'">
+                        <table-data :class="altCss(display == 'table')" ref="tb_pac_1" cols="_id:PRESTADOR,suma:TOTAL:$ " compact counter lastright sumar="suma"></table-data>
+                        <am-ver :class="altCss(display == 'chart')" ref="gp_pac_1" pretag="$ " grilla="0" multicolor campo_categoria="_id" campo_valor="suma" etiquetas tooltip sin_valores altura_minima="100" unidad="30" empty_data="No hay datos para graficar." custom="{valueX} ({total} registros)"></am-ver>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
         <div :class="section == 'controls'? '': 'd-none'">
             <div class="panel panel-default card-view border pt-3 pb-2">
                 <div class="panel-wrapper collapse in pa-0x">
@@ -903,8 +949,9 @@ export default {
             display: 'chart',       // table | chart
             opt: [
                 {'tx': 'General', 'code': 'basic'}, 
-                {'tx': 'Ranking facturas RS', 'code': 'data-1'}, 
-                {'tx': 'Ranking facturas RC', 'code': 'data-2'}, 
+                {'tx': 'Facturas RS', 'code': 'data-1'}, 
+                {'tx': 'Facturas RC', 'code': 'data-2'}, 
+                {'tx': 'Facturas PAC', 'code': 'data-3'}, 
                 {'tx': 'Reservas', 'code': 'controls'}, 
                 {'tx': 'Estructura', 'code': 'schema'}, 
                 {'tx': 'Importar', 'code': 'import'}
@@ -956,6 +1003,14 @@ export default {
             }
             str += Math.round(Math.random() * 999 + 1000);
             return str;
+        },
+        parseNull: function(arg, tx='(Vacío)') {
+            return arg.map(elm => {
+                if(elm._id == null){
+                    elm._id = tx;
+                }
+                return elm;
+            });
         },
         isEmpty: function(arg){
             if([undefined, null, ''].includes(arg)) return true;
@@ -1021,11 +1076,13 @@ export default {
             // rs_3: Ámbito
             // rs_4: Est Glosa
             if(this.rawData != null){
-                this.$refs.gp_0.setDatos(this.rawData['rs_0']);
-                this.$refs.gp_1.setDatos(this.rawData['rs_1']);
-                this.$refs.gp_2.setDatos(this.rawData['rs_2']);
-                this.$refs.gp_3.setDatos(this.rawData['rs_3']);
-                this.$refs.gp_4.setDatos(this.rawData['rs_4']);
+                console.log('Observar aquí ...');
+                console.log(this.rawData['rs_0']);
+                this.$refs.gp_0.setDatos(this.parseNull(this.rawData['rs_0']));
+                this.$refs.gp_1.setDatos(this.parseNull(this.rawData['rs_1']));
+                this.$refs.gp_2.setDatos(this.parseNull(this.rawData['rs_2']));
+                this.$refs.gp_3.setDatos(this.parseNull(this.rawData['rs_3']));
+                this.$refs.gp_4.setDatos(this.parseNull(this.rawData['rs_4']));
                 this.$refs.gp_ext_01.setDatos(this.rawData['gp_ext_01']);
                 this.$refs.gp_ext_02.setDatos(this.rawData['gp_ext_02']);
                 this.$refs.gp_ext_03.setDatos(this.rawData['gp_ext_03']);
@@ -1070,15 +1127,12 @@ export default {
                 this.$refs.gp_1_S.setDatos(this.rawData['s1'].slice(0, 30).sort((a, b) => a.suma - b.suma));
                 this.$refs.tb_1_V.setDatos(this.parseNull(this.rawData['v1']));
                 this.$refs.gp_1_V.setDatos(this.rawData['v1'].slice(0, 30).sort((a, b) => a.suma - b.suma));
+
+                this.$refs.tb_pac_0.setDatos(this.parseNull(this.rawData['p0']));
+                this.$refs.gp_pac_0.setDatos(this.rawData['p0'].slice(0, 30).sort((a, b) => a.suma - b.suma));
+                this.$refs.tb_pac_1.setDatos(this.parseNull(this.rawData['p1']));
+                this.$refs.gp_pac_1.setDatos(this.rawData['p1'].slice(0, 30).sort((a, b) => a.suma - b.suma));
             }
-        },
-        parseNull: function(arg) {
-            return arg.map(elm => {
-                if(elm._id == null){
-                    elm._id = 'SIN NOMBRE PRESTADOR';
-                }
-                return elm;
-            });
         },
         loadSchema: function(tload){
             // facets.unshift("x_id:group:none:1");

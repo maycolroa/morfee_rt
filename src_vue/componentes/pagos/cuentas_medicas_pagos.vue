@@ -2,7 +2,7 @@
     <div>
         <div class="d-flex justify-content-between mt-2 mb-3">
             <div>
-                <h5 class="txt-dark mb-0">CUENTAS MÉDICAS PAGOS</h5>
+                <h5 class="txt-dark mb-0">CUENTAS MÉDICAS - PAGOS</h5>
                 <div style="letter-spacing:3px; color:#555; font:12px Arial">Módulo de reservas técnicas</div>
             </div>
             <div class="d-flex">

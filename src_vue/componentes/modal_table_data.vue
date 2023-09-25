@@ -110,7 +110,7 @@ export default {
                 pam.append('periodo', this.periodo);
                 pam.append('filtros', this.filtros);
                 this.status = this.state.LOADING;
-                axios.post(root_path + 'reservas/slice/data', pam).then(res => {
+                axios.post(root_path + 'consulta/slice/data', pam).then(res => {
                     this.datos = (typeof res.data == 'string')? JSON.parse(String(res.data).replace(/:\s+NaN/g, ": null")): res.data;
                     this.is_more = this.datos.length > this.lc_cantidad? true: false;
                     this.status = this.state.LOADED;

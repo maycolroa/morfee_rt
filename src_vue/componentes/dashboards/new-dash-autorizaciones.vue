@@ -459,104 +459,6 @@
                     <local-counter ref="c_3" pretag="$ " class="border" texto="DIFERENCIA" valor="0" duracion="1" miles warning></local-counter>
                 </div>
             </div>
-
-
-
-
-
-        </div>
-        <div :class="section == 'general'? '': 'd-none'">
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="panel panel-default card-view border">
-                        <div class="panel-heading border-bottomx">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h6 class="panel-title txt-dark text-bold text-upper mb-0">PROPORCIÓN DE TARIFAS <i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
-                                    <span class="txt-dark">{{ human_period }}</span>
-                                </div>
-                                <div>
-                                    <a href="#" class="full-screen"><i class="zmdi zmdi-fullscreen"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="panel-wrapper collapse in">
-                            <div :class="status == state.LOADING? 'panel-body opaco': 'panel-body'">
-                                <table-data :class="altCss(display == 'table')" ref="table_suma" cols="_id:TARIFA,valor:TOTAL" compact lastright sumar="valor"></table-data>
-                                <am-pie :class="altCss(display == 'chart')" ref="sumas" campo_categoria="_id" altura="480" tooltip etiquetas></am-pie>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="panel panel-default card-view border">
-                        <div class="panel-heading border-bottomx">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h6 class="panel-title txt-dark text-bold text-upper mb-0">Estado <i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
-                                    <span class="txt-dark">{{ human_period }}</span>
-                                </div>
-                                <div>
-                                    <a href="#" class="full-screen"><i class="zmdi zmdi-fullscreen"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="panel-wrapper collapse in">
-                            <div :class="status == state.LOADING? 'panel-body opaco': 'panel-body'">
-                                <table-data :class="altCss(display == 'table')" ref="table_3" cols="_id:ESTADO,suma:VALOR,total:REGISTROS" compact lastright sumar="total"></table-data>
-                                <am-bar :class="altCss(display == 'chart')" ref="gp_3" campo_categoria="_id" campo_valor="total" etiquetas sin_valores grilla="0" altura="180" multicolor tooltip cursor lanzarevento="select-estado"></am-bar>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- END MICRO TABLE -->
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="panel panel-default card-view border">
-                                <div class="panel-heading border-bottomx">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h6 class="panel-title txt-dark text-bold text-upper mb-0">Plan salud <i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
-                                            <span class="txt-dark">{{ human_period }}</span>
-                                        </div>
-                                        <div>
-                                            <a href="#" class="full-screen"><i class="zmdi zmdi-fullscreen"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="panel-wrapper collapse in">
-                                    <div :class="status == state.LOADING? 'panel-body opaco': 'panel-body'">
-                                        <table-data :class="altCss(display == 'table')" ref="table_1" cols="_id:PLAN,suma:VALOR,total:REGISTROS" compact lastright sumar="total"></table-data>
-                                        <am-bar :class="altCss(display == 'chart')" ref="gp_1" campo_categoria="_id" campo_valor="total" etiquetas sin_valores grilla="0" altura="180" multicolor tooltip cursor lanzarevento="select-plan"></am-bar>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- END MICRO TABLE -->
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="panel panel-default card-view border">
-                                <div class="panel-heading border-bottomx">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h6 class="panel-title txt-dark text-bold text-upper mb-0">Tipo de prestador <i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
-                                            <span class="txt-dark">{{ human_period }}</span>
-                                        </div>
-                                        <div>
-                                            <a href="#" class="full-screen"><i class="zmdi zmdi-fullscreen"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="panel-wrapper collapse in">
-                                    <div :class="status == state.LOADING? 'panel-body opaco': 'panel-body'">
-                                        <table-data :class="altCss(display == 'table')" ref="table_2" cols="_id:TIPO DOC,suma:VALOR,total:REGISTROS" compact lastright sumar="total"></table-data>
-                                        <am-bar :class="altCss(display == 'chart')" ref="gp_2" campo_categoria="_id" campo_valor="total" etiquetas sin_valores grilla="0" altura="180" multicolor tooltip cursor lanzarevento="select-tipo"></am-bar>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- END MICRO TABLE -->
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
         <div :class="section == 'schema'? '': 'd-none'">
             <div class="row">
@@ -840,11 +742,11 @@ export default {
                         if(elm._id == '0'){
                             this.$refs.a_1.setValor(this.clearNumber(elm.sum_fac));
                             this.$refs.a_2.setValor(this.clearNumber(elm.sum_vbs));
-                            this.$refs.a_3.setValor(this.clearNumber(elm.sum_fac - elm.sum_vbs));
+                            this.$refs.a_3.setValor(this.clearNumber(Math.abs(elm.sum_fac - elm.sum_vbs)));
                         }else if(elm._id == '1'){
                             this.$refs.b_1.setValor(this.clearNumber(elm.sum_fac));
                             this.$refs.b_2.setValor(this.clearNumber(elm.sum_vpm));
-                            this.$refs.b_3.setValor(this.clearNumber(elm.sum_fac - elm.sum_vpm));
+                            this.$refs.b_3.setValor(this.clearNumber(Math.abs(elm.sum_fac - elm.sum_vpm)));
                         }
                     })
                     this.status = this.state.LOADED;
@@ -866,7 +768,7 @@ export default {
                 this.rawData['facet_vbs'].length > 0? this.$refs.cnt_vbs.setValor(Math.round(this.rawData['facet_vbs'][0].n)): this.$refs.cnt_vbs.setValor('');
                 this.rawData['facet_vac'].length > 0? this.$refs.cnt_vac.setValor(Math.round(this.rawData['facet_vac'][0].n)): this.$refs.cnt_vac.setValor('');
                 this.rawData['facet_vpm'].length > 0? this.$refs.cnt_vpm.setValor(Math.round(this.rawData['facet_vpm'][0].n)): this.$refs.cnt_vpm.setValor('');
-                this.$refs.gp_doc.setDatos(this.rawData['facet_doc']);
+                this.$refs.gp_doc.setDatos(this.parseNull(this.rawData['facet_doc']));
                 if(Array.isArray(this.rawData['pmx'])){
                     let aux = {};
                     this.rawData['pmx'].forEach(elm => {
@@ -878,10 +780,10 @@ export default {
                     });
                     this.$refs.gp_pmx.setDatos(Object.values(aux));
                 }
-                this.$refs.gp_esti.setDatos(this.rawData['gp_esti']);
-                this.$refs.gp_stt.setDatos(this.rawData['gp_stt']);
-                this.$refs.one.setDatos(this.rawData['facet_pla']);
-                this.$refs.two.setDatos(this.rawData['facet_amb']);
+                this.$refs.gp_esti.setDatos(this.parseNull(this.rawData['gp_esti']));
+                this.$refs.gp_stt.setDatos(this.parseNull(this.rawData['gp_stt']));
+                this.$refs.one.setDatos(this.parseNull(this.rawData['facet_pla']));
+                this.$refs.two.setDatos(this.parseNull(this.rawData['facet_amb']));
                 this.writeItems();
             }
             // facet_vbs  facet_vac   facet_vpm
@@ -890,18 +792,18 @@ export default {
             if(this.rawData != null){
                 if(this.taritem == 'suma'){
                     this.$refs.tb_0_S.setDatos(this.parseNull(this.rawData['rs_1']), '$ ');
-                    this.$refs.gp_0_S.setDatos(this.rawData['rs_1'].slice(0, 30).sort((a, b) => a.valor - b.valor), '$ ');
+                    this.$refs.gp_0_S.setDatos(this.parseNull(this.rawData['rs_1']).slice(0, 30).sort((a, b) => a.valor - b.valor), '$ ');
                     this.$refs.tb_0_V.setDatos(this.parseNull(this.rawData['rs_2']), '$ ');
-                    this.$refs.gp_0_V.setDatos(this.rawData['rs_2'].slice(0, 30).sort((a, b) => a.valor - b.valor), '$ ');
+                    this.$refs.gp_0_V.setDatos(this.parseNull(this.rawData['rs_2']).slice(0, 30).sort((a, b) => a.valor - b.valor), '$ ');
                     this.$refs.tb_1_S.setDatos(this.parseNull(this.rawData['rs_3']), '$ ');
-                    this.$refs.gp_1_S.setDatos(this.rawData['rs_3'].slice(0, 30).sort((a, b) => a.valor - b.valor), '$ ');
+                    this.$refs.gp_1_S.setDatos(this.parseNull(this.rawData['rs_3']).slice(0, 30).sort((a, b) => a.valor - b.valor), '$ ');
                     this.$refs.tb_1_V.setDatos(this.parseNull(this.rawData['rs_4']), '$ ');
-                    this.$refs.gp_1_V.setDatos(this.rawData['rs_4'].slice(0, 30).sort((a, b) => a.valor - b.valor), '$ ');
+                    this.$refs.gp_1_V.setDatos(this.parseNull(this.rawData['rs_4']).slice(0, 30).sort((a, b) => a.valor - b.valor), '$ ');
                     //isaias 
                     this.$refs.tb_5_V.setDatos(this.parseNull(this.rawData['rs_5']), '$ ');
-                    this.$refs.gp_5_V.setDatos(this.rawData['rs_5'].slice(0, 30).sort((a, b) => a.valor - b.valor), '$ ');
+                    this.$refs.gp_5_V.setDatos(this.parseNull(this.rawData['rs_5']).slice(0, 30).sort((a, b) => a.valor - b.valor), '$ ');
                     this.$refs.tb_6_V.setDatos(this.parseNull(this.rawData['rs_6']), '$ ');
-                    this.$refs.gp_6_V.setDatos(this.rawData['rs_6'].slice(0, 30).sort((a, b) => a.valor - b.valor), '$ ');
+                    this.$refs.gp_6_V.setDatos(this.parseNull(this.rawData['rs_6']).slice(0, 30).sort((a, b) => a.valor - b.valor), '$ ');
 
                 }else{
                     this.$refs.tb_0_S.setDatos(this.rawData['rs_1'].map(elm => this.makeItem(elm)), '');
@@ -922,10 +824,10 @@ export default {
                 }
             }
         },
-        parseNull: function(arg) {
+        parseNull: function(arg, tx="(Vacío)") {
             return arg.map(elm => {
                 if(elm._id == null){
-                    elm._id = 'SIN NOMBRE PRESTADOR';
+                    elm._id = tx;
                 }
                 return elm;
             });
@@ -1034,13 +936,13 @@ export default {
                         });
                         this.$refs.a_1.setValor(this.clearNumber(a_fac));
                         this.$refs.a_2.setValor(this.clearNumber(a_vbs));
-                        this.$refs.a_3.setValor(this.clearNumber(a_fac - a_vbs));
+                        this.$refs.a_3.setValor(this.clearNumber(Math.abs(a_fac - a_vbs)));
                         this.$refs.b_1.setValor(this.clearNumber(b_fac));
                         this.$refs.b_2.setValor(this.clearNumber(b_vpm));
-                        this.$refs.b_3.setValor(this.clearNumber(b_fac - b_vpm));
+                        this.$refs.b_3.setValor(this.clearNumber(Math.abs(b_fac - b_vpm)));
                         this.$refs.c_1.setValor(this.clearNumber(c_fac));
                         this.$refs.c_2.setValor(this.clearNumber(c_vac));
-                        this.$refs.c_3.setValor(this.clearNumber(c_fac - c_vac));
+                        this.$refs.c_3.setValor(this.clearNumber(Math.abs(c_fac - c_vac)));
                     },
                     force
                 );

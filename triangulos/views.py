@@ -339,7 +339,7 @@ def mng_fuente_pyr(request):
     ]
     if fuente == 'aut':
         etapas = [
-            {"$match": {"crx": int(crx)}},
+            {"$match": {"crx": int(crx), 'stt': {"$nin": ['PR', 'AN']}}},
             {"$addFields": {"f_pre": {"$substrBytes": [{"$toString": "$fau"}, 0, 6]}, "f_rad": {"$substrBytes": [{"$toString": "$fau"}, 0, 6]}}},
             {"$project": {"f_pre": 1, "f_rad": 1, "vbs": 1, "vac": 1, "vpm": 1}},
             {'$facet': {'datos': [

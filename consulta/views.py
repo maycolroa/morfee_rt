@@ -65,3 +65,39 @@ def consultas_view(request):
         #datos ={'estado' : 'no', 'datos':'', 'view':'no ha enviado coleccion'}
     return HttpResponse(x, content_type="application/json")
     #return JsonResponse(datos)
+
+def slice_data(request):
+    coleccion = request.POST.get('coleccion')
+    campos = request.POST.get('campos')
+    pagina = int(request.POST.get('pagina'))
+    cantidad = int(request.POST.get('cantidad'))
+    salto = cantidad * (pagina - 1)
+    project = {cmp:1 for cmp in campos.split(',')}
+    project['_id'] = 0
+    rawper = int(request.POST.get('periodo'))
+    filtros = request.POST.get('filtros')       # field:value | field:value
+    periodo = {"$exists": False} if rawper == 0 else rawper
+    match = {'crx': periodo}
+    print('canton')
+    print(coleccion)
+    print(salto)
+    print(cantidad)
+    print(filtros)
+    for fil in filtros.split('|'):
+        # field : value : bool
+        par = fil.split(':')
+        if par[1] == 'exists':
+            bool = True if par[2] == 'true' else False
+            match[par[0]] = {"$exists": bool}
+        else:
+            match[par[0]] = par[1]
+    mongo = Mongo(coleccion)
+    print(match)
+    datos = mongo.aggregate([
+        {'$match': match},
+        {'$project': project },
+        {'$skip': salto},
+        {'$limit': cantidad + 1}
+    ])
+    print(datos)
+    return HttpResponse(datos, content_type="application/json")

@@ -683,43 +683,53 @@ export default {
         getIBNR: function(tipo){
             let sum = 0;
             if(tipo == 'prom'){
-                this.getReverse().forEach(per => {
-                    let a = this.getValorAcumRow(per.ordered);
-                    let b = this.hot_mm[per.reverse].pro_p;
-                    let c = a * b;
-                    sum += c - a;
+                this.getReverse().forEach((per, i) => {
+                    if(i < 35){
+                        let a = this.getValorAcumRow(per.ordered);
+                        let b = this.hot_mm[per.reverse].pro_p;
+                        let c = a * b;
+                        sum += c - a;
+                    }
                 });
             }
             if(tipo == 'ladder'){
-                this.getReverse().forEach(per => {
-                    let a = this.getValorAcumRow(per.ordered);
-                    let b = this.hot_mm[per.reverse].ladder_p;
-                    let c = a * b;
-                    sum += c - a;
+                this.getReverse().forEach((per, i) => {
+                    if(i < 35){
+                        let a = this.getValorAcumRow(per.ordered);
+                        let b = this.hot_mm[per.reverse].ladder_p;
+                        let c = a * b;
+                        sum += c - a;
+                    }
                 });
             }
             if(tipo == 'min'){
-                this.getReverse().forEach(per => {
-                    let a = this.getValorAcumRow(per.ordered);
-                    let b = this.hot_mm[per.reverse].min_p;
-                    let c = a * b;
-                    sum += c - a;
+                this.getReverse().forEach((per, i) => {
+                    if(i < 35){
+                        let a = this.getValorAcumRow(per.ordered);
+                        let b = this.hot_mm[per.reverse].min_p;
+                        let c = a * b;
+                        sum += c - a;
+                    }
                 });
             }
             if(tipo == 'max'){
-                this.getReverse().forEach(per => {
-                    let a = this.getValorAcumRow(per.ordered);
-                    let b = this.hot_mm[per.reverse].max_p;
-                    let c = a * b;
-                    sum += c - a;
+                this.getReverse().forEach((per, i) => {
+                    if(i < 35){
+                        let a = this.getValorAcumRow(per.ordered);
+                        let b = this.hot_mm[per.reverse].max_p;
+                        let c = a * b;
+                        sum += c - a;
+                    }
                 });
             }
             if(tipo == 'smx'){
-                this.getReverse().forEach(per => {
-                    let a = this.getValorAcumRow(per.ordered);
-                    let b = this.hot_mm[per.reverse].smx_p;
-                    let c = a * b;
-                    sum += c - a;
+                this.getReverse().forEach((per, i) => {
+                    if(i < 35){
+                        let a = this.getValorAcumRow(per.ordered);
+                        let b = this.hot_mm[per.reverse].smx_p;
+                        let c = a * b;
+                        sum += c - a;
+                    }
                 });
             }
             return sum;

@@ -85,7 +85,9 @@ def raw_facet(request):
                         {'$addFields': {'xnum': {"$convert": {"input": "$tar", "to": "string", "onError": "error", "onNull": "null"}} }},
                         {'$group': {'_id': '$xnum', 'total': {'$sum': 1}}} 
                     ],
-                    'rs_9': [ {'$group': {'_id': '$ids', 'total': {'$sum': 1}}} ], #SERVICCIOS
+                    'rs_9': [ 
+                        {'$group': {'_id': '$ser', 'total': {'$sum': 1}}}  #SERVICCIOS
+                    ],
                     'rs_10': [
                         {'$group': {'_id': '$ser', 'total': {'$sum': 1}, 'promedio': {'$avg': '$act'}}}, 
                         {'$sort': {'promedio': -1}}, 

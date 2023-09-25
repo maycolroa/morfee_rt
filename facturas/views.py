@@ -95,9 +95,9 @@ def raw_facet_fac(request):
     user_id = request.user.id
     print(tema)
     print(periodo)
+    print(f'raw_facet_fac{rawper}')
     consulta = createConsulta('raw_facet_fac' + str(rawper), tema, clave, user_id)
     mongo = Mongo(tema)
-    print('hola mundo mongo')
     try:
         datos = mongo.aggregate([
             {'$match': {'crx': periodo} }, 
@@ -116,7 +116,7 @@ def raw_facet_fac(request):
                     'cores': [
                         {"$project": {
                             "_id": 0, # sum_vpm
-                            "n_vac": {"$convert": {"input": "$vac", "to": "double", "onError": 0, "onNull": 0}},
+                            "n_vac": {"$convert": {"input": "$vrpac", "to": "double", "onError": 0, "onNull": 0}},
                             "n_vbs": {"$convert": {"input": "$vrpbs", "to": "double", "onError": 0, "onNull": 0}},
                             "n_vpm": {"$convert": {"input": "$vrpm", "to": "double", "onError": 0, "onNull": 0}},
                             "n_vdo": {"$convert": {"input": "$vdo", "to": "double", "onError": 0, "onNull": 0}},
@@ -127,6 +127,7 @@ def raw_facet_fac(request):
                             "_id": None, 
                             "total": {"$sum": 1},
                             "sum_vac": {"$sum": "$n_vac"},
+                            # "sum_vac": {"$sum": 1},
                             "sum_vbs": {"$sum": "$n_vbs"}, 
                             "sum_vpm": {"$sum": "$n_vpm"}, 
                             "sum_vdo": {"$sum": "$n_vdo"}, 
@@ -135,28 +136,41 @@ def raw_facet_fac(request):
                         }},
                     ],
                     's0': [
-                        {"$match": {'pmx': {"$in": ['0', 0]}, 'pla': 'S'}},
-                        {"$group": {'_id': '$nmp', 'suma': {"$sum": "$vdo"}, 'total': {'$sum': 1}}},
-                        {"$sort": {"suma": -1}}
-                    ],
-                    'v0': [
-                        {"$match": {'pmx': {"$in": ['0', 0]}, 'pla': 'V'}},
+                        {"$match": {'pmx': {"$in": ['0', 0]}, 'pla': {"$in": ['S', 'M']}}},
                         {"$group": {'_id': '$nmp', 'suma': {"$sum": "$vdo"}, 'total': {'$sum': 1}}},
                         {"$sort": {"suma": -1}}
                     ],
                     's1': [
-                        {"$match": {'pmx': {"$in": ['1', 1]}, 'pla': 'S'}},
+                        {"$match": {'pmx': {"$in": ['1', 1]}, 'pla': {"$in": ['S', 'M']}}},
+                        {"$group": {'_id': '$nmp', 'suma': {"$sum": "$vdo"}, 'total': {'$sum': 1}}},
+                        {"$sort": {"suma": -1}}
+                    ],
+                    'v0': [
+                        {"$match": {'pmx': {"$in": ['0', 0]}, 'pla': {"$in": ['V', 'C']}}},
                         {"$group": {'_id': '$nmp', 'suma': {"$sum": "$vdo"}, 'total': {'$sum': 1}}},
                         {"$sort": {"suma": -1}}
                     ],
                     'v1': [
-                        {"$match": {'pmx': {"$in": ['1', 1]}, 'pla': 'V'}},
+                        {"$match": {'pmx': {"$in": ['1', 1]}, 'pla': {"$in": ['V', 'C']}}},
                         {"$group": {'_id': '$nmp', 'suma': {"$sum": "$vdo"}, 'total': {'$sum': 1}}},
                         {"$sort": {"suma": -1}}
                     ],
+                    'p0': [
+                        {"$match": {'pmx': {"$in": ['0', 0]}, 'pla': 'P'}},
+                        {"$group": {'_id': '$nmp', 'suma': {"$sum": "$vdo"}, 'total': {'$sum': 1}}},
+                        {"$sort": {"suma": -1}}
+                    ],
+                    'p1': [
+                        {"$match": {'pmx': {"$in": ['1', 1]}, 'pla': 'P'}},
+                        {"$group": {'_id': '$nmp', 'suma': {"$sum": "$vdo"}, 'total': {'$sum': 1}}},
+                        {"$sort": {"suma": -1}}
+                    ],
+
                 }
             }
         ])
+        print('Imprimiendo datos')
+        print(datos)
         consulta.contenido = str(datos)
         consulta.estado = 'close'
         consulta.save()
