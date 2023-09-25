@@ -1,12 +1,13 @@
-{% extends "morfee_frontier/base.html" %}
+{% extends "base/base.html" %}
 {% load static %}
 {% block contenido %}
 <div class="row heading-bg">
-    <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-        <h5 class="txt-dark">ADMINISTRADOR</h5>
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+        <h5 class="txt-dark mb-0"><strong>USUARIOS</strong><br></h5>
+        <div style="letter-spacing:3px; color:#555; font:12px Arial">Módulo de reservas técnicas</div>
     </div>
     <!-- Breadcrumb -->
-    <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+    <div class="col-lg-8 col-sm-8 col-md-8 col-xs-12">
         <ol class="breadcrumb">
             <li><a href="{% url 'inicio' %}">Inicio</a></li>
             <li><a href="{% url 'ad_user_list' %}">Usuarios</a></li>
@@ -38,21 +39,21 @@
                                 <div class="form-group mb-4">
                                     {{ form.username.label }}
                                     {{ form.username }}
-                                    {% include 'morfee_frontier/display_errors.html' with errors=form.username.errors %}
+                                    {% include 'users/display_errors.html' with errors=form.username.errors %}
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group mb-4">
                                     {{ form.password1.label }}
                                     {{ form.password1 }}
-                                    {% include 'morfee_frontier/display_errors.html' with errors=form.password1.errors %}
+                                    {% include 'users/display_errors.html' with errors=form.password1.errors %}
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group mb-4">
                                     {{ form.password2.label }}
                                     {{ form.password2 }}
-                                    {% include 'morfee_frontier/display_errors.html' with errors=form.password2.errors %}
+                                    {% include 'users/display_errors.html' with errors=form.password2.errors %}
                                 </div>
                             </div>
                         </div>
@@ -61,35 +62,37 @@
                                 <div class="form-group mb-4">
                                     {{ form.first_name.label }}
                                     {{ form.first_name }}
-                                    {% include 'morfee_frontier/display_errors.html' with errors=form.first_name.errors %}
+                                    {% include 'users/display_errors.html' with errors=form.first_name.errors %}
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group mb-4">
                                     {{ form.last_name.label }}
                                     {{ form.last_name }}
-                                    {% include 'morfee_frontier/display_errors.html' with errors=form.last_name.errors %}
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group mb-4">
-                                    {{ form.email.label }}
-                                    {{ form.email }}
-                                    {% include 'morfee_frontier/display_errors.html' with errors=form.email.errors %}
+                                    {% include 'users/display_errors.html' with errors=form.last_name.errors %}
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group mb-4">
-                                    {{ form.cliente.label }}
-                                    {{ form.cliente }}
-                                    {% include 'morfee_frontier/display_errors.html' with errors=form.cliente.errors %}
+                                    {{ form.email.label }}
+                                    {{ form.email }}
+                                    {% include 'users/display_errors.html' with errors=form.email.errors %}
                                 </div>
                             </div>
+                            <!-- 
+                                <div class="col-md-6">
+                                    <div class="form-group mb-4">
+                                        {{ form.cliente.label }}
+                                        {{ form.cliente }}
+                                        {% include 'users/display_errors.html' with errors=form.cliente.errors %}
+                                    </div>
+                                </div>
+                            -->
                             <div class="col-md-6">
                                 <div class="form-group mb-4">
                                     {{ form.rol.label }}
                                     {{ form.rol }}
-                                    {% include 'morfee_frontier/display_errors.html' with errors=form.rol.errors %}
+                                    {% include 'users/display_errors.html' with errors=form.rol.errors %}
                                 </div>
                             </div>
                         </div>
@@ -100,7 +103,7 @@
                 </div>
                 <hr class="light-grey-hr">
                 <div class="text-right">
-                    <a href="{% url 'ad_user_preselect' %}" class="btn btn-default"><i class="fa fa-chevron-left"></i> &nbsp;Atrás</a>
+                    <a href="{% url 'ad_user_list' %}" class="btn btn-default"><i class="fa fa-chevron-left"></i> &nbsp;Atrás</a>
                     <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> &nbsp;Guardar</button>
                 </div>
             </form>

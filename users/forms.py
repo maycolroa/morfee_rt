@@ -27,7 +27,7 @@ class UserMorfeeForm(forms.ModelForm):
     first_name = forms.CharField(max_length=100, required=True, label='Nombres:', widget=forms.TextInput(attrs={'class': 'form-control', 'autocomplete': 'off'}), error_messages={'required': 'Los nombres del usuario son requeridos!'})
     last_name = forms.CharField(max_length=100, required=True, label='Apellidos:', widget=forms.TextInput(attrs={'class': 'form-control', 'autocomplete': 'off'}), error_messages={'required': 'Los apellidos del usuario son requeridos!'})
     email = forms.EmailField(label="Correo electrónico", max_length=254, widget=forms.EmailInput(attrs={'autocomplete': 'off', 'class': 'form-control'}))
-    cliente = forms.ModelChoiceField(label="Cliente y/o empresa:", queryset=AuthCliente.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}), empty_label="Seleccione el cliente")
+   # cliente = forms.ModelChoiceField(label="Cliente y/o empresa:", queryset=AuthCliente.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}), empty_label="Seleccione el cliente")
     rol = forms.ModelChoiceField(label="Rol del usuario:", queryset=AuthRol.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}), empty_label="Seleccione el rol")
 
     class Meta:
@@ -58,7 +58,7 @@ class UserClientForm(forms.ModelForm):
 
     class Meta:
         model = UserMorfee
-        fields = ['username', 'password1', 'password2', 'first_name', 'last_name', 'email', 'cliente', 'rol']
+        fields = ['username', 'password1', 'password2', 'first_name', 'last_name', 'email', 'rol']
 
     def clean_password2(self):
         pw1 = self.cleaned_data.get('password1')
@@ -91,12 +91,12 @@ class UserEditForm(forms.ModelForm):
     first_name = forms.CharField(max_length=100, required=True, label='Nombres:', widget=forms.TextInput(attrs={'class': 'form-control', 'autocomplete': 'off'}), error_messages={'required': 'Los nombres del usuario son requeridos!'})
     last_name = forms.CharField(max_length=100, required=True, label='Apellidos:', widget=forms.TextInput(attrs={'class': 'form-control', 'autocomplete': 'off'}), error_messages={'required': 'Los apellidos del usuario son requeridos!'})
     email = forms.EmailField(label="Correo electrónico", max_length=254, widget=forms.EmailInput(attrs={'autocomplete': 'off', 'class': 'form-control'}))
-    cliente = forms.ModelChoiceField(label="Cliente y/o empresa:", queryset=AuthCliente.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}), empty_label="Seleccione el cliente")
+    #cliente = forms.ModelChoiceField(label="Cliente y/o empresa:", queryset=AuthCliente.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}), empty_label="Seleccione el cliente")
     rol = forms.ModelChoiceField(label="Rol del usuario:", queryset=AuthRol.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}), empty_label="Seleccione el rol")
 
     class Meta:
         model = UserMorfee
-        fields = ['username', 'first_name', 'last_name', 'email', 'cliente', 'rol']
+        fields = ['username', 'first_name', 'last_name', 'email', 'rol']
 
 class UserEditStaffForm(forms.ModelForm):
     username = forms.CharField(max_length=100, required=True, label="Usuario:", widget=forms.TextInput(attrs={'class': 'form-control', 'autocomplete': 'username'}), error_messages={'unique': 'El nombre de usuario ingresado no está disponible!'})
@@ -106,7 +106,7 @@ class UserEditStaffForm(forms.ModelForm):
 
     class Meta:
         model = UserMorfee
-        fields = ['username', 'first_name', 'last_name', 'email', 'cliente']
+        fields = ['username', 'first_name', 'last_name', 'email']
 
 class UserClientEditForm(forms.ModelForm):
 

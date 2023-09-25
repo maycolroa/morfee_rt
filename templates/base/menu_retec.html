@@ -52,11 +52,18 @@
             <div class="pull-left"><i class="zmdi zmdi-inbox me-3"></i><span class="right-nav-text">Proyecciones</span></div><div class="clearfix"></div>
         </a>
     </li>
+    <li>
+        <a href="{% url 'ad_user_list' %}" class="{% if request.resolver_match.url_name == 'ad_user_list' %}active{% endif %}">
+            <div class="pull-left"><i class="zmdi zmdi-account me-3"></i><span class="right-nav-text">Usuarios</span></div><div class="clearfix"></div>
+        </a>
+    </li>
+
     <li class="d-none">
         <a href="{% url 'us_prueba' %}" class="{% if request.resolver_match.url_name == 'us_prueba' %}active{% endif %}">
             <div class="pull-left"><i class="zmdi zmdi-inbox me-3"></i><span class="right-nav-text">Barra</span></div><div class="clearfix"></div>
         </a>
     </li>
+    
     <li class="d-none">
         {% comment %} <a href="{% url 'pro_chat' %}" class="{% if request.resolver_match.url_name == 'pro_chat' %}active{% endif %}">
             <div class="pull-left"><i class="zmdi zmdi-inbox me-3"></i><span class="right-nav-text">Chat</span></div><div class="clearfix"></div>

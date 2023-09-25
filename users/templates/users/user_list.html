@@ -1,12 +1,13 @@
-{% extends "morfee_frontier/base.html" %}
+{% extends "base/base.html" %}
 {% load static %}
 {% block contenido %}
 <div class="row heading-bg">
-    <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-        <h5 class="txt-dark">ADMINISTRADOR</h5>
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+        <h5 class="txt-dark mb-0"><strong>USUARIOS</strong><br></h5>
+        <div style="letter-spacing:3px; color:#555; font:12px Arial">Módulo de reservas técnicas</div>
     </div>
     <!-- Breadcrumb -->
-    <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+    <div class="col-lg-8 col-sm-8 col-md-8 col-xs-12">
         <ol class="breadcrumb">
             <li><a href="{% url 'inicio' %}">Inicio</a></li>
             <li class="active"><span>Usuarios</span></li>
@@ -18,7 +19,10 @@
     <div class="panel-heading">
         <div class="d-flex">
             <h6 class="panel-title fs-5">USUARIOS REGISTRADOS</h6>
-            <a href="{% url 'ad_user_preselect' %}" class="btn btn-success btn-sm ms-auto"><i class="icon-plus"></i> &nbsp;Nuevo</a>
+           <!-- 
+             <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css" integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ" crossorigin="anonymous"> <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css" integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ" crossorigin="anonymous"> <a href="{% url 'ad_user_preselect' %}" class="btn btn-success btn-sm ms-auto"><i class="icon-plus"></i> &nbsp;Nuevo</a>
+           -->
+            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css" integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ" crossorigin="anonymous"> <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css" integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ" crossorigin="anonymous"> <a href="{% url 'ad_user_add' %} " class="btn btn-success btn-sm ms-auto"><i class="icon-plus"></i> &nbsp;Nuevo</a>
         </div>
     </div>
     <div class="panel-wrapper collapse in">
@@ -27,7 +31,7 @@
                 <div class="table-responsive">
                     <table class="table table-borderedx table-hover mb-0">
                         <thead>
-                            <tr><th class="colmin">No.</th><th>Usuario</th><th>Nombres</th><th>Apellidos</th><th>Cliente</th><th class="text-center colmin">Rol</th><th class="text-center">Estado</th><th class="text-center colmin">Acción</th></tr>
+                            <tr><th class="colmin">No.</th><th>Usuario</th><th>Nombres</th><th>Apellidos</th><th class="text-center colmin">Rol</th><th class="text-center">Estado</th><th class="text-center colmin">Acción</th></tr>
                         </thead>
                         {% if datos|length > 0 %}
                         <tbody>
@@ -46,7 +50,6 @@
                                 </td>
                                 <td>{{ dat.first_name }}</td>
                                 <td>{{ dat.last_name }}</td>
-                                <td>{{ dat.cliente.cliente }}</td>
                                 <td class="text-center">
                                     {% if dat.is_superuser or dat.is_staff %}
                                         <i class="txt-danger">No aplica</i>
@@ -63,7 +66,7 @@
                                 </td>
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center mx-4">
-                                        <a href="{% url 'ad_user_edit' dat.id %}" data-toggle="tooltip" data-original-title="Editar"><i class="fa fa-pencil"></i></a>
+                                        <a href="{% url 'ad_user_edit' dat.id %}" data-toggle="tooltip" data-original-title="Editar"><i class="fa fa-pen"></i></a>
                                         {% if dat.is_superuser %}
                                         <a href="javascript:void(0)" class="ms-4" style="visibility: hidden"><i class="fa fa-close txt-warning"></i></a>
                                         {% else %}
