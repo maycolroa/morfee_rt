@@ -429,6 +429,7 @@
             </div>
         </div>
         <div :class="section == 'controls'? '': 'd-none'">
+            <!-- LÍNEA DE RESUMEN -->
             <div class="panel panel-default card-view border pt-3 pb-2">
                 <div class="panel-wrapper collapse in pa-0x">
                     <div class="table-wrap">
@@ -439,11 +440,13 @@
                                         <th>VLR FACTURADO</th>
                                         <th>PAGADO PBS</th>
                                         <th>PAGADO PM</th>
+                                        <th>PAGADO PAC</th>
                                         <th>GLOSADO</th>
                                         <th>GLOSA DEF</th>
                                         <th>REGISTROS</th>
                                         <th>RESERVA PBS</th>
                                         <th>RESERVA PM</th>
+                                        <th>RESERVA PAC</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -451,14 +454,16 @@
                                         <td>{{ numformat(clearNumber(rawCtr[0].s_vdo)) }}</td>
                                         <td>{{ numformat(clearNumber(rawCtr[0].s_vpbs)) }}</td>
                                         <td>{{ numformat(clearNumber(rawCtr[0].s_vppm)) }}</td>
+                                        <td></td>
                                         <td>{{ numformat(clearNumber(rawCtr[0].s_vgl)) }}</td>
                                         <td>{{ numformat(clearNumber(rawCtr[0].s_gld)) }}</td>
                                         <td>{{ numformat(clearNumber(rawCtr[0].total)) }}</td>
                                         <td>{{ numformat(clearNumber(rawCtr[0].s_vrpbs)) }}</td>
                                         <td>{{ numformat(clearNumber(rawCtr[0].s_vrpm)) }}</td>
+                                        <td></td>
                                     </tr>
                                     <tr class="dk-row" v-if="rawCtr != null && rawCtr.length > 0">
-                                        <td colspan="5"></td>
+                                        <td colspan="6"></td>
                                         <td>CONTROLES</td>
                                         <td>
                                             {{ numformat(clearNumber(rawCtr[0].s_vrpbs_0 + rawCtr[0].s_vrpbs_2 + rawCtr[0].s_vrpbs_1)) }}
@@ -470,15 +475,21 @@
                                             <!-- <hr>
                                             {{ numformat(clearNumber(calcResta([rawCtr[0].s_vdo_0_pm, rawCtr[0].s_vppm_0]) + calcResta([rawCtr[0].s_vdo_2_pm, rawCtr[0].s_vgl_2_pm, rawCtr[0].s_vppm_2]) + calcResta([rawCtr[0].s_vdo_1_pm, rawCtr[0].s_gld_1_pm]))) }} -->
                                         </td>
+                                        <td>
+                                            AQUÍ
+                                        </td>
                                     </tr>
                                     <tr class="dk-row" v-if="rawCtr != null && rawCtr.length > 0">
-                                        <td colspan="5"></td>
+                                        <td colspan="6"></td>
                                         <td>DIFERENCIA</td>
                                         <td :class="df_pbs == 0? 'dk-success': 'text-danger'">
                                             {{ df_pbs }}
                                         </td>
                                         <td :class="df_pm == 0? 'dk-success': 'text-danger'">
                                             {{ df_pm }}
+                                        </td>
+                                        <td>
+                                            aquí
                                         </td>
                                     </tr>
                                     <tr v-if="status == state.LOADING">
@@ -511,29 +522,14 @@
                                 </thead>
                                 <tbody>
                                     <tr class="dk-row" v-if="rawCtr != null && rawCtr.length > 0">
-                                        <td>
-                                            <div class="text-bold">FACTURADO</div>
-                                            {{ printed('s_vdo_0_pbs') }}
-                                        </td>
-                                        <td>
-                                            <div class="text-bold">PAGADO PBS</div>
-                                            {{ printed('s_vpbs_0') }}
-                                        </td>
-                                        <td>
-                                            <div class="text-bold">RESERVA PBS</div>
-                                            {{ printed('s_vrpbs_0') }}
-                                        </td>
-                                        <td :class="df_pbs_glo == 0? 'dk-success td-20': 'txt-danger td-20'">
-                                            <div class="text-bold">DIFERENCIA</div>
-                                            {{ df_pbs_glo }}
-                                        </td>
+                                        <td><div class="text-bold">FACTURADO</div>{{ printed('s_vdo_0_pbs') }}</td>
+                                        <td><div class="text-bold">PAGADO PBS</div>{{ printed('s_vpbs_0') }}</td>
+                                        <td><div class="text-bold">RESERVA PBS</div>{{ printed('s_vrpbs_0') }}</td>
+                                        <td :class="df_pbs_glo == 0? 'dk-success td-20': 'txt-danger td-20'"><div class="text-bold">DIFERENCIA</div>{{ df_pbs_glo }}</td>
                                     </tr>
                                     <tr v-if="status == state.LOADING">
                                         <td colspan="4">
-                                            <div class="d-flex align-items-center">
-                                                <i class="fa fa-spinner fa-spin fs-4 me-2"></i>
-                                                <span>Cargando...</span>
-                                            </div>
+                                            <div class="d-flex align-items-center"><i class="fa fa-spinner fa-spin fs-4 me-2"></i><span>Cargando...</span></div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -558,29 +554,14 @@
                                 </thead>
                                 <tbody>
                                     <tr class="dk-row" v-if="rawCtr != null && rawCtr.length > 0">
-                                        <td>
-                                            <div class="text-bold">FACTURADO</div>
-                                            {{ printed('s_vdo_0_pm') }}
-                                        </td>
-                                        <td>
-                                            <div class="text-bold">PAGADO PM</div>
-                                            {{ printed('s_vppm_0') }}
-                                        </td>
-                                        <td>
-                                            <div class="text-bold">RESERVA PM</div>
-                                            {{ printed('s_vrpm_0') }}
-                                        </td>
-                                        <td :class="df_pm_glo == 0? 'dk-success td-20': 'txt-danger td-20'">
-                                            <div class="text-bold">DIFERENCIA</div>
-                                            {{ df_pm_glo }}
-                                        </td>
+                                        <td><div class="text-bold">FACTURADO</div>{{ printed('s_vdo_0_pm') }}</td>
+                                        <td><div class="text-bold">PAGADO PM</div>{{ printed('s_vppm_0') }}</td>
+                                        <td><div class="text-bold">RESERVA PM</div>{{ printed('s_vrpm_0') }}</td>
+                                        <td :class="df_pm_glo == 0? 'dk-success td-20': 'txt-danger td-20'"><div class="text-bold">DIFERENCIA</div>{{ df_pm_glo }}</td>
                                     </tr>
                                     <tr v-if="status == state.LOADING">
                                         <td colspan="4">
-                                            <div class="d-flex align-items-center">
-                                                <i class="fa fa-spinner fa-spin fs-4 me-2"></i>
-                                                <span>Cargando...</span>
-                                            </div>
+                                            <div class="d-flex align-items-center"><i class="fa fa-spinner fa-spin fs-4 me-2"></i><span>Cargando...</span></div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -605,29 +586,14 @@
                                 </thead>
                                 <tbody>
                                     <tr class="dk-row" v-if="rawCtr != null && rawCtr.length > 0">
-                                        <td>
-                                            <div class="text-bold">FACTURADO</div>
-                                            {{ printed('s_vdo_0_pac') }}
-                                        </td>
-                                        <td>
-                                            <div class="text-bold">PAGADO PAC</div>
-                                            {{ printed('s_vpac_0') }}
-                                        </td>
-                                        <td>
-                                            <div class="text-bold">RESERVA PAC</div>
-                                            {{ printed('s_vrpac_0') }}
-                                        </td>
-                                        <td :class="df_pm_glo == 0? 'dk-success td-20': 'txt-danger td-20'">
-                                            <div class="text-bold">DIFERENCIA</div>
-                                            {{ df_pm_glo }} ------
-                                        </td>
+                                        <td><div class="text-bold">FACTURADO</div>{{ printed('s_vdo_0_pac') }}</td>
+                                        <td><div class="text-bold">PAGADO PAC</div>{{ printed('s_vpac_0') }}</td>
+                                        <td><div class="text-bold">RESERVA PAC</div>{{ printed('s_vrpac_0') }}</td>
+                                        <td :class="df_pac_glo == 0? 'dk-success td-20': 'txt-danger td-20'"><div class="text-bold">DIFERENCIA</div>{{ df_pac_glo }}</td>
                                     </tr>
                                     <tr v-if="status == state.LOADING">
                                         <td colspan="4">
-                                            <div class="d-flex align-items-center">
-                                                <i class="fa fa-spinner fa-spin fs-4 me-2"></i>
-                                                <span>Cargando...</span>
-                                            </div>
+                                            <div class="d-flex align-items-center"><i class="fa fa-spinner fa-spin fs-4 me-2"></i><span>Cargando...</span></div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -653,29 +619,15 @@
                                 </thead>
                                 <tbody>
                                     <tr class="dk-row tr-20" v-if="rawCtr != null && rawCtr.length > 0">
-                                        <td>
-                                            <div class="text-bold">FACTURADO</div>{{ printed('s_vdo_2_pbs') }}
-                                        </td>
-                                        <td>
-                                            <div class="text-bold">PAGADO PBS</div>{{ printed('s_vpbs_2') }}
-                                        </td>
-                                        <td>
-                                            <div class="text-bold">GLOSADO</div>{{ printed('s_vgl_2_pbs') }}
-                                        </td>
-                                        <td>
-                                            <div class="text-bold">RESERVA PBS</div>{{ printed('s_vrpbs_2') }}
-                                        </td>
-                                        <td :class="df_pbs_pen == 0? 'dk-success': 'txt-danger'">
-                                            <div class="text-bold">DIFERENCIA</div>
-                                            {{ df_pbs_pen }}
-                                        </td>
+                                        <td><div class="text-bold">FACTURADO</div>{{ printed('s_vdo_2_pbs') }}</td>
+                                        <td><div class="text-bold">PAGADO PBS</div>{{ printed('s_vpbs_2') }}</td>
+                                        <td><div class="text-bold">GLOSADO</div>{{ printed('s_vgl_2_pbs') }}</td>
+                                        <td><div class="text-bold">RESERVA PBS</div>{{ printed('s_vrpbs_2') }}</td>
+                                        <td :class="df_pbs_pen == 0? 'dk-success': 'txt-danger'"><div class="text-bold">DIFERENCIA</div>{{ df_pbs_pen }}</td>
                                     </tr>
                                     <tr v-if="status == state.LOADING">
                                         <td colspan="5">
-                                            <div class="d-flex align-items-center">
-                                                <i class="fa fa-spinner fa-spin fs-4 me-2"></i>
-                                                <span>Cargando...</span>
-                                            </div>
+                                            <div class="d-flex align-items-center"><i class="fa fa-spinner fa-spin fs-4 me-2"></i><span>Cargando...</span></div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -700,29 +652,15 @@
                                 </thead>
                                 <tbody>
                                     <tr class="dk-row tr-20" v-if="rawCtr != null && rawCtr.length > 0">
-                                        <td>
-                                            <div class="text-bold">FACTURADO</div>{{ printed('s_vdo_2_pm') }}
-                                        </td>
-                                        <td>
-                                            <div class="text-bold">PAGADO PM</div>{{ printed('s_vppm_2') }}
-                                        </td>
-                                        <td>
-                                            <div class="text-bold">GLOSADO</div>{{ printed('s_vgl_2_pm') }}
-                                        </td>
-                                        <td>
-                                            <div class="text-bold">RESERVA PM</div>{{ printed('s_vrpm_2') }}
-                                        </td>
-                                        <td :class="df_pm_pen == 0? 'dk-success': 'txt-danger'">
-                                            <div class="text-bold">DIFERENCIA</div>
-                                            {{ df_pm_pen }}
-                                        </td>
+                                        <td><div class="text-bold">FACTURADO</div>{{ printed('s_vdo_2_pm') }}</td>
+                                        <td><div class="text-bold">PAGADO PM</div>{{ printed('s_vppm_2') }}</td>
+                                        <td><div class="text-bold">GLOSADO</div>{{ printed('s_vgl_2_pm') }}</td>
+                                        <td><div class="text-bold">RESERVA PM</div>{{ printed('s_vrpm_2') }}</td>
+                                        <td :class="df_pm_pen == 0? 'dk-success': 'txt-danger'"><div class="text-bold">DIFERENCIA</div>{{ df_pm_pen }}</td>
                                     </tr>
                                     <tr v-if="status == state.LOADING">
                                         <td colspan="5">
-                                            <div class="d-flex align-items-center">
-                                                <i class="fa fa-spinner fa-spin fs-4 me-2"></i>
-                                                <span>Cargando...</span>
-                                            </div>
+                                            <div class="d-flex align-items-center"><i class="fa fa-spinner fa-spin fs-4 me-2"></i><span>Cargando...</span></div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -747,29 +685,15 @@
                                 </thead>
                                 <tbody>
                                     <tr class="dk-row tr-20" v-if="rawCtr != null && rawCtr.length > 0">
-                                        <td>
-                                            <div class="text-bold">FACTURADO</div>{{ printed('s_vdo_2_pac') }}
-                                        </td>
-                                        <td>
-                                            <div class="text-bold">PAGADO PAC</div>{{ printed('s_vpac_2') }}
-                                        </td>
-                                        <td>
-                                            <div class="text-bold">GLOSADO</div>{{ printed('s_vgl_2_pac') }}
-                                        </td>
-                                        <td>
-                                            <div class="text-bold">RESERVA PAC</div>{{ printed('s_vrpac_2') }}
-                                        </td>
-                                        <td :class="df_pm_pen == 0? 'dk-success': 'txt-danger'">
-                                            <div class="text-bold">DIFERENCIA</div>
-                                            {{ df_pm_pen }} ---------
-                                        </td>
+                                        <td><div class="text-bold">FACTURADO</div>{{ printed('s_vdo_2_pac') }}</td>
+                                        <td><div class="text-bold">PAGADO PAC</div>{{ printed('s_vpac_2') }}</td>
+                                        <td><div class="text-bold">GLOSADO</div>{{ printed('s_vgl_2_pac') }}</td>
+                                        <td><div class="text-bold">RESERVA PAC</div>{{ printed('s_vrpac_2') }}</td>
+                                        <td :class="df_pm_pen == 0? 'dk-success': 'txt-danger'"><div class="text-bold">DIFERENCIA</div>{{ df_pac_pen }}</td>
                                     </tr>
                                     <tr v-if="status == state.LOADING">
                                         <td colspan="5">
-                                            <div class="d-flex align-items-center">
-                                                <i class="fa fa-spinner fa-spin fs-4 me-2"></i>
-                                                <span>Cargando...</span>
-                                            </div>
+                                            <div class="d-flex align-items-center"><i class="fa fa-spinner fa-spin fs-4 me-2"></i><span>Cargando...</span></div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -795,29 +719,15 @@
                                 </thead>
                                 <tbody>
                                     <tr class="dk-row tr-20" v-if="rawCtr != null && rawCtr.length > 0">
-                                        <td>
-                                            <div class="text-bold">FACTURADO</div>{{ printed('s_vdo_1_pbs') }}
-                                        </td>
-                                        <td>
-                                            <div class="text-bold">PAGADO PBS</div>{{ printed('s_vpbs_1') }}
-                                        </td>
-                                        <td>
-                                            <div class="text-bold">GLOSA DEFINITIVA</div>{{ printed('s_gld_1_pbs') }}
-                                        </td>
-                                        <td>
-                                            <div class="text-bold">RESERVA PBS</div>{{ printed('s_vrpbs_1') }}
-                                        </td>
-                                        <td :class="df_pbs_con == 0? 'dk-success': 'txt-danger'">
-                                            <div class="text-bold">DIFERENCIA</div>
-                                            {{ df_pbs_con }}
-                                        </td>
+                                        <td><div class="text-bold">FACTURADO</div>{{ printed('s_vdo_1_pbs') }}</td>
+                                        <td><div class="text-bold">PAGADO PBS</div>{{ printed('s_vpbs_1') }}</td>
+                                        <td><div class="text-bold">GLOSA DEFINITIVA</div>{{ printed('s_gld_1_pbs') }}</td>
+                                        <td><div class="text-bold">RESERVA PBS</div>{{ printed('s_vrpbs_1') }}</td>
+                                        <td :class="df_pbs_con == 0? 'dk-success': 'txt-danger'"><div class="text-bold">DIFERENCIA</div>{{ df_pbs_con }}</td>
                                     </tr>
                                     <tr v-if="status == state.LOADING">
                                         <td colspan="5">
-                                            <div class="d-flex align-items-center">
-                                                <i class="fa fa-spinner fa-spin fs-4 me-2"></i>
-                                                <span>Cargando...</span>
-                                            </div>
+                                            <div class="d-flex align-items-center"><i class="fa fa-spinner fa-spin fs-4 me-2"></i><span>Cargando...</span></div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -842,29 +752,15 @@
                                 </thead>
                                 <tbody>
                                     <tr class="dk-row tr-20" v-if="rawCtr != null && rawCtr.length > 0">
-                                        <td>
-                                            <div class="text-bold">FACTURADO</div>{{ printed('s_vdo_1_pm') }}
-                                        </td>
-                                        <td>
-                                            <div class="text-bold">PAGADO PM</div>{{ printed('s_vppm_1') }}
-                                        </td>
-                                        <td>
-                                            <div class="text-bold">GLOSA DEFINITIVA</div>{{ printed('s_gld_1_pm') }}
-                                        </td>
-                                        <td>
-                                            <div class="text-bold">RESERVA PM</div>{{ printed('s_vrpm_1') }}
-                                        </td>
-                                        <td :class="df_pm_con == 0? 'dk-success': 'txt-danger'">
-                                            <div class="text-bold">DIFERENCIA</div>
-                                            {{ df_pm_con }}
-                                        </td>
+                                        <td><div class="text-bold">FACTURADO</div>{{ printed('s_vdo_1_pm') }}</td>
+                                        <td><div class="text-bold">PAGADO PM</div>{{ printed('s_vppm_1') }}</td>
+                                        <td><div class="text-bold">GLOSA DEFINITIVA</div>{{ printed('s_gld_1_pm') }}</td>
+                                        <td><div class="text-bold">RESERVA PM</div>{{ printed('s_vrpm_1') }}</td>
+                                        <td :class="df_pm_con == 0? 'dk-success': 'txt-danger'"><div class="text-bold">DIFERENCIA</div>{{ df_pm_con }}</td>
                                     </tr>
                                     <tr v-if="status == state.LOADING">
                                         <td colspan="5">
-                                            <div class="d-flex align-items-center">
-                                                <i class="fa fa-spinner fa-spin fs-4 me-2"></i>
-                                                <span>Cargando...</span>
-                                            </div>
+                                            <div class="d-flex align-items-center"><i class="fa fa-spinner fa-spin fs-4 me-2"></i><span>Cargando...</span></div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -889,29 +785,15 @@
                                 </thead>
                                 <tbody>
                                     <tr class="dk-row tr-20" v-if="rawCtr != null && rawCtr.length > 0">
-                                        <td>
-                                            <div class="text-bold">FACTURADO</div>{{ printed('vdo_1_pac') }}
-                                        </td>
-                                        <td>
-                                            <div class="text-bold">PAGADO PM</div>{{ printed('s_vpac_1') }}
-                                        </td>
-                                        <td>
-                                            <div class="text-bold">GLOSA DEFINITIVA</div>{{ printed('s_gld_1_pac') }}
-                                        </td>
-                                        <td>
-                                            <div class="text-bold">RESERVA PM</div>{{ printed('s_vrpac_1') }}
-                                        </td>
-                                        <td :class="df_pm_con == 0? 'dk-success': 'txt-danger'">
-                                            <div class="text-bold">DIFERENCIA</div>
-                                            {{ df_pm_con }} =======
-                                        </td>
+                                        <td><div class="text-bold">FACTURADO</div>{{ printed('vdo_1_pac') }}</td>
+                                        <td><div class="text-bold">PAGADO PM</div>{{ printed('s_vpac_1') }}</td>
+                                        <td><div class="text-bold">GLOSA DEFINITIVA</div>{{ printed('s_gld_1_pac') }}</td>
+                                        <td><div class="text-bold">RESERVA PM</div>{{ printed('s_vrpac_1') }}</td>
+                                        <td :class="df_pm_con == 0? 'dk-success': 'txt-danger'"><div class="text-bold">DIFERENCIA</div>{{ df_pac_con }}</td>
                                     </tr>
                                     <tr v-if="status == state.LOADING">
                                         <td colspan="5">
-                                            <div class="d-flex align-items-center">
-                                                <i class="fa fa-spinner fa-spin fs-4 me-2"></i>
-                                                <span>Cargando...</span>
-                                            </div>
+                                            <div class="d-flex align-items-center"><i class="fa fa-spinner fa-spin fs-4 me-2"></i><span>Cargando...</span></div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -1119,13 +1001,17 @@ export default {
             porcion: [{'a': 0, 'b': 5, 'per': '0'}, {'a': 5, 'b': 10, 'per': '33%'}, {'a': 10, 'b': 15, 'per': '67%'}, {'per': '100%'}],
             df_pbs: 0,
             df_pm: 0,
+            df_pac: 0,
 
             df_pbs_glo: 0,
             df_pm_glo: 0,
+            df_pac_glo: 0,
             df_pbs_pen: 0,
             df_pm_pen: 0,
+            df_pac_pen: 0,
             df_pbs_con: 0,
             df_pm_con: 0,
+            df_pac_con: 0,
         }
     },
     computed: {
@@ -1356,6 +1242,7 @@ export default {
                     res => {
                         if(!this.isEmpty(res)){
                             this.rawCtr = (res.length > 0)?  res: null;
+                            let result = this.rawCtr[0];result
                             // this.df_pbs = this.numformat(this.clearNumber(this.calcResta([this.rawCtr[0].s_vrpbs, this.calcResta([this.rawCtr[0].s_vdo, this.rawCtr[0].s_vpbs]) + this.calcResta([this.rawCtr[0].s_vdo, this.rawCtr[0].s_vpbs, this.rawCtr[0].s_vgl]) + this.calcResta([this.rawCtr[0].s_vdo, this.rawCtr[0].s_vpbs, this.rawCtr[0].s_gld])]) ));
                             // this.df_pm = this.numformat(this.clearNumber(this.calcResta([this.rawCtr[0].s_vrpm, this.calcResta([this.rawCtr[0].s_vdo, this.rawCtr[0].s_vppm]) + this.calcResta([this.rawCtr[0].s_vdo, this.rawCtr[0].s_vgl, this.rawCtr[0].s_vppm]) + this.calcResta([this.rawCtr[0].s_vdo, this.rawCtr[0].s_gld])]) ));
                             // FACTURADO:s_vdo_0_pbs | PAGADO PBS:s_vpbs_0 | RESERVA PBS:s_vrpbs_0 | DIFERENCIA:df_pbs_glo
@@ -1364,16 +1251,26 @@ export default {
                             this.df_pbs_pen = this.numformat(this.clearNumber(this.baseResta(this.rawCtr[0].s_vrpbs_2, [this.rawCtr[0].s_vdo_2_pbs, this.rawCtr[0].s_vpbs_2])));  // s_vgl_2_pbs
                             this.df_pm_pen = this.numformat(this.clearNumber(this.baseResta(this.rawCtr[0].s_vrpm_2, [this.rawCtr[0].s_vdo_2_pm, this.rawCtr[0].s_vppm_2])));  // s_vgl_2_pm
                             this.df_pbs_con = this.numformat(this.clearNumber(this.baseResta(this.rawCtr[0].s_vrpbs_1, [this.rawCtr[0].s_vdo_1_pbs, this.rawCtr[0].s_vpbs_1, this.rawCtr[0].s_gld_1_pbs])));
-
-                            
-                                                                                                        // FACTURADO  s_vdo_1_pm
-                                                                                                        // PAGADO PM	s_vppm_1
-                                                                                                        // GLOSA DEFINITIVA	s_gld_1_pm
-                                                                                                        // RESERVA PM			s_vrpm_1
                             this.df_pm_con = this.numformat(this.clearNumber(this.rawCtr[0].s_vdo_1_pm - (this.rawCtr[0].s_vppm_1 + this.rawCtr[0].s_gld_1_pm + this.rawCtr[0].s_vrpm_1)));
+                            // Formula:  Reserva - (facturado - pagado)
+                            this.df_pac_glo = this.numformat(this.clearNumber(this.baseResta(result.s_vrpac_0, [result.s_vdo_0_pac, result.s_vpac_0])));
+                            this.df_pac_pen = this.numformat(this.clearNumber(this.baseResta(result.s_vrpac_2, [result.s_vdo_2_pac, result.s_vpac_2])));
+                            this.df_pac_con = this.numformat(this.clearNumber(result.vdo_1_pac - (result.s_vpac_1 + result.s_gld_1_pac + result.s_vrpac_1)));
+
+                            //     <td><div class="text-bold">FACTURADO</div>{{ printed('s_vdo_1_pbs') }}</td>
+                            //     <td><div class="text-bold">PAGADO PBS</div>{{ printed('s_vpbs_1') }}</td>
+                            //     <td><div class="text-bold">GLOSA DEFINITIVA</div>{{ printed('s_gld_1_pbs') }}</td>
+                            //     <td><div class="text-bold">RESERVA PBS</div>{{ printed('s_vrpbs_1') }}</td>
+                            
+                            // <td><div class="text-bold">FACTURADO</div>{{ printed('s_vdo_1_pm') }}</td>  base
+                            // <td><div class="text-bold">PAGADO PM</div>{{ printed('s_vppm_1') }}</td>
+                            // <td><div class="text-bold">GLOSA DEFINITIVA</div>{{ printed('s_gld_1_pm') }}</td>
+                            // <td><div class="text-bold">RESERVA PM</div>{{ printed('s_vrpm_1') }}</td>
+
                             // this.df_pm_con = this.numformat(this.clearNumber(this.baseResta(this.rawCtr[0].s_vrpm_1, [this.rawCtr[0].s_vdo_1_pm, this.rawCtr[0].s_gld_1_pm])));
                             this.df_pbs = this.rawCtr[0].s_vrpbs - (this.rawCtr[0].s_vrpbs_0 + this.rawCtr[0].s_vrpbs_2 + this.rawCtr[0].s_vrpbs_1);
                             this.df_pm = this.rawCtr[0].s_vrpm - (this.rawCtr[0].s_vrpm_0 + this.rawCtr[0].s_vrpm_1 + this.rawCtr[0].s_vrpm_2);
+                            // this.df_pac = 
                         }else{
                             console.log('Contenido vacío!');
                         }

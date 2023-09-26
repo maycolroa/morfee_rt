@@ -183,7 +183,7 @@
             <div class="col-sm-6">
                 <div :class="status + '-wait'">
                     <get-view-periodo collections="retec_autorizaciones,retec_facturas,retec_pagos" storage="timecop"></get-view-periodo>
-                    <div class="form-group mb-0">
+                    <!-- <div class="form-group mb-0">
                         <div class="input-group">
                             <select class="form-control" v-model="targetPeriodoDB" :disabled="hasAnyData()">
                                 <option :value="null">Seleccione el periodo de corte de la base de datos:</option>
@@ -195,7 +195,7 @@
                                 <button class="btn btn-success" :disabled="!hasAnyData()" @click="preReset"><i class="fa fa-refresh"></i></button>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             <div class="col-sm-6">
@@ -438,21 +438,25 @@
                 </div><!-- End panel-body -->
             </div><!-- End panel-wrapper -->
         </div><!-- End card-view -->
-        <div :class="hot_status? '': 'row'">
-            <div class="col-sm-3">
-                <contador-light ref="ib_prom" fontsize="20px" texto="IBNR Promedio" duracion="1" miles pretag="$ "></contador-light>
+        <div :class="hot_status? '': 'd-none'">
+            <div class="row">
+                <div class="col-sm-4">
+                    <contador-light ref="ib_prom" texto="IBNR Promedio" duracion="1" miles pretag="$ "></contador-light>
+                </div>
+                <div class="col-sm-4">
+                    <contador-light ref="ib_ladder" texto="IBNR Chain Ladder" duracion="1" miles pretag="$ "></contador-light>
+                </div>
+                <div class="col-sm-4">
+                    <contador-light ref="ib_min" texto="IBNR Min" duracion="1" miles pretag="$ "></contador-light>
+                </div>
             </div>
-            <div class="col-sm-2">
-                <contador-light ref="ib_ladder" fontsize="20px" texto="IBNR Chain Ladder" duracion="1" miles pretag="$ "></contador-light>
-            </div>
-            <div class="col-sm-2">
-                <contador-light ref="ib_min" fontsize="20px" texto="IBNR Min" duracion="1" miles pretag="$ "></contador-light>
-            </div>
-            <div class="col-sm-2">
-                <contador-light ref="ib_max" fontsize="20px" texto="IBNR Max" duracion="1" miles pretag="$ "></contador-light>
-            </div>
-            <div class="col-sm-3">
-                <contador-light ref="ib_smx" fontsize="20px" texto="IBNR Prom-Min-Max" duracion="1" miles pretag="$ "></contador-light>
+            <div class="row">
+                <div class="col-sm-4">
+                    <contador-light ref="ib_max" texto="IBNR Max" duracion="1" miles pretag="$ "></contador-light>
+                </div>
+                <div class="col-sm-4">
+                    <contador-light ref="ib_smx" texto="IBNR Prom-Min-Max" duracion="1" miles pretag="$ "></contador-light>
+                </div>
             </div>
         </div>
         <!-- *********************** -->
@@ -1014,11 +1018,11 @@ export default {
             console.log('Bakiri sam');
             console.log(this.hot_mm);
             this.hot_status = true;
-            this.$refs.ib_prom.setValor(this.getIBNR('prom'));
-            this.$refs.ib_ladder.setValor(this.getIBNR('ladder'));
-            this.$refs.ib_min.setValor(this.getIBNR('min'));
-            this.$refs.ib_max.setValor(this.getIBNR('max'));
-            this.$refs.ib_smx.setValor(this.getIBNR('smx'));
+            this.$refs.ib_prom.setValor(Math.round(Math.abs(this.getIBNR('prom'))));
+            this.$refs.ib_ladder.setValor(Math.round(Math.abs(this.getIBNR('ladder'))));
+            this.$refs.ib_min.setValor(Math.round(Math.abs(this.getIBNR('min'))));
+            this.$refs.ib_max.setValor(Math.round(Math.abs(this.getIBNR('max'))));
+            this.$refs.ib_smx.setValor(Math.round(Math.abs(this.getIBNR('smx'))));
         },
         setTriangle: function(elm){
             this.enable_controls = false;

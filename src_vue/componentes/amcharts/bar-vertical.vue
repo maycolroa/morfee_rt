@@ -278,7 +278,7 @@ export default {
             if(this.truncar){
                 // this.ejeCat.renderer.labels.template.wrap = true;
                 this.ejeCat.renderer.labels.template.truncate = true;
-                this.ejeCat.renderer.labels.template.maxWidth = 120;
+                this.ejeCat.renderer.labels.template.maxWidth = 400;
             }
             //this.ejeCat.renderer.grid.template.disabled = true;    Oculta la línea
             if(this.titulo_categoria != 'none'){

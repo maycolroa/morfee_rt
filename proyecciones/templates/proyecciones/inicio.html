@@ -15,22 +15,5 @@
     </div>
     <!-- /Breadcrumb -->
 </div>
-<div class="panel panel-default card-view border">
-    <div class="panel-heading d-none">
-        <ul class="nav nav-pills">
-            <li class="active"><a href="{% url 'retec_incapacidades' 'inicio' %}">Dashboard</a></li>
-            <li><a href="{% url 'retec_incapacidades' 'table' %}">Registros</a></li>
-            <li><a href="{% url 'retec_incapacidades' 'import' %}">Importar</a></li>
-        </ul>
-        <hr class="light-grey-hr mb-1">
-        <!-- <h6 class="panel-title fs-5">RÉGIMEN CONTRIBUTIVO</h6> -->
-    </div>
-    <div class="panel-wrapper collapse in">
-        <div class="panel-body">
-            <h5>Predicción Cuentas Médicas - Innovación Analítica</h5>
-            <div class="my-4"></div>
-            <proyeccion pathpredict="{% url 'pro_predecir' %}" pathmodel="{% static 'modelos/dl_rt_pagos.h5' %}"></proyeccion>
-        </div>
-    </div>
-</div>
+<proyeccion pathpredict="{% url 'pro_predecir' %}" pathmodel="{% static 'modelos/dl_rt_pagos.h5' %}"></proyeccion>
 {% endblock %}

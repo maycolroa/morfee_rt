@@ -191,7 +191,7 @@
                     <div :class="status == state.LOADING? 'panel-body opaco': 'panel-body'">
                         <table-data :class="altCss(display == 'table')" ref="table_10" cols="_id:SERVICIOS,promedio:VALOR:$ ,total:REGISTROS" compact counter lastright sumar="total"></table-data>
                         <!-- <am-pie :class="altCss(display == 'chart')" ref="gp_60" campo_categoria="_id" campo_valor="total" sin_valores altura="500"></am-pie> -->
-                        <am-ver :class="altCss(display == 'chart')" ref="gp_10" pretag="$ " grilla="0" multicolor campo_categoria="_id" campo_valor="promedio" etiquetas tooltip sin_valores altura_minima="100" unidad="30"></am-ver>
+                        <am-ver :class="altCss(display == 'chart')" ref="gp_10" pretag="$ " grilla="0" multicolor campo_categoria="_id" campo_valor="promedio" etiquetas tooltip sin_valores altura_minima="100" unidad="30" truncar></am-ver>
                     </div>
                 </div>
             </div>

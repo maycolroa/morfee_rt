@@ -173,6 +173,7 @@ Vue.component('chat-time', require('./componentes/chat.vue').default);
 Vue.component('cuentas-medicas', require('./componentes/facturas/cuentas_medicas.vue').default);
 Vue.component('cuentas-medicas-pagos', require('./componentes/pagos/cuentas_medicas_pagos.vue').default);
 Vue.component('temporizador', require('./componentes/temporizador.vue').default);
+Vue.component('neuronas', require('./componentes/neuronas.vue').default);
 Vue.component('animacion', require('./componentes/animacion.vue').default);
 
 

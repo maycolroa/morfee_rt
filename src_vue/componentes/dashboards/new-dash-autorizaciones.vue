@@ -239,7 +239,7 @@
                 <div class="panel-wrapper collapse in">
                     <div :class="status == state.LOADING? 'panel-body opaco': 'panel-body'">
                         <table-data :class="altCss(display == 'table')" ref="tb_0_S" cols="_id:PRESTADOR,valor:TOTAL:$ " compact counter lastright sumar="valor"></table-data>
-                        <am-ver :class="altCss(display == 'chart')" custom="Valor: {valueX}, Registros: {total}" custom_label="{category}: {valueX} ({total} registros)" ref="gp_0_S" pretag="$ " grilla="0" multicolor campo_categoria="_id" campo_valor="valor" etiquetas tooltip sin_valores altura_minima="100" unidad="30" empty_data="No hay datos para graficar."></am-ver>
+                        <am-ver :class="altCss(display == 'chart')" custom="Valor: {valueX}, Registros: {total}" custom_label="{category}: {valueX} ({total} registros)" ref="gp_0_S" pretag="$ " grilla="0" multicolor campo_categoria="_id" campo_valor="valor" etiquetas tooltip sin_valores altura_minima="100" unidad="30" truncar empty_data="No hay datos para graficar."></am-ver>
                     </div>
                 </div>
             </div>
@@ -271,6 +271,7 @@
                             sin_valores 
                             altura_minima="100" 
                             unidad="30" 
+                            truncar
                             custom="Valor: {valueX}, Registros: {total}" 
                             custom_label="{category}: {valueX} ({total} registros)" 
                             empty_data="No hay datos para graficar."></am-ver>
@@ -307,6 +308,7 @@
                             sin_valores 
                             altura_minima="100" 
                             unidad="30" 
+                            truncar
                             custom="Valor: {valueX}, Registros: {total}" 
                             custom_label="{category}: {valueX} ({total} registros)" 
                             empty_data="No hay datos para graficar."></am-ver>
@@ -341,6 +343,7 @@
                             sin_valores 
                             altura_minima="100" 
                             unidad="30" 
+                            truncar
                             custom="Valor: {valueX}, Registros: {total}" 
                             custom_label="{category}: {valueX} ({total} registros)" 
                             empty_data="No hay datos para graficar."></am-ver>
@@ -378,6 +381,7 @@
                             sin_valores 
                             altura_minima="100" 
                             unidad="30" 
+                            truncar
                             custom="Valor: {valueX}, Registros: {total}" 
                             custom_label="{category}: {valueX} ({total} registros)" 
                             empty_data="No hay datos para graficar."></am-ver>
@@ -412,6 +416,7 @@
                             sin_valores 
                             altura_minima="100" 
                             unidad="30" 
+                            truncar
                             custom="Valor: {valueX}, Registros: {total}" 
                             custom_label="{category}: {valueX} ({total} registros)" 
                             empty_data="No hay datos para graficar."></am-ver>
