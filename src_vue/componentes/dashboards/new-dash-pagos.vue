@@ -913,10 +913,12 @@ export default {
                 }
             }
         },
-        parseNull: function(arg) {
+        parseNull: function(arg, tx='(Vacío)') {
+            console.log('Que estoy recibiendo?');
+            console.log(arg);
             return arg.map(elm => {
                 if(elm._id == null){
-                    elm._id = 'SIN NOMBRE PRESTADOR';
+                    elm._id = tx;
                 }
                 return elm;
             });

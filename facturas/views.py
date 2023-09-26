@@ -187,7 +187,7 @@ def raw_facet_fac_control(request):
     periodo = {"$exists": False} if rawper == 0 else rawper
     user_id = request.user.id
     consulta = createConsulta('raw_fac_ctr' + str(rawper), tema, clave, user_id)
-    print('vigo: ' + tema)
+    print('Observación: ' + tema)
     mongo = Mongo(tema)
     try:
         # "n_vbs": {"$convert": {"input": "$vbs", "to": "double", "onError": 0, "onNull": 0}}
@@ -197,44 +197,73 @@ def raw_facet_fac_control(request):
                 "hg": {"$cond": [{"$in": ["$egl", ["T", "P"]]}, 1, 0]}, # hg has_glosa
                 "pmx": {"$convert": {"input": "$pmx", "to": "string", "onError": "", "onNull": ""}},
             }},
+            {"$addFields": {
+                "cd_1": {"$and": [{"$eq": ["$pmx", "0"]}, {"$eq": ["$hg", 0]}, {"$ne": ["$pla", 'P']}]},
+                "cd_2": {"$and": [{"$eq": ["$pmx", "1"]}, {"$eq": ["$hg", 0]}, {"$ne": ["$pla", 'P']}]},
+                "cd_3": {"$and": [{"$eq": ["$hg", 0]}, {"$eq": ["$pla", 'P']}]},
+                "cd_4": {"$and": [{"$eq": ["$pmx", "0"]}, {"$eq": ["$egl", "T"]}, {"$ne": ["$pla", 'P']}]},
+                "cd_5": {"$and": [{"$eq": ["$pmx", "1"]}, {"$eq": ["$egl", "T"]}, {"$ne": ["$pla", 'P']}]},
+                "cd_6": {"$and": [{"$eq": ["$egl", "T"]}, {"$eq": ["$pla", 'P']}]},
+                "cd_7": {"$and": [{"$eq": ["$pmx", "0"]}, {"$eq": ["$egl", "P"]}, {"$ne": ["$pla", 'P']}]},
+                "cd_8": {"$and": [{"$eq": ["$pmx", "1"]}, {"$eq": ["$egl", "P"]}, {"$ne": ["$pla", 'P']}]},
+                "cd_9": {"$and": [{"$eq": ["$egl", "P"]}, {"$eq": ["$pla", 'P']}]}
+            }},
+            # // FACTURADO:s_vdo_0_pbs | PAGADO PBS:s_vpbs_0 | RESERVA PBS:s_vrpbs_0 | DIFERENCIA:df_pbs_glo
             {'$project': {
                 'vdo': 1,
                 'vpbs': 1,
                 'vppm': 1,
+                'vpac': 1,  # Nueva
                 'vgl': 1,
                 'gld': 1,
                 'vrpbs': 1,
                 'vrpm': 1,
-                'vdo_0_pbs': {"$cond": [{"$and": [{"$eq": ["$pmx", "0"]}, {"$eq": ["$hg", 0]}]}, "$vdo", 0]},
-                'vdo_0_pm': {"$cond": [{"$and": [{"$eq": ["$pmx", "1"]}, {"$eq": ["$hg", 0]}]}, "$vdo", 0]},
-                'vgl_0_pbs': {"$cond": [{"$and": [{"$eq": ["$pmx", "0"]}, {"$eq": ["$hg", 0]}]}, "$vgl", 0]},
-                'vgl_0_pm': {"$cond": [{"$and": [{"$eq": ["$pmx", "1"]}, {"$eq": ["$hg", 0]}]}, "$vgl", 0]},
-                'gld_0_pbs': {"$cond": [{"$and": [{"$eq": ["$pmx", "0"]}, {"$eq": ["$hg", 0]}]}, "$gld", 0]},
-                'gld_0_pm': {"$cond": [{"$and": [{"$eq": ["$pmx", "1"]}, {"$eq": ["$hg", 0]}]}, "$gld", 0]},
-                'vpbs_0': {"$cond": [{"$and": [{"$eq": ["$pmx", "0"]}, {"$eq": ["$hg", 0]}]}, "$vpbs", 0]},
-                'vppm_0': {"$cond": [{"$and": [{"$eq": ["$pmx", "1"]}, {"$eq": ["$hg", 0]}]}, "$vppm", 0]},
-                'vrpbs_0': {"$cond": [{"$and": [{"$eq": ["$pmx", "0"]}, {"$eq": ["$hg", 0]}]}, "$vrpbs", 0]},
-                'vrpm_0': {"$cond": [{"$and": [{"$eq": ["$pmx", "1"]}, {"$eq": ["$hg", 0]}]}, "$vrpm", 0]},
-                'vdo_1_pbs': {"$cond": [{"$and": [{"$eq": ["$pmx", "0"]}, {"$eq": ["$egl", "T"]}]}, "$vdo", 0]},
-                'vdo_1_pm': {"$cond": [{"$and": [{"$eq": ["$pmx", "1"]}, {"$eq": ["$egl", "T"]}]}, "$vdo", 0]},
-                'vgl_1_pbs': {"$cond": [{"$and": [{"$eq": ["$pmx", "0"]}, {"$eq": ["$egl", "T"]}]}, "$vgl", 0]},
-                'vgl_1_pm': {"$cond": [{"$and": [{"$eq": ["$pmx", "1"]}, {"$eq": ["$egl", "T"]}]}, "$vgl", 0]},
-                'gld_1_pbs': {"$cond": [{"$and": [{"$eq": ["$pmx", "0"]}, {"$eq": ["$egl", "T"]}]}, "$gld", 0]},
-                'gld_1_pm': {"$cond": [{"$and": [{"$eq": ["$pmx", "1"]}, {"$eq": ["$egl", "T"]}]}, "$gld", 0]},
-                'vpbs_1': {"$cond": [{"$and": [{"$eq": ["$pmx", "0"]}, {"$eq": ["$egl", "T"]}]}, "$vpbs", 0]},
-                'vppm_1': {"$cond": [{"$and": [{"$eq": ["$pmx", "1"]}, {"$eq": ["$egl", "T"]}]}, "$vppm", 0]},
-                'vrpbs_1': {"$cond": [{"$and": [{"$eq": ["$pmx", "0"]}, {"$eq": ["$egl", "T"]}]}, "$vrpbs", 0]},
-                'vrpm_1': {"$cond": [{"$and": [{"$eq": ["$pmx", "1"]}, {"$eq": ["$egl", "T"]}]}, "$vrpm", 0]},
-                'vdo_2_pbs': {"$cond": [{"$and": [{"$eq": ["$pmx", "0"]}, {"$eq": ["$egl", "P"]}]}, "$vdo", 0]},
-                'vdo_2_pm': {"$cond": [{"$and": [{"$eq": ["$pmx", "1"]}, {"$eq": ["$egl", "P"]}]}, "$vdo", 0]},
-                'vgl_2_pbs': {"$cond": [{"$and": [{"$eq": ["$pmx", "0"]}, {"$eq": ["$egl", "P"]}]}, "$vgl", 0]},
-                'vgl_2_pm': {"$cond": [{"$and": [{"$eq": ["$pmx", "1"]}, {"$eq": ["$egl", "P"]}]}, "$vgl", 0]},
-                'gld_2_pbs': {"$cond": [{"$and": [{"$eq": ["$pmx", "0"]}, {"$eq": ["$egl", "P"]}]}, "$gld", 0]},
-                'gld_2_pm': {"$cond": [{"$and": [{"$eq": ["$pmx", "1"]}, {"$eq": ["$egl", "P"]}]}, "$gld", 0]},
-                'vpbs_2': {"$cond": [{"$and": [{"$eq": ["$pmx", "0"]}, {"$eq": ["$egl", "P"]}]}, "$vpbs", 0]},
-                'vppm_2': {"$cond": [{"$and": [{"$eq": ["$pmx", "1"]}, {"$eq": ["$egl", "P"]}]}, "$vppm", 0]},
-                'vrpbs_2': {"$cond": [{"$and": [{"$eq": ["$pmx", "0"]}, {"$eq": ["$egl", "P"]}]}, "$vrpbs", 0]},
-                'vrpm_2': {"$cond": [{"$and": [{"$eq": ["$pmx", "1"]}, {"$eq": ["$egl", "P"]}]}, "$vrpm", 0]},
+                'vrpac': 1, # Nueva
+                'vdo_0_pbs': {"$cond": ["$cd_1", "$vdo", 0]},
+                'vdo_0_pm': {"$cond": ["$cd_2", "$vdo", 0]},
+                'vdo_0_pac': {"$cond": ["$cd_3", "$vdo", 0]},
+                'vgl_0_pbs': {"$cond": ["$cd_1", "$vgl", 0]},
+                'vgl_0_pm': {"$cond": ["$cd_2", "$vgl", 0]},
+                'vgl_0_pac': {"$cond": ["$cd_3", "$vgl", 0]},
+                'gld_0_pbs': {"$cond": ["$cd_1", "$gld", 0]},
+                'gld_0_pm': {"$cond": ["$cd_2", "$gld", 0]},
+                'gld_0_pac': {"$cond": ["$cd_3", "$gld", 0]},
+                'vpbs_0': {"$cond": ["$cd_1", "$vpbs", 0]},
+                'vppm_0': {"$cond": ["$cd_2", "$vppm", 0]},
+                'vpac_0': {"$cond": ["$cd_3", "$vpac", 0]},
+                'vrpbs_0': {"$cond": ["$cd_1", "$vrpbs", 0]},
+                'vrpm_0': {"$cond": ["$cd_2", "$vrpm", 0]},
+                'vrpac_0': {"$cond": ["$cd_3", "$vrpac", 0]},
+                'vdo_1_pbs': {"$cond": ["$cd_4", "$vdo", 0]},
+                'vdo_1_pm': {"$cond": ["$cd_5", "$vdo", 0]},
+                'vdo_1_pac': {"$cond": ["$cd_6", "$vdo", 0]},
+                'vgl_1_pbs': {"$cond": ["$cd_4", "$vgl", 0]},
+                'vgl_1_pm': {"$cond": ["$cd_5", "$vgl", 0]},
+                'vgl_1_pac': {"$cond": ["$cd_6", "$vgl", 0]},
+                'gld_1_pbs': {"$cond": ["$cd_4", "$gld", 0]},
+                'gld_1_pm': {"$cond": ["$cd_5", "$gld", 0]},
+                'gld_1_pac': {"$cond": ["$cd_6", "$gld", 0]},
+                'vpbs_1': {"$cond": ["$cd_4", "$vpbs", 0]},
+                'vppm_1': {"$cond": ["$cd_5", "$vppm", 0]},
+                'vpac_1': {"$cond": ["$cd_6", "$vpac", 0]},
+                'vrpbs_1': {"$cond": ["$cd_4", "$vrpbs", 0]},
+                'vrpm_1': {"$cond": ["$cd_5", "$vrpm", 0]},
+                'vrpac_1': {"$cond": ["$cd_6", "$vrpac", 0]},
+                'vdo_2_pbs': {"$cond": ["$cd_7", "$vdo", 0]},
+                'vdo_2_pm': {"$cond": ["$cd_8", "$vdo", 0]},
+                'vdo_2_pac': {"$cond": ["$cd_9", "$vdo", 0]},
+                'vgl_2_pbs': {"$cond": ["$cd_7", "$vgl", 0]},
+                'vgl_2_pm': {"$cond": ["$cd_8", "$vgl", 0]},
+                'vgl_2_pac': {"$cond": ["$cd_9", "$vgl", 0]},
+                'gld_2_pbs': {"$cond": ["$cd_7", "$gld", 0]},
+                'gld_2_pm': {"$cond": ["$cd_8", "$gld", 0]},
+                'gld_2_pac': {"$cond": ["$cd_9", "$gld", 0]},
+                'vpbs_2': {"$cond": ["$cd_7", "$vpbs", 0]},
+                'vppm_2': {"$cond": ["$cd_8", "$vppm", 0]},
+                'vpac_2': {"$cond": ["$cd_9", "$vpac", 0]},
+                'vrpbs_2': {"$cond": ["$cd_7", "$vrpbs", 0]},
+                'vrpm_2': {"$cond": ["$cd_8", "$vrpm", 0]},
+                'vrpac_2': {"$cond": ["$cd_9", "$vrpac", 0]},
             }},
             {'$group': {
                 '_id': None,
@@ -275,9 +304,36 @@ def raw_facet_fac_control(request):
                 's_vppm_2': {'$sum': '$vppm_2'},
                 's_vrpbs_2': {'$sum': '$vrpbs_2'},
                 's_vrpm_2': {'$sum': '$vrpm_2'},
+                # NUEVAS VARIABLES... s_vdo_0_pm    s_vrpm_0
+                's_vpac': {'$sum': '$vpac'},
+                's_vrpac': {'$sum': '$vrpac'},
+                's_vdo_0_pac': {'$sum': '$vdo_0_pac'},
+                's_vgl_0_pac': {'$sum': '$vgl_0_pac'},
+                's_gld_0_pac': {'$sum': '$gld_0_pac'},
+                's_vpac_0': {'$sum': '$vpac_0'},
+                's_vrpac_0': {'$sum': '$vrpac_0'},
+                's_vdo_1_pac': {'$sum': '$vdo_1_pac'},
+                's_vgl_1_pac': {'$sum': '$vgl_1_pac'},
+                's_gld_1_pac': {'$sum': '$gld_1_pac'},
+                's_vpac_1': {'$sum': '$vpac_1'},
+                's_vrpac_1': {'$sum': '$vrpac_1'},
+                's_vdo_2_pac': {'$sum': '$vdo_2_pac'},
+                's_vgl_2_pac': {'$sum': '$vgl_2_pac'},
+                's_gld_2_pac': {'$sum': '$gld_2_pac'},
+                's_vpac_2': {'$sum': '$vpac_2'},
+                's_vrpac_2': {'$sum': '$vrpac_2'},
                 'total': {'$sum': 1}
             }}
         ])
+        # s_vdo_1_pm    vdo_1_pac
+        # s_vppm_1      s_vpac_1
+        # s_gld_1_pm    s_gld_1_pac
+        # s_vrpm_1      s_vrpac_1
+
+
+        # vpac | vrpac | vdo_0_pac | vgl_0_pac | gld_0_pac | vpac_0 | vrpac_0
+        # vdo_1_pac | vgl_1_pac | gld_1_pac | vpac_1 | vrpac_1 | vdo_2_pac
+        # vgl_2_pac | gld_2_pac | vpac_2 | vrpac_2
         consulta.contenido = str(datos)
         consulta.estado = 'close'
         consulta.save()

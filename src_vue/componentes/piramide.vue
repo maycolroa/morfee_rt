@@ -438,7 +438,23 @@
                 </div><!-- End panel-body -->
             </div><!-- End panel-wrapper -->
         </div><!-- End card-view -->
-
+        <div :class="hot_status? '': 'row'">
+            <div class="col-sm-3">
+                <contador-light ref="ib_prom" fontsize="20px" texto="IBNR Promedio" duracion="1" miles pretag="$ "></contador-light>
+            </div>
+            <div class="col-sm-2">
+                <contador-light ref="ib_ladder" fontsize="20px" texto="IBNR Chain Ladder" duracion="1" miles pretag="$ "></contador-light>
+            </div>
+            <div class="col-sm-2">
+                <contador-light ref="ib_min" fontsize="20px" texto="IBNR Min" duracion="1" miles pretag="$ "></contador-light>
+            </div>
+            <div class="col-sm-2">
+                <contador-light ref="ib_max" fontsize="20px" texto="IBNR Max" duracion="1" miles pretag="$ "></contador-light>
+            </div>
+            <div class="col-sm-3">
+                <contador-light ref="ib_smx" fontsize="20px" texto="IBNR Prom-Min-Max" duracion="1" miles pretag="$ "></contador-light>
+            </div>
+        </div>
         <!-- *********************** -->
         <!-- SECTION MODAL DATA CELL -->
         <!-- *********************** -->
@@ -998,6 +1014,11 @@ export default {
             console.log('Bakiri sam');
             console.log(this.hot_mm);
             this.hot_status = true;
+            this.$refs.ib_prom.setValor(this.getIBNR('prom'));
+            this.$refs.ib_ladder.setValor(this.getIBNR('ladder'));
+            this.$refs.ib_min.setValor(this.getIBNR('min'));
+            this.$refs.ib_max.setValor(this.getIBNR('max'));
+            this.$refs.ib_smx.setValor(this.getIBNR('smx'));
         },
         setTriangle: function(elm){
             this.enable_controls = false;
@@ -1070,6 +1091,9 @@ export default {
                 this.fun_filter = (tipo) => true;
             }else{
                 this.fun_filter = (tipo) => tipo == this.f_filtro;
+            }
+            if('CALOR' == this.getTriangleInfo('code')){
+                this.resetHotData();
             }
         },
         setValor: function(row, col, val){

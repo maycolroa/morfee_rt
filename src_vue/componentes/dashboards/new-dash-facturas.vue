@@ -428,10 +428,6 @@
                 </div>
             </div>
         </div>
-
-
-
-
         <div :class="section == 'controls'? '': 'd-none'">
             <div class="panel panel-default card-view border pt-3 pb-2">
                 <div class="panel-wrapper collapse in pa-0x">
@@ -499,6 +495,7 @@
                     </div>
                 </div>
             </div>
+            <!-- PRIMERA LÍNEA DE CONTROLES -->
             <div class="panel panel-default card-view border pt-3 pb-2">
                 <div class="panel-wrapper collapse in pa-0x">
                     <div class="table-wrap">
@@ -545,6 +542,7 @@
                     </div>
                 </div>
             </div>
+            <!-- SEGUNDA LÍNEA DE CONTROLES -->
             <div class="panel panel-default card-view border pt-3 pb-2">
                 <div class="panel-wrapper collapse in pa-0x">
                     <div class="table-wrap">
@@ -591,6 +589,55 @@
                     </div>
                 </div>
             </div>
+            <!-- TERCERA LÍNEA DE CONTROLES (PAC) -->
+            <div class="panel panel-default card-view border pt-3 pb-2">
+                <div class="panel-wrapper collapse in pa-0x">
+                    <div class="table-wrap">
+                        <div class="table-responsive">
+                            <table class="table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th colspan="4" class="pt-0 pb-2" style="letter-spacing:1px; font-family:Arial">
+                                            FACTURA PAC SIN GLOSA
+                                            <div>{{ human_period }}</div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="dk-row" v-if="rawCtr != null && rawCtr.length > 0">
+                                        <td>
+                                            <div class="text-bold">FACTURADO</div>
+                                            {{ printed('s_vdo_0_pac') }}
+                                        </td>
+                                        <td>
+                                            <div class="text-bold">PAGADO PAC</div>
+                                            {{ printed('s_vpac_0') }}
+                                        </td>
+                                        <td>
+                                            <div class="text-bold">RESERVA PAC</div>
+                                            {{ printed('s_vrpac_0') }}
+                                        </td>
+                                        <td :class="df_pm_glo == 0? 'dk-success td-20': 'txt-danger td-20'">
+                                            <div class="text-bold">DIFERENCIA</div>
+                                            {{ df_pm_glo }} ------
+                                        </td>
+                                    </tr>
+                                    <tr v-if="status == state.LOADING">
+                                        <td colspan="4">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fa fa-spinner fa-spin fs-4 me-2"></i>
+                                                <span>Cargando...</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="my-4" style="border-top:1px solid #FFF; border-bottom:1px solid #FFF; height:3px; background:#AAA"></div>
+            <!-- CUARTA LÍNEA DE CONTROLES -->
             <div class="panel panel-default card-view border pt-3 pb-2">
                 <div class="panel-wrapper collapse in pa-0x">
                     <div class="table-wrap">
@@ -637,6 +684,7 @@
                     </div>
                 </div>
             </div>
+            <!-- QUINTA LÍNEA DE CONTROLES -->
             <div class="panel panel-default card-view border pt-3 pb-2">
                 <div class="panel-wrapper collapse in pa-0x">
                     <div class="table-wrap">
@@ -683,6 +731,102 @@
                     </div>
                 </div>
             </div>
+            <!-- SEXTA LÍNEA DE CONTROLES (PAC) -->
+            <div class="panel panel-default card-view border pt-3 pb-2">
+                <div class="panel-wrapper collapse in pa-0x">
+                    <div class="table-wrap">
+                        <div class="table-responsive">
+                            <table class="table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th colspan="5" class="pt-0 pb-2" style="letter-spacing:1px; font-family:Arial">
+                                            FACTURA PAC CON GLOSA PENDIENTE DE CONCILIAR
+                                            <div>{{ human_period }}</div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="dk-row tr-20" v-if="rawCtr != null && rawCtr.length > 0">
+                                        <td>
+                                            <div class="text-bold">FACTURADO</div>{{ printed('s_vdo_2_pac') }}
+                                        </td>
+                                        <td>
+                                            <div class="text-bold">PAGADO PAC</div>{{ printed('s_vpac_2') }}
+                                        </td>
+                                        <td>
+                                            <div class="text-bold">GLOSADO</div>{{ printed('s_vgl_2_pac') }}
+                                        </td>
+                                        <td>
+                                            <div class="text-bold">RESERVA PAC</div>{{ printed('s_vrpac_2') }}
+                                        </td>
+                                        <td :class="df_pm_pen == 0? 'dk-success': 'txt-danger'">
+                                            <div class="text-bold">DIFERENCIA</div>
+                                            {{ df_pm_pen }} ---------
+                                        </td>
+                                    </tr>
+                                    <tr v-if="status == state.LOADING">
+                                        <td colspan="5">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fa fa-spinner fa-spin fs-4 me-2"></i>
+                                                <span>Cargando...</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="my-4" style="border-top:1px solid #FFF; border-bottom:1px solid #AAA"></div>
+            <!-- SÉPTIMA LÍNEA DE CONTROLES -->
+            <div class="panel panel-default card-view border pt-3 pb-2">
+                <div class="panel-wrapper collapse in pa-0x">
+                    <div class="table-wrap">
+                        <div class="table-responsive">
+                            <table class="table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th colspan="5" class="pt-0 pb-2" style="letter-spacing:1px; font-family:Arial">
+                                            FACTURA PBS CON GLOSA CONCILIADA
+                                            <div>{{ human_period }}</div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="dk-row tr-20" v-if="rawCtr != null && rawCtr.length > 0">
+                                        <td>
+                                            <div class="text-bold">FACTURADO</div>{{ printed('s_vdo_1_pbs') }}
+                                        </td>
+                                        <td>
+                                            <div class="text-bold">PAGADO PBS</div>{{ printed('s_vpbs_1') }}
+                                        </td>
+                                        <td>
+                                            <div class="text-bold">GLOSA DEFINITIVA</div>{{ printed('s_gld_1_pbs') }}
+                                        </td>
+                                        <td>
+                                            <div class="text-bold">RESERVA PBS</div>{{ printed('s_vrpbs_1') }}
+                                        </td>
+                                        <td :class="df_pbs_con == 0? 'dk-success': 'txt-danger'">
+                                            <div class="text-bold">DIFERENCIA</div>
+                                            {{ df_pbs_con }}
+                                        </td>
+                                    </tr>
+                                    <tr v-if="status == state.LOADING">
+                                        <td colspan="5">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fa fa-spinner fa-spin fs-4 me-2"></i>
+                                                <span>Cargando...</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- OPTAVA LÍNEA DE CONTROLES -->
             <div class="panel panel-default card-view border pt-3 pb-2">
                 <div class="panel-wrapper collapse in pa-0x">
                     <div class="table-wrap">
@@ -729,6 +873,7 @@
                     </div>
                 </div>
             </div>
+            <!-- NOVENA LÍNEA DE CONTROLES -->
             <div class="panel panel-default card-view border pt-3 pb-2">
                 <div class="panel-wrapper collapse in pa-0x">
                     <div class="table-wrap">
@@ -737,7 +882,7 @@
                                 <thead>
                                     <tr>
                                         <th colspan="5" class="pt-0 pb-2" style="letter-spacing:1px; font-family:Arial">
-                                            FACTURA PBS CON GLOSA CONCILIADA
+                                            FACTURA PAC CON GLOSA CONCILIADA
                                             <div>{{ human_period }}</div>
                                         </th>
                                     </tr>
@@ -745,20 +890,20 @@
                                 <tbody>
                                     <tr class="dk-row tr-20" v-if="rawCtr != null && rawCtr.length > 0">
                                         <td>
-                                            <div class="text-bold">FACTURADO</div>{{ printed('s_vdo_1_pbs') }}
+                                            <div class="text-bold">FACTURADO</div>{{ printed('vdo_1_pac') }}
                                         </td>
                                         <td>
-                                            <div class="text-bold">PAGADO PBS</div>{{ printed('s_vpbs_1') }}
+                                            <div class="text-bold">PAGADO PM</div>{{ printed('s_vpac_1') }}
                                         </td>
                                         <td>
-                                            <div class="text-bold">GLOSA DEFINITIVA</div>{{ printed('s_gld_1_pbs') }}
+                                            <div class="text-bold">GLOSA DEFINITIVA</div>{{ printed('s_gld_1_pac') }}
                                         </td>
                                         <td>
-                                            <div class="text-bold">RESERVA PBS</div>{{ printed('s_vrpbs_1') }}
+                                            <div class="text-bold">RESERVA PM</div>{{ printed('s_vrpac_1') }}
                                         </td>
-                                        <td :class="df_pbs_con == 0? 'dk-success': 'txt-danger'">
+                                        <td :class="df_pm_con == 0? 'dk-success': 'txt-danger'">
                                             <div class="text-bold">DIFERENCIA</div>
-                                            {{ df_pbs_con }}
+                                            {{ df_pm_con }} =======
                                         </td>
                                     </tr>
                                     <tr v-if="status == state.LOADING">
@@ -945,7 +1090,7 @@ export default {
             krache_ctr: 'dash_factu_ctr_' + this.cliente,
             krache_indi: 'dash_factu_indi_' + this.cliente,
             krache_time: 'time_factu_' + this.cliente,
-            section: 'basic',
+            section: 'controls', // 'basic',
             display: 'chart',       // table | chart
             opt: [
                 {'tx': 'General', 'code': 'basic'}, 
@@ -1213,6 +1358,7 @@ export default {
                             this.rawCtr = (res.length > 0)?  res: null;
                             // this.df_pbs = this.numformat(this.clearNumber(this.calcResta([this.rawCtr[0].s_vrpbs, this.calcResta([this.rawCtr[0].s_vdo, this.rawCtr[0].s_vpbs]) + this.calcResta([this.rawCtr[0].s_vdo, this.rawCtr[0].s_vpbs, this.rawCtr[0].s_vgl]) + this.calcResta([this.rawCtr[0].s_vdo, this.rawCtr[0].s_vpbs, this.rawCtr[0].s_gld])]) ));
                             // this.df_pm = this.numformat(this.clearNumber(this.calcResta([this.rawCtr[0].s_vrpm, this.calcResta([this.rawCtr[0].s_vdo, this.rawCtr[0].s_vppm]) + this.calcResta([this.rawCtr[0].s_vdo, this.rawCtr[0].s_vgl, this.rawCtr[0].s_vppm]) + this.calcResta([this.rawCtr[0].s_vdo, this.rawCtr[0].s_gld])]) ));
+                            // FACTURADO:s_vdo_0_pbs | PAGADO PBS:s_vpbs_0 | RESERVA PBS:s_vrpbs_0 | DIFERENCIA:df_pbs_glo
                             this.df_pbs_glo = this.numformat(this.clearNumber(this.baseResta(this.rawCtr[0].s_vrpbs_0, [this.rawCtr[0].s_vdo_0_pbs, this.rawCtr[0].s_vpbs_0])));
                             this.df_pm_glo = this.numformat(this.clearNumber(this.baseResta(this.rawCtr[0].s_vrpm_0, [this.rawCtr[0].s_vdo_0_pm, this.rawCtr[0].s_vppm_0])));
                             this.df_pbs_pen = this.numformat(this.clearNumber(this.baseResta(this.rawCtr[0].s_vrpbs_2, [this.rawCtr[0].s_vdo_2_pbs, this.rawCtr[0].s_vpbs_2])));  // s_vgl_2_pbs
