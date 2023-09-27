@@ -454,13 +454,13 @@
                                         <td>{{ numformat(clearNumber(rawCtr[0].s_vdo)) }}</td>
                                         <td>{{ numformat(clearNumber(rawCtr[0].s_vpbs)) }}</td>
                                         <td>{{ numformat(clearNumber(rawCtr[0].s_vppm)) }}</td>
-                                        <td></td>
+                                        <td>{{ numformat(clearNumber(rawCtr[0].s_vpac)) }}</td>
                                         <td>{{ numformat(clearNumber(rawCtr[0].s_vgl)) }}</td>
                                         <td>{{ numformat(clearNumber(rawCtr[0].s_gld)) }}</td>
                                         <td>{{ numformat(clearNumber(rawCtr[0].total)) }}</td>
                                         <td>{{ numformat(clearNumber(rawCtr[0].s_vrpbs)) }}</td>
                                         <td>{{ numformat(clearNumber(rawCtr[0].s_vrpm)) }}</td>
-                                        <td></td>
+                                        <td>{{ numformat(clearNumber(rawCtr[0].s_vrpac)) }}</td>
                                     </tr>
                                     <tr class="dk-row" v-if="rawCtr != null && rawCtr.length > 0">
                                         <td colspan="6"></td>
@@ -476,20 +476,22 @@
                                             {{ numformat(clearNumber(calcResta([rawCtr[0].s_vdo_0_pm, rawCtr[0].s_vppm_0]) + calcResta([rawCtr[0].s_vdo_2_pm, rawCtr[0].s_vgl_2_pm, rawCtr[0].s_vppm_2]) + calcResta([rawCtr[0].s_vdo_1_pm, rawCtr[0].s_gld_1_pm]))) }} -->
                                         </td>
                                         <td>
-                                            AQUÍ
+                                            <!-- AQUÍ -->
+                                            {{ numformat(clearNumber(rawCtr[0].s_vrpac_0 + rawCtr[0].s_vrpac_1 + rawCtr[0].s_vrpac_2)) }}
                                         </td>
                                     </tr>
                                     <tr class="dk-row" v-if="rawCtr != null && rawCtr.length > 0">
                                         <td colspan="6"></td>
                                         <td>DIFERENCIA</td>
                                         <td :class="df_pbs == 0? 'dk-success': 'text-danger'">
-                                            {{ df_pbs }}
+                                            {{ numformat(clearNumber(df_pbs)) }}
                                         </td>
                                         <td :class="df_pm == 0? 'dk-success': 'text-danger'">
-                                            {{ df_pm }}
+                                            {{ numformat(clearNumber(df_pm)) }}
                                         </td>
-                                        <td>
-                                            aquí
+                                        <td :class="df_pac == 0? 'dk-success': 'text-danger'">
+                                            <!-- aquí -->
+                                            {{ numformat(clearNumber(df_pac)) }}
                                         </td>
                                     </tr>
                                     <tr v-if="status == state.LOADING">
@@ -689,7 +691,7 @@
                                         <td><div class="text-bold">PAGADO PAC</div>{{ printed('s_vpac_2') }}</td>
                                         <td><div class="text-bold">GLOSADO</div>{{ printed('s_vgl_2_pac') }}</td>
                                         <td><div class="text-bold">RESERVA PAC</div>{{ printed('s_vrpac_2') }}</td>
-                                        <td :class="df_pm_pen == 0? 'dk-success': 'txt-danger'"><div class="text-bold">DIFERENCIA</div>{{ df_pac_pen }}</td>
+                                        <td :class="df_pac_pen == 0? 'dk-success': 'txt-danger'"><div class="text-bold">DIFERENCIA</div>{{ df_pac_pen }}</td>
                                     </tr>
                                     <tr v-if="status == state.LOADING">
                                         <td colspan="5">
@@ -785,11 +787,11 @@
                                 </thead>
                                 <tbody>
                                     <tr class="dk-row tr-20" v-if="rawCtr != null && rawCtr.length > 0">
-                                        <td><div class="text-bold">FACTURADO</div>{{ printed('vdo_1_pac') }}</td>
+                                        <td><div class="text-bold">FACTURADO</div>{{ printed('s_vdo_1_pac') }}</td>
                                         <td><div class="text-bold">PAGADO PM</div>{{ printed('s_vpac_1') }}</td>
                                         <td><div class="text-bold">GLOSA DEFINITIVA</div>{{ printed('s_gld_1_pac') }}</td>
                                         <td><div class="text-bold">RESERVA PM</div>{{ printed('s_vrpac_1') }}</td>
-                                        <td :class="df_pm_con == 0? 'dk-success': 'txt-danger'"><div class="text-bold">DIFERENCIA</div>{{ df_pac_con }}</td>
+                                        <td :class="df_pac_con == 0? 'dk-success': 'txt-danger'"><div class="text-bold">DIFERENCIA</div>{{ df_pac_con }}</td>
                                     </tr>
                                     <tr v-if="status == state.LOADING">
                                         <td colspan="5">
@@ -972,7 +974,7 @@ export default {
             krache_ctr: 'dash_factu_ctr_' + this.cliente,
             krache_indi: 'dash_factu_indi_' + this.cliente,
             krache_time: 'time_factu_' + this.cliente,
-            section: 'controls', // 'basic',
+            section: 'basic', // 'basic',
             display: 'chart',       // table | chart
             opt: [
                 {'tx': 'General', 'code': 'basic'}, 
@@ -1242,7 +1244,7 @@ export default {
                     res => {
                         if(!this.isEmpty(res)){
                             this.rawCtr = (res.length > 0)?  res: null;
-                            let result = this.rawCtr[0];result
+                            let result = this.rawCtr[0];
                             // this.df_pbs = this.numformat(this.clearNumber(this.calcResta([this.rawCtr[0].s_vrpbs, this.calcResta([this.rawCtr[0].s_vdo, this.rawCtr[0].s_vpbs]) + this.calcResta([this.rawCtr[0].s_vdo, this.rawCtr[0].s_vpbs, this.rawCtr[0].s_vgl]) + this.calcResta([this.rawCtr[0].s_vdo, this.rawCtr[0].s_vpbs, this.rawCtr[0].s_gld])]) ));
                             // this.df_pm = this.numformat(this.clearNumber(this.calcResta([this.rawCtr[0].s_vrpm, this.calcResta([this.rawCtr[0].s_vdo, this.rawCtr[0].s_vppm]) + this.calcResta([this.rawCtr[0].s_vdo, this.rawCtr[0].s_vgl, this.rawCtr[0].s_vppm]) + this.calcResta([this.rawCtr[0].s_vdo, this.rawCtr[0].s_gld])]) ));
                             // FACTURADO:s_vdo_0_pbs | PAGADO PBS:s_vpbs_0 | RESERVA PBS:s_vrpbs_0 | DIFERENCIA:df_pbs_glo
@@ -1255,7 +1257,8 @@ export default {
                             // Formula:  Reserva - (facturado - pagado)
                             this.df_pac_glo = this.numformat(this.clearNumber(this.baseResta(result.s_vrpac_0, [result.s_vdo_0_pac, result.s_vpac_0])));
                             this.df_pac_pen = this.numformat(this.clearNumber(this.baseResta(result.s_vrpac_2, [result.s_vdo_2_pac, result.s_vpac_2])));
-                            this.df_pac_con = this.numformat(this.clearNumber(result.vdo_1_pac - (result.s_vpac_1 + result.s_gld_1_pac + result.s_vrpac_1)));
+                            this.df_pac_con = this.numformat(this.clearNumber(result.s_vdo_1_pac - (result.s_vpac_1 + result.s_gld_1_pac + result.s_vrpac_1)));
+
 
                             //     <td><div class="text-bold">FACTURADO</div>{{ printed('s_vdo_1_pbs') }}</td>
                             //     <td><div class="text-bold">PAGADO PBS</div>{{ printed('s_vpbs_1') }}</td>
@@ -1270,7 +1273,7 @@ export default {
                             // this.df_pm_con = this.numformat(this.clearNumber(this.baseResta(this.rawCtr[0].s_vrpm_1, [this.rawCtr[0].s_vdo_1_pm, this.rawCtr[0].s_gld_1_pm])));
                             this.df_pbs = this.rawCtr[0].s_vrpbs - (this.rawCtr[0].s_vrpbs_0 + this.rawCtr[0].s_vrpbs_2 + this.rawCtr[0].s_vrpbs_1);
                             this.df_pm = this.rawCtr[0].s_vrpm - (this.rawCtr[0].s_vrpm_0 + this.rawCtr[0].s_vrpm_1 + this.rawCtr[0].s_vrpm_2);
-                            // this.df_pac = 
+                            this.df_pac = result.s_vrpac - (result.s_vrpac_0 + result.s_vrpac_1 + result.s_vrpac_2);
                         }else{
                             console.log('Contenido vacío!');
                         }

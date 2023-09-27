@@ -70,23 +70,25 @@ def raw_facet(request):
             {'$match': {'crx': periodo}}, 
             {
                 '$facet': {
-                    'rs_1': [ {'$group': {'_id': '$pla', 'total': {'$sum': 1}, 'suma': {'$sum': '$act'}}} ], 
-                    'rs_2': [ {'$group': {'_id': '$tpp', 'total': {'$sum': 1}, 'suma': {'$sum': '$act'}}} ], 
-                    'rs_3': [ {'$group': {'_id': '$stt', 'total': {'$sum': 1}, 'suma': {'$sum': '$act'}}} ], 
-                    'rs_4': [ {'$group': {'_id': None, 'suma': {'$sum': '$bas'}}} ], 
-                    'rs_5': [ {'$group': {'_id': None, 'suma': {'$sum': '$act'}, 'alldoc': {'$sum': 1} }} ], 
+                    'rs_1': [ {'$group': {'_id': '$pla', 'total': {'$sum': 1}, 'suma': {'$sum': '$act'}}}, {'$limit': 20}], 
+                    'rs_2': [ {'$group': {'_id': '$tpp', 'total': {'$sum': 1}, 'suma': {'$sum': '$act'}}}, {'$limit': 20}], 
+                    'rs_3': [ {'$group': {'_id': '$stt', 'total': {'$sum': 1}, 'suma': {'$sum': '$act'}}}, {'$limit': 20}], 
+                    'rs_4': [ {'$group': {'_id': None, 'suma': {'$sum': '$bas'}}}, {'$limit': 20}], 
+                    'rs_5': [ {'$group': {'_id': None, 'suma': {'$sum': '$act'}, 'alldoc': {'$sum': 1} }}, {'$limit': 20}], 
                     'rs_6': [
                         {'$group': {'_id': '$nmp', 'total': {'$sum': 1}, 'suma': {'$sum': '$act'}}}, 
                         {'$sort': {'suma': -1}}, 
                         {'$limit': 20}
                     ],
-                    'rs_7': [ {'$group': {'_id': '$idp', 'total': {'$sum': 1}}} ],
+                    'rs_7': [ {'$group': {'_id': '$idp', 'total': {'$sum': 1}}}, {'$limit': 20}],
                     'rs_8': [
                         {'$addFields': {'xnum': {"$convert": {"input": "$tar", "to": "string", "onError": "error", "onNull": "null"}} }},
-                        {'$group': {'_id': '$xnum', 'total': {'$sum': 1}}} 
+                        {'$group': {'_id': '$xnum', 'total': {'$sum': 1}}},
+                        {'$limit': 20} 
                     ],
                     'rs_9': [ 
-                        {'$group': {'_id': '$ser', 'total': {'$sum': 1}}}  #SERVICCIOS
+                        {'$group': {'_id': '$ser', 'total': {'$sum': 1}}},  #SERVICCIOS
+                        {'$limit': 20}
                     ],
                     'rs_10': [
                         {'$group': {'_id': '$ser', 'total': {'$sum': 1}, 'promedio': {'$avg': '$act'}}}, 
@@ -99,7 +101,6 @@ def raw_facet(request):
         consulta.contenido = str(datos)
         consulta.estado = 'close'
         consulta.save()
-        print(datos)
         return HttpResponse(datos, content_type="application/json")
     except:
         consulta.estado = 'failed'

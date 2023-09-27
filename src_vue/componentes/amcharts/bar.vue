@@ -92,6 +92,9 @@ export default {
         }
     },
     methods: {
+        isEmpty: function(arg){
+            return ['', null, undefined].includes(arg);
+        },
         exportar: function(){
             if(this.chart != null){
                 this.chart.exporting.export("png");
@@ -157,7 +160,7 @@ export default {
                 if(arg.length > 50){
                     this.overload = true;
                     this.datos = (this.empty_category == '')? arg.slice(0, 50): arg.slice(0, 50).map(elm => {
-                        if(elm[this.campo_categoria] === ''){
+                        if(this.isEmpty(elm[this.campo_categoria])){
                             elm[this.campo_categoria] = this.empty_category;
                         }
                         return elm;
@@ -165,7 +168,7 @@ export default {
                 }else{
                     this.overload = false;
                     this.datos = (this.empty_category == '')? arg: arg.map(elm => {
-                        if(elm[this.campo_categoria] === ''){
+                        if(this.isEmpty(elm[this.campo_categoria])){
                             elm[this.campo_categoria] = this.empty_category;
                         }
                         return elm;

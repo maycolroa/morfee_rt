@@ -36,7 +36,7 @@ def data_cm(request):
     clave = request.POST.get('clave') if request.POST.get('clave') else ''
     user_id = request.user.id
     # rawper = int(request.POST.get('periodo'))
-    consulta = createConsulta('raw_cmed', 'retec_facturas', clave, user_id)
+    consulta = createConsulta('raw_cmed_pag', 'retec_facturas', clave, user_id)
     mongo = Mongo('retec_pagos')
     print('Exe query mongodb...')
     datos = mongo.aggregate([

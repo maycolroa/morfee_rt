@@ -183,6 +183,7 @@
                                     multicolor 
                                     grilla="0" 
                                     cursor 
+                                    empty_category="(Vacío)"
                                     lanzarevento="select-tipodoc">
                                 </am-bar>
                             </div>
@@ -773,7 +774,7 @@ export default {
                 this.rawData['facet_vbs'].length > 0? this.$refs.cnt_vbs.setValor(Math.round(this.rawData['facet_vbs'][0].n)): this.$refs.cnt_vbs.setValor('');
                 this.rawData['facet_vac'].length > 0? this.$refs.cnt_vac.setValor(Math.round(this.rawData['facet_vac'][0].n)): this.$refs.cnt_vac.setValor('');
                 this.rawData['facet_vpm'].length > 0? this.$refs.cnt_vpm.setValor(Math.round(this.rawData['facet_vpm'][0].n)): this.$refs.cnt_vpm.setValor('');
-                this.$refs.gp_doc.setDatos(this.parseNull(this.rawData['facet_doc']));
+                this.$refs.gp_doc.setDatos(this.rawData['facet_doc']);
                 if(Array.isArray(this.rawData['pmx'])){
                     let aux = {};
                     this.rawData['pmx'].forEach(elm => {

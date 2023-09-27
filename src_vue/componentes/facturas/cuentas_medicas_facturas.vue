@@ -61,7 +61,7 @@
                                 <div class="txt-dark">FAMISANAR</div>
                             </div>
                             <div>
-                                <a href="javascript:void(0)" class="me-2" click="$refs.gp_1.exportar()"><i class="zmdi zmdi-download"></i></a>
+                                <a href="javascript:void(0)" class="me-2" click="$refs.gp_bi.exportar()"><i class="zmdi zmdi-download"></i></a>
                                 <a href="#" class="full-screen"><i class="zmdi zmdi-fullscreen"></i></a>
                             </div>
                         </div>
@@ -90,7 +90,7 @@
                                 <div class="txt-dark">FAMISANAR</div>
                             </div>
                             <div>
-                                <a href="javascript:void(0)" class="me-2" click="$refs.gp_1.exportar()"><i class="zmdi zmdi-download"></i></a>
+                                <a href="javascript:void(0)" class="me-2" click="$refs.gp_line.exportar()"><i class="zmdi zmdi-download"></i></a>
                                 <a href="#" class="full-screen"><i class="zmdi zmdi-fullscreen"></i></a>
                             </div>
                         </div>
@@ -125,7 +125,7 @@
                                 <div class="txt-dark">FAMISANAR</div>
                             </div>
                             <div>
-                                <a href="javascript:void(0)" class="me-2" click="$refs.gp_1.exportar()"><i class="zmdi zmdi-download"></i></a>
+                                <a href="javascript:void(0)" class="me-2" click="$refs.gp_pag.exportar()"><i class="zmdi zmdi-download"></i></a>
                                 <a href="#" class="full-screen"><i class="zmdi zmdi-fullscreen"></i></a>
                             </div>
                         </div>
@@ -158,7 +158,7 @@
                                 <div class="txt-dark">FAMISANAR</div>
                             </div>
                             <div>
-                                <a href="javascript:void(0)" class="me-2" click="$refs.gp_1.exportar()"><i class="zmdi zmdi-download"></i></a>
+                                <a href="javascript:void(0)" class="me-2" click="$refs.gp_res.exportar()"><i class="zmdi zmdi-download"></i></a>
                                 <a href="#" class="full-screen"><i class="zmdi zmdi-fullscreen"></i></a>
                             </div>
                         </div>
@@ -328,7 +328,7 @@ export default {
         },
         exeQuery: function(force){
             this.status = this.state.LOADING;
-            this.$refs.timecop.dispatchQuery('raw_cmed', this.pathdata, {}, null, force);
+            this.$refs.timecop.dispatchQuery('raw_cmed_fac', this.pathdata, {}, null, force);
         },
         listen: function(){
             this.$eventBus.$on('search-finish', res => {

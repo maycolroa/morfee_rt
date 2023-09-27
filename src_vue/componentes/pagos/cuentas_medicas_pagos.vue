@@ -283,7 +283,7 @@ export default {
         },
         exeQuery: function(force){
             this.status = this.state.LOADING;
-            this.$refs.timecop.dispatchQuery('raw_cmed', this.pathdata, {}, null, force);
+            this.$refs.timecop.dispatchQuery('raw_cmed_pag', this.pathdata, {}, null, force);
         },
         listen: function(){
             this.$eventBus.$on('search-finish', res => {

@@ -438,24 +438,6 @@ export default {
                 this.manager();
             }
         },
-        loadData: function(arg){
-            if(this.status != this.state.LOADING){
-                let pam = new FormData();
-                pam.append('tema', this.fuente);
-                pam.append('periodo', arg);
-                this.status = this.state.LOADING;
-                axios.post(this.pathdata + '/data', pam).then(res => {
-                    this.rawData = (res.data.length > 0)?  res.data[0]: {'rs_1': [], 'rs_2': [], 'rs_3': [], 'rs_4': [], 'rs_5': [], 'rs_6': [], 'rs_7': [], 'rs_8': []};
-                    registerJSON(this.krache, this.rawData, 'per_' + arg);
-                    registerJSON(this.krache, arg, 'lastper');
-                    this.writeCards();
-                    this.status = this.state.LOADED;
-                }).catch(err => {
-                    this.status = this.state.FAILED;
-                    console.log(err);
-                });
-            }
-        },
         writeCards: function(){
             // rs_1: Plan salud
             // rs_2: Tipo de prestador
@@ -581,7 +563,6 @@ export default {
         manager: function(force=false){
             // this.rawData = getRegisterJSON(this.krache, 'per_' + this.periodo);
             // if(this.isEmpty(this.rawData)){
-            //     this.loadData(this.periodo);
             // }else{
             //     this.writeCards();
             // }
@@ -594,6 +575,8 @@ export default {
                     {'tema': this.fuente, 'periodo': this.periodo},
                     res => {
                         this.rawData = (res.length > 0)?  res[0]: {'rs_1': [], 'rs_2': [], 'rs_3': [], 'rs_4': [], 'rs_5': [], 'rs_6': [], 'rs_7': []};
+                        console.log('Kimono');
+                        console.log(this.rawData);
                         this.writeCards();
                     },
                     force

@@ -14,7 +14,7 @@ def data_cm(request):
     clave = request.POST.get('clave') if request.POST.get('clave') else ''
     user_id = request.user.id
     # rawper = int(request.POST.get('periodo'))
-    consulta = createConsulta('raw_cmed', 'retec_facturas', clave, user_id)
+    consulta = createConsulta('raw_cmed_fac', 'retec_facturas', clave, user_id)
     mongo = Mongo('retec_facturas')
     print('Exe query mongodb...')
     datos = mongo.aggregate([
@@ -325,13 +325,7 @@ def raw_facet_fac_control(request):
                 'total': {'$sum': 1}
             }}
         ])
-        # s_vdo_1_pm    vdo_1_pac
-        # s_vppm_1      s_vpac_1
-        # s_gld_1_pm    s_gld_1_pac
-        # s_vrpm_1      s_vrpac_1
-
-
-        # vpac | vrpac | vdo_0_pac | vgl_0_pac | gld_0_pac | vpac_0 | vrpac_0
+        # vpac | vrpac | vdo_0_pac | vgl_0_pac | gld_0_pac | vpac_0 | vrpac_0       s_vdo_1_pm
         # vdo_1_pac | vgl_1_pac | gld_1_pac | vpac_1 | vrpac_1 | vdo_2_pac
         # vgl_2_pac | gld_2_pac | vpac_2 | vrpac_2
         consulta.contenido = str(datos)

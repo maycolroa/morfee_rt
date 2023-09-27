@@ -11,21 +11,36 @@ def getConsulta(request):
     name = request.POST.get('consulta')
     uid = request.user.id
     print('Claving: ' + keycode + ', consulting: ' + name)
-    try:
-        c = Consulta.objects.filter(nombre=name, clave=keycode, user_id=uid).get() if keycode != '' else Consulta.objects.filter(nombre=name, user_id=uid).get()
+    c = Consulta.objects.filter(nombre=name, clave=keycode).first() if keycode != '' else Consulta.objects.filter(nombre=name).first()
+    if c:
         contenido = json.loads(c.contenido) if c.contenido else []
         print('Consulta encontrada')
         rs = {'nombre': c.nombre, 'coleccion': c.coleccion, 'contenido': contenido, 'clave': c.clave, 'estado': c.estado, 'created_at': c.created_at}
         return JsonResponse(rs)
-    except Consulta.DoesNotExist:
+    else:
         print('No existe la consulta')
         rs = {'nombre': name, 'coleccion': '', 'contenido': '', 'clave': keycode, 'estado': 'void', 'created_at': str(date.today())}
         return JsonResponse(rs)
+    
+    # try:
+    #     # c = Consulta.objects.filter(nombre=name, clave=keycode, user_id=uid).get() if keycode != '' else Consulta.objects.filter(nombre=name, user_id=uid).get()
+    #     c = Consulta.objects.filter(nombre=name, clave=keycode).first() if keycode != '' else Consulta.objects.filter(nombre=name).first()
+    #     print('dona')
+    #     print(c)
+    #     contenido = json.loads(c.contenido) if c.contenido else []
+    #     print('Consulta encontrada')
+    #     rs = {'nombre': c.nombre, 'coleccion': c.coleccion, 'contenido': contenido, 'clave': c.clave, 'estado': c.estado, 'created_at': c.created_at}
+    #     return JsonResponse(rs)
+    # except Consulta.DoesNotExist:
+    #     print('No existe la consulta')
+    #     rs = {'nombre': name, 'coleccion': '', 'contenido': '', 'clave': keycode, 'estado': 'void', 'created_at': str(date.today())}
+    #     return JsonResponse(rs)
 
 def createConsulta(name, cole, cla, user):
     print('Generando consulta: ' + name)
     try:
-        c = Consulta.objects.filter(nombre=name, coleccion=cole, cliente_id=0, user_id=user).get()
+        # c = Consulta.objects.filter(nombre=name, coleccion=cole, cliente_id=0, user_id=user).get()
+        c = Consulta.objects.filter(nombre=name, coleccion=cole, cliente_id=0).get()
         c.clave = cla
         c.estado = 'reopen'
         c.created_at = date.today()
