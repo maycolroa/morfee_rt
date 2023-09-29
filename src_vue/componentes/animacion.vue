@@ -72,6 +72,7 @@ export default {
     },
     methods:{
          init: function(){   
+            alert('isaias');
             this.this.connections.length = 0;
             this.data.length = 0;
             this.all.length = 0;
@@ -352,6 +353,7 @@ export default {
             this.ctx.fillRect( 0, 0, w, h );
         });
         window.addEventListener( 'click', init );  
+        
     }
 }
 </script> 

@@ -1,0 +1,74 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block menu %}{% include 'base/menu_retec.html' %}{% endblock %}
+
+{% block estilo %}
+<style>
+    .panel-hover:hover {border:1px solid #2ECD99}
+    .panel-hover:hover .icon > i {color:#2ECD99 !important}
+    .panel-hover:hover .file-name {background:#2ECD99; color:#FFF}
+    .file .icon {height: auto !important}
+    .file .icon i {font-size:3.5rem}
+    .file .file-name {text-align: center}
+    .dk-p {text-align: justify; margin-bottom: 1rem; color:#555}
+</style>
+{% endblock %}
+{% block contenido %}
+<div class="row heading-bg">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+        <h5 class="txt-dark mb-0"><strong>BIENVENIDO</strong><br></h5>
+        <div style="letter-spacing:3px; color:#555; font:12px Arial">Módulo de reservas técnicas</div>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="col-lg-8 col-sm-8 col-md-8 col-xs-12">
+        <ol class="breadcrumb">
+            <li><a href="{% url 'inicio' %}">Morfee</a></li>
+            <li class="active"><span>Inicio</span></li>
+        </ol>
+    </div>
+    <!-- /Breadcrumb -->
+</div>
+<div class="d-flex justify-content-center mb-4">
+    <div>
+        <img width="37%" src="{% static 'img/famisanar.png' %}" alt="auth-img">
+    </div>
+    <div>
+        <img width="80%" src="{% static 'img/logo_min.png' %}" alt="auth-img">
+    </div>
+</div>    
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-center">
+            <a href="{% url 'retec_contratos_new' %}" class="card-view border text-center mx-3 py-4" style="border-radius: 8px !important;  width: 15% !important;">
+                <img height="60px" src="{% static 'img/ico/contrato1.png' %}" alt="auth-img">
+                <h6>CONTRATOS</h6>
+            </a>
+            <a href="{% url 'retec_autorizaciones_new' %}" class="card-view border text-center mx-3 py-4" style="border-radius: 8px !important; width: 15% !important;">
+                <img height="60px" src="{% static 'img/ico/autorizar1.png' %}" alt="auth-img">
+                <h6>AUTORIZACIONES</h6>
+            </a>
+            <a href="{% url 'retec_facturas_new' %}" class="card-view border text-center mx-3 py-4" style="border-radius: 8px !important;  width: 15% !important;">
+                <img height="60px" src="{% static 'img/ico/reservas1.png' %}" alt="auth-img">
+                <h6>FACTURAS</h6>
+            </a>
+        </div>
+    </div>    
+    <div class="col-12">
+        <div class="d-flex justify-content-center">
+            <a href="{% url 'retec_pagos_new' %}" class="card-view border text-center mx-3 py-4" style="border-radius: 8px !important; width: 13%; width: 15% !important;">
+                <img height="60px" src="{% static 'img/ico/pagos1.png' %}" alt="auth-img">
+                <h6>PAGOS</h6>
+            </a>
+            <a href="{% url 'retec_incapacidades_new' %}" class="card-view border text-center mx-3 py-4" style="border-radius: 8px !important; width: 15% !important;">
+                <img height="55px" src="{% static 'img/ico/incapacidades1.png' %}" alt="auth-img">
+                <h6>INCAPACIDADES</h6>
+            </a>
+            <a href="{% url 'pro_inicio' %}" class="card-view border text-center mx-3 py-4" style="border-radius: 8px !important; width: 15% !important;">
+                <img height="60px" src="{% static 'img/ico/proyecciones1.png' %}" alt="auth-img">
+                <h6>PROYECCIONES</h6>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
