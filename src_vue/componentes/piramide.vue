@@ -19,7 +19,8 @@
                                 <tbody>
                                     <tr v-for="(elm, i) in pridata" :key="i">
                                         <td class="colmin df-grey py-2">{{ elm.tx }}</td>
-                                        <td class="py-2" v-for="(rad, r) in periodos" :key="r">{{ clearNumber(getDataMM(rad.num, elm.src), 4) }}</td>
+                                        <td :class="r == 0? 'd-none': 'py-2'" v-for="(rad, r) in periodos" :key="r">{{ clearNumber(getDataMM(rad.num, elm.src), 4) }}</td>
+                                        <td class="py-2">1</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -43,10 +44,10 @@
                                         <td class="py-1">{{ per.ordered }}</td>
                                         <td class="py-1 text-center">{{ per.iback + 1 }}</td>
                                         <td class="py-1">{{ clearNumber(getValorAcumRow(per.ordered)) }}</td>
-                                        <td class="py-1">{{ clearNumber(hot_mm[per.reverse].pro_p, 4) }}</td>
-                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.ordered) * hot_mm[per.reverse].pro_p) }}</td>
+                                        <td class="py-1">{{ formatMiles(getDataMM(per.reverse_back, 'pro_p', per.first)) }}</td>
+                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.ordered) * getDataMM(per.reverse_back, 'pro_p', per.first)) }}</td>
                                         <td class="py-1">
-                                            {{ clearNumber((getValorAcumRow(per.ordered) * hot_mm[per.reverse].pro_p) - getValorAcumRow(per.ordered)) }}
+                                            {{ clearNumber((getValorAcumRow(per.ordered) * getDataMM(per.reverse_back, 'pro_p', per.first)) - getValorAcumRow(per.ordered)) }}
                                         </td>
                                     </tr>
                                 </tbody>
@@ -73,10 +74,10 @@
                                         <td class="py-1">{{ per.ordered }}</td>
                                         <td class="py-1 text-center">{{ per.iback + 1 }}</td>
                                         <td class="py-1">{{ clearNumber(getValorAcumRow(per.ordered)) }}</td>
-                                        <td class="py-1">{{ clearNumber(hot_mm[per.reverse].ladder_p, 4) }}</td>
-                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.ordered) * hot_mm[per.reverse].ladder_p) }}</td>
+                                        <td class="py-1">{{ formatMiles(getDataMM(per.reverse_back, 'ladder_p', per.first)) }}</td>
+                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.ordered) * getDataMM(per.reverse_back, 'ladder_p', per.first)) }}</td>
                                         <td class="py-1">
-                                            {{ clearNumber((getValorAcumRow(per.ordered) * hot_mm[per.reverse].ladder_p) - getValorAcumRow(per.ordered)) }}
+                                            {{ clearNumber((getValorAcumRow(per.ordered) * getDataMM(per.reverse_back, 'ladder_p', per.first)) - getValorAcumRow(per.ordered)) }}
                                         </td>
                                     </tr>
                                 </tbody>
@@ -103,10 +104,10 @@
                                         <td class="py-1">{{ per.ordered }}</td>
                                         <td class="py-1 text-center">{{ per.iback + 1 }}</td>
                                         <td class="py-1">{{ clearNumber(getValorAcumRow(per.ordered)) }}</td>
-                                        <td class="py-1">{{ clearNumber(hot_mm[per.reverse].min_p, 4) }}</td>
-                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.ordered) * hot_mm[per.reverse].min_p) }}</td>
+                                        <td class="py-1">{{ formatMiles(getDataMM(per.reverse_back, 'min_p', per.first)) }}</td>
+                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.ordered) * getDataMM(per.reverse_back, 'min_p', per.first)) }}</td>
                                         <td class="py-1">
-                                            {{ clearNumber((getValorAcumRow(per.ordered) * hot_mm[per.reverse].min_p) - getValorAcumRow(per.ordered)) }}
+                                            {{ clearNumber((getValorAcumRow(per.ordered) * getDataMM(per.reverse_back, 'min_p', per.first)) - getValorAcumRow(per.ordered)) }}
                                         </td>
                                     </tr>
                                 </tbody>
@@ -133,10 +134,10 @@
                                         <td class="py-1">{{ per.ordered }}</td>
                                         <td class="py-1 text-center">{{ per.iback + 1 }}</td>
                                         <td class="py-1">{{ clearNumber(getValorAcumRow(per.ordered)) }}</td>
-                                        <td class="py-1">{{ clearNumber(hot_mm[per.reverse].max_p, 4) }}</td>
-                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.ordered) * hot_mm[per.reverse].max_p) }}</td>
+                                        <td class="py-1">{{ formatMiles(getDataMM(per.reverse_back, 'max_p', per.first)) }}</td>
+                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.ordered) * getDataMM(per.reverse_back, 'max_p', per.first)) }}</td>
                                         <td class="py-1">
-                                            {{ clearNumber((getValorAcumRow(per.ordered) * hot_mm[per.reverse].max_p) - getValorAcumRow(per.ordered)) }}
+                                            {{ clearNumber((getValorAcumRow(per.ordered) * getDataMM(per.reverse_back, 'max_p', per.first)) - getValorAcumRow(per.ordered)) }}
                                         </td>
                                     </tr>
                                 </tbody>
@@ -163,10 +164,10 @@
                                         <td class="py-1">{{ per.ordered }}</td>
                                         <td class="py-1 text-center">{{ per.iback + 1 }}</td>
                                         <td class="py-1">{{ clearNumber(getValorAcumRow(per.ordered)) }}</td>
-                                        <td class="py-1">{{ clearNumber(hot_mm[per.reverse].smx_p, 4) }}</td>
-                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.ordered) * hot_mm[per.reverse].smx_p) }}</td>
+                                        <td class="py-1">{{ formatMiles(getDataMM(per.reverse_back, 'smx_p', per.first)) }}</td>
+                                        <td class="py-1">{{ clearNumber(getValorAcumRow(per.ordered) * getDataMM(per.reverse_back, 'smx_p', per.first)) }}</td>
                                         <td class="py-1">
-                                            {{ clearNumber((getValorAcumRow(per.ordered) * hot_mm[per.reverse].smx_p) - getValorAcumRow(per.ordered)) }}
+                                            {{ clearNumber((getValorAcumRow(per.ordered) * getDataMM(per.reverse_back, 'smx_p', per.first)) - getValorAcumRow(per.ordered)) }}
                                         </td>
                                     </tr>
                                 </tbody>
@@ -694,64 +695,22 @@ export default {
         }
     },
     methods: {
-        getDataMM: function(ym, atr){
+        getDataMM: function(ym, atr, alt=false){
             if(atr == '' || [undefined, null].includes(this.hot_mm[ym])){
                 return '';
             }
-            return this.hot_mm[ym][atr];
+            return alt? 1: this.hot_mm[ym][atr];
         },
         getIBNR: function(tipo){
             let sum = 0;
-            if(tipo == 'prom'){
-                this.getReverse().forEach((per, i) => {
-                    if(i < 35){
-                        let a = this.getValorAcumRow(per.ordered);
-                        let b = this.hot_mm[per.reverse].pro_p;
-                        let c = a * b;
-                        sum += c - a;
-                    }
-                });
-            }
-            if(tipo == 'ladder'){
-                this.getReverse().forEach((per, i) => {
-                    if(i < 35){
-                        let a = this.getValorAcumRow(per.ordered);
-                        let b = this.hot_mm[per.reverse].ladder_p;
-                        let c = a * b;
-                        sum += c - a;
-                    }
-                });
-            }
-            if(tipo == 'min'){
-                this.getReverse().forEach((per, i) => {
-                    if(i < 35){
-                        let a = this.getValorAcumRow(per.ordered);
-                        let b = this.hot_mm[per.reverse].min_p;
-                        let c = a * b;
-                        sum += c - a;
-                    }
-                });
-            }
-            if(tipo == 'max'){
-                this.getReverse().forEach((per, i) => {
-                    if(i < 35){
-                        let a = this.getValorAcumRow(per.ordered);
-                        let b = this.hot_mm[per.reverse].max_p;
-                        let c = a * b;
-                        sum += c - a;
-                    }
-                });
-            }
-            if(tipo == 'smx'){
-                this.getReverse().forEach((per, i) => {
-                    if(i < 35){
-                        let a = this.getValorAcumRow(per.ordered);
-                        let b = this.hot_mm[per.reverse].smx_p;
-                        let c = a * b;
-                        sum += c - a;
-                    }
-                });
-            }
+            let taos = {'prom': 'pro_p', 'ladder': 'ladder_p', 'min': 'min_p', 'max': 'max_p', 'smx': 'smx_p'};
+            let ibnr = taos[tipo];
+            this.getReverse().forEach((per, i) => {
+                let a = this.getValorAcumRow(per.ordered);
+                let b = this.getDataMM(per.reverse_back, ibnr, per.first);
+                let c = a * b;
+                sum += c - a;
+            });
             return sum;
         },
         makeRango: function(num){	// Version 3
@@ -777,15 +736,23 @@ export default {
         },
         getReverse: function(){
             let arr = [];
+            let back = 0;
             this.periodos.forEach((elm, i) => {
+                let first = false;
+                if(i == 0){
+                    back = this.periodos[35 - i].num;
+                    first = true;
+                }
                 arr.push({
                     'ordered': elm.num,
                     'reverse': this.periodos[35 - i].num,
+                    'reverse_back': back,
                     'iback': 35 - i,
+                    'first': first
                 });
+                back = this.periodos[35 - i].num;
             });
             return arr;
-            // return this.periodos.map(elm => elm.num).reverse();
         },
         isEmpty: function(arg){
             return ['', undefined, null].includes(arg);
@@ -968,7 +935,7 @@ export default {
                     let refmm = this.periodos[ri].num;
                     let namei = `${pre.num}_${rad.num}`;
                     if(ri == 0){
-                        this.hot_col[namei] = 'd-nonex';
+                        this.hot_col[namei] = 'd-none';
                     }else{
                         if(!this.isEmpty(this.hot_mm[refmm]) && !this.isEmpty(this.hot_fac[namei])){
                             let rango = this.hot_mm[refmm].max - this.hot_mm[refmm].min;
@@ -1018,11 +985,25 @@ export default {
             console.log('Bakiri sam');
             console.log(this.hot_mm);
             this.hot_status = true;
-            this.$refs.ib_prom.setValor(Math.round(Math.abs(this.getIBNR('prom'))));
-            this.$refs.ib_ladder.setValor(Math.round(Math.abs(this.getIBNR('ladder'))));
-            this.$refs.ib_min.setValor(Math.round(Math.abs(this.getIBNR('min'))));
-            this.$refs.ib_max.setValor(Math.round(Math.abs(this.getIBNR('max'))));
-            this.$refs.ib_smx.setValor(Math.round(Math.abs(this.getIBNR('smx'))));
+            let summary = {
+                'prom': {'fuente': 'prom', 'valor': Math.round(Math.abs(this.getIBNR('prom'))), 'active': false},
+                'ladder': {'fuente': 'ladder', 'valor': Math.round(Math.abs(this.getIBNR('ladder'))), 'active': false},
+                'min': {'fuente': 'min', 'valor': Math.round(Math.abs(this.getIBNR('min'))), 'active': false},
+                'max': {'fuente': 'max', 'valor': Math.round(Math.abs(this.getIBNR('max'))), 'active': false},
+                'smx': {'fuente': 'smx', 'valor': Math.round(Math.abs(this.getIBNR('smx'))), 'active': false},
+            };
+            // let tmin = Object.values(summary).reduce((ac, elm) => {
+            //     if(ac == null){
+            //         return elm;
+            //     }
+            //     return (ac.valor < elm.valor)? ac: elm;
+            // }, null);
+            // summary[tmin.fuente].active = true;
+            this.$refs.ib_prom.setValor(summary.prom.valor, summary.prom.active);
+            this.$refs.ib_ladder.setValor(summary.ladder.valor, summary.ladder.active);
+            this.$refs.ib_min.setValor(summary.min.valor, summary.min.active);
+            this.$refs.ib_max.setValor(summary.max.valor, summary.max.active);
+            this.$refs.ib_smx.setValor(summary.smx.valor, summary.smx.active);
         },
         setTriangle: function(elm){
             this.enable_controls = false;

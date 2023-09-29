@@ -9,6 +9,10 @@ import json
 # from bson.code import Code
 
 @login_required(login_url='/login/')
+def tpl_reserva(request):
+    return render(request, 'triangulos/reserva.html')
+
+@login_required(login_url='/login/')
 def piramide(request):
     clienteId = '0'
     cliente = 'CLIENTE NUEVO'

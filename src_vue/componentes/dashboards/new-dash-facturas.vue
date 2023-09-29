@@ -30,8 +30,8 @@
                 <div class="col-sm-3">
                     <local-counter ref="cnt_all" class="border" texto="REGISTROS" valor="0" loading duracion="1" miles></local-counter>
                     <local-counter ref="cnt_vbs" class="border" texto="Total VLRRESERVAPBS" valor="0" loading duracion="1" miles pretag="$ "></local-counter>
-                    <local-counter ref="cnt_vac" class="border" texto="Total VLRRESERVAPAC" valor="0" loading duracion="1" miles pretag="$ "></local-counter>
                     <local-counter ref="cnt_vpm" class="border" texto="Total VLRRESERVAPM" valor="0" loading duracion="1" miles pretag="$ "></local-counter>
+                    <local-counter ref="cnt_vac" class="border" texto="Total VLRRESERVAPAC" valor="0" loading duracion="1" miles pretag="$ "></local-counter>
                     <local-counter ref="cnt_vdo" class="border" texto="Total VLRFACTURADO" valor="0" loading duracion="1" miles pretag="$ "></local-counter>
                     <local-counter ref="cnt_vgl" class="border" texto="Total VLRGLOSADO" valor="0" loading duracion="1" miles pretag="$ "></local-counter>
                     <local-counter ref="cnt_gde" class="border" texto="Total GLOSADEFINITIVA" valor="0" loading duracion="1" miles pretag="$ "></local-counter>

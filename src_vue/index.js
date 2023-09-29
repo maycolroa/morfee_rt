@@ -138,12 +138,6 @@ Vue.component('fragmentador', require('./componentes/fragmentador.vue').default)
 Vue.component('geo-location', require('./componentes/geo-location.vue').default);
 Vue.component('table-data', require('./componentes/table-data.vue').default);
 
-Vue.component('dash-contratos', require('./componentes/dashboards/dash-contratos.vue').default);
-Vue.component('dash-autorizaciones', require('./componentes/dashboards/dash-autorizaciones.vue').default);
-Vue.component('dash-facturas', require('./componentes/dashboards/dash-facturas.vue').default);
-Vue.component('dash-pagos', require('./componentes/dashboards/dash-pagos.vue').default);
-Vue.component('dash-incapacidades', require('./componentes/dashboards/dash-incapacidades.vue').default);
-
 Vue.component('new-dash-contratos', require('./componentes/dashboards/new-dash-contratos.vue').default);
 Vue.component('new-dash-autorizaciones', require('./componentes/dashboards/new-dash-autorizaciones.vue').default);
 Vue.component('new-dash-facturas', require('./componentes/dashboards/new-dash-facturas.vue').default);

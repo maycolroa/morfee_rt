@@ -33,7 +33,7 @@
     <li>
         <a href="javascript:void(0);" data-toggle="collapse" data-target="#ui_drp"><div class="pull-left"><i class="zmdi zmdi-inbox me-3"></i><span class="right-nav-text">Pagos</span></div><div class="pull-right"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
         <ul id="ui_drp" class="collapse collapse-level-1 two-col-list">
-            <li><a href="{% url 'retec_pagos_new' %}">Reservas</a></li>
+            <li><a href="{% url 'retec_pagos_new' %}">Detalles</a></li>
             <li><a href="{% url 'pag_cm' %}">Cuentas médicas</a></li>
         </ul>
     </li>
@@ -45,6 +45,11 @@
     <li>
         <a href="{% url 'retec_piramide' %}" class="{% if request.resolver_match.url_name == 'retec_piramide' %}active{% endif %}">
             <div class="pull-left"><i class="zmdi zmdi-triangle-up me-3"></i><span class="right-nav-text">Triángulos</span></div><div class="clearfix"></div>
+        </a>
+    </li>
+    <li class="d-none">
+        <a href="{% url 'try_reserva' %}" class="{% if request.resolver_match.url_name == 'try_reserva' %}active{% endif %}">
+            <div class="pull-left"><i class="zmdi zmdi-money me-3"></i><span class="right-nav-text">Reserva</span></div><div class="clearfix"></div>
         </a>
     </li>
     <li>
@@ -60,7 +65,7 @@
 
     <li class="d-none">
         <a href="{% url 'us_prueba' %}" class="{% if request.resolver_match.url_name == 'us_prueba' %}active{% endif %}">
-            <div class="pull-left"><i class="zmdi zmdi-inbox me-3"></i><span class="right-nav-text">Barra</span></div><div class="clearfix"></div>
+            <div class="pull-left"><i class="zmdi zmdi-money me-3"></i><span class="right-nav-text">Barra</span></div><div class="clearfix"></div>
         </a>
     </li>
     

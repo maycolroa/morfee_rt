@@ -1,7 +1,7 @@
 <template>
-    <div class="panel panel-default card-view border py-0 px-4">
+    <div :class="lc_active? 'panel panel-default card-view py-0 px-4 vega': 'panel panel-default card-view border py-0 px-4'">
         <div class="panel-wrapper collapse in">
-            <div class="panel-body pt-4 pb-3 vega">
+            <div class="panel-body pt-4 pb-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="x1">
                         <div class="fs-4 titulo">
@@ -36,13 +36,15 @@ export default {
         canal: {type: String, default: ''},
         pretag: {type: String, default: ''},
         fontsize: {type: String, default: '22px'},
-        warning: {type: Boolean, default: false}
+        warning: {type: Boolean, default: false},
+        active: {type: Boolean, default: false}
     },
     data() {
         return {
             _duracion: 0,
             iteration: 0,
             intervalId: null,
+            lc_active: this.active,
             lc_valor: '',
             lc_texto: '',
             // css: ['icon-layers', 'data-right-rep-icon', 'txt-light-grey'],
@@ -77,7 +79,8 @@ export default {
                 return tmp;
             }
         },
-        setValor: function(num){
+        setValor: function(num, stt=false){
+            this.lc_active = stt;
             this.lc_loading = false;
             this.resetData();
             this.lc_valor = String(num);
@@ -179,4 +182,6 @@ export default {
         animation-duration: 1.2s;
         animation-iteration-count: infinite;
     }
+    .vega {background:#2ECD99 !important; border:1px solid #2ECD99 !important; color:#FFF !important}
+    .vega div, .vega span, .vega i.txt-light-grey {color:#FFF !important}
 </style>
