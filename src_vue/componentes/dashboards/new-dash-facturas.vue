@@ -29,12 +29,15 @@
             <div class="row">
                 <div class="col-sm-3">
                     <local-counter ref="cnt_all" class="border" texto="REGISTROS" valor="0" loading duracion="1" miles></local-counter>
-                    <local-counter ref="cnt_vbs" class="border" texto="Total VLRRESERVAPBS" valor="0" loading duracion="1" miles pretag="$ "></local-counter>
-                    <local-counter ref="cnt_vpm" class="border" texto="Total VLRRESERVAPM" valor="0" loading duracion="1" miles pretag="$ "></local-counter>
-                    <local-counter ref="cnt_vac" class="border" texto="Total VLRRESERVAPAC" valor="0" loading duracion="1" miles pretag="$ "></local-counter>
-                    <local-counter ref="cnt_vdo" class="border" texto="Total VLRFACTURADO" valor="0" loading duracion="1" miles pretag="$ "></local-counter>
-                    <local-counter ref="cnt_vgl" class="border" texto="Total VLRGLOSADO" valor="0" loading duracion="1" miles pretag="$ "></local-counter>
-                    <local-counter ref="cnt_gde" class="border" texto="Total GLOSADEFINITIVA" valor="0" loading duracion="1" miles pretag="$ "></local-counter>
+                    <div class="mb-4" style="border-top:1px solid #CCC; border-bottom:1px solid #FFF"></div>
+                    <local-counter ref="cnt_vbs" class="border" texto="Total VLR RESERVA PBS" valor="0" loading duracion="1" miles pretag="$ "></local-counter>
+                    <local-counter ref="cnt_vpm" class="border" texto="Total VLR RESERVA PM" valor="0" loading duracion="1" miles pretag="$ "></local-counter>
+                    <local-counter ref="cnt_vac" class="border" texto="Total VLR RESERVA PAC" valor="0" loading duracion="1" miles pretag="$ "></local-counter>
+                    <local-counter ref="cnt_res" class="border" texto="Total VLR RESERVA" valor="0" loading duracion="1" miles pretag="$ "></local-counter>
+                    <div class="mb-4" style="border-top:1px solid #CCC; border-bottom:1px solid #FFF"></div>
+                    <local-counter ref="cnt_vdo" class="border" texto="Total VLR FACTURADO" valor="0" loading duracion="1" miles pretag="$ "></local-counter>
+                    <local-counter ref="cnt_vgl" class="border" texto="Total VLR GLOSADO" valor="0" loading duracion="1" miles pretag="$ "></local-counter>
+                    <local-counter ref="cnt_gde" class="border" texto="Total GLOSA DEFINITIVA" valor="0" loading duracion="1" miles pretag="$ "></local-counter>
                 </div>
                 <div class="col-sm-3">
                     <div class="panel panel-default card-view border">
@@ -1138,16 +1141,18 @@ export default {
                 if(cores != null){
                     this.$refs.cnt_all.setValor(cores.total);
                     this.$refs.cnt_vbs.setValor(this.clearNumber(cores.sum_vbs));
-                    this.$refs.cnt_vac.setValor(this.clearNumber(cores.sum_vac));
                     this.$refs.cnt_vpm.setValor(this.clearNumber(cores.sum_vpm));
+                    this.$refs.cnt_vac.setValor(this.clearNumber(cores.sum_vac));
+                    this.$refs.cnt_res.setValor(this.clearNumber(cores.sum_vbs + cores.sum_vpm + cores.sum_vac));
                     this.$refs.cnt_vdo.setValor(this.clearNumber(cores.sum_vdo));
                     this.$refs.cnt_vgl.setValor(this.clearNumber(cores.sum_vgl));
                     this.$refs.cnt_gde.setValor(this.clearNumber(cores.sum_gde));
                 }else{
                     this.$refs.cnt_all.setValor('');
                     this.$refs.cnt_vbs.setValor('');
-                    this.$refs.cnt_vac.setValor('');
                     this.$refs.cnt_vpm.setValor('');
+                    this.$refs.cnt_vac.setValor('');
+                    this.$refs.cnt_res.setValor('');
                     this.$refs.cnt_vdo.setValor('');
                     this.$refs.cnt_vgl.setValor('');
                     this.$refs.cnt_gde.setValor('');
@@ -1165,55 +1170,6 @@ export default {
                 this.$refs.gp_pac_0.setDatos(this.rawData['p0'].slice(0, 30).sort((a, b) => a.suma - b.suma));
                 this.$refs.tb_pac_1.setDatos(this.parseNull(this.rawData['p1']));
                 this.$refs.gp_pac_1.setDatos(this.rawData['p1'].slice(0, 30).sort((a, b) => a.suma - b.suma));
-            }
-        },
-        loadSchema: function(tload){
-            // facets.unshift("x_id:group:none:1");
-            this.pinload = tload;
-            if(this.pinload <= 2){
-                let lim_a = this.porcion[this.pinload].a;
-                let lim_b = this.porcion[this.pinload].b;
-                let facets = [];
-                let matches = [];
-                if(this.pinload == 0){
-                    facets = ["x_id:group:none:1"].concat(this.campos.slice(lim_a, lim_b).map(elm => "x_" + elm + ":group:none:1"));
-                    matches = this.campos.slice(lim_a, lim_b).map(elm => "x_" + elm + ":" + elm + ":exists:true");
-                }else if(this.pinload < 2){
-                    facets = this.campos.slice(lim_a, lim_b).map(elm => "x_" + elm + ":group:none:1");
-                    matches = this.campos.slice(lim_a, lim_b).map(elm => "x_" + elm + ":" + elm + ":exists:true");
-                }else{
-                    facets = this.campos.slice(lim_a).map(elm => "x_" + elm + ":group:none:1");
-                    matches = this.campos.slice(lim_a).map(elm => "x_" + elm + ":" + elm + ":exists:true");
-                }
-                var pam = new FormData();
-                pam.append('tema', this.fuente);
-                pam.append('facets', facets.join('|'));
-                pam.append('match', matches.join('|'));
-                pam.append('periodo', this.periodo);
-                this.status_sch = this.state.LOADING;
-                axios.post(root_path + 'reservas/mng/facet', pam).then(res => {
-                    if(res.data.length > 0){
-                        var raw = res.data[0];
-                        if(tload == 0){
-                            this.rawSchema.push({'field': '_id', 'total': raw['x_id'][0].total});
-                            this.num_registros = raw['x_id'][0].total;
-                        }
-                        this.campos.forEach(elm => {
-                            if(raw['x_' + elm] != undefined){
-                                if(raw['x_' + elm].length > 0){
-                                    this.rawSchema.push({'field': elm, 'total': raw['x_' + elm][0].total});
-                                }
-                            }
-                        });
-                    }
-                    registerJSON(this.krache, this.rawSchema, 'sch_' + this.periodo);
-                    this.status_sch = this.state.LOADED;
-                    this.loadSchema(this.pinload + 1);
-                }).catch(err => {
-                    this.status_sch = this.state.FAILED;
-                    console.log('Load schema failed!');
-                    console.log(err);
-                });
             }
         },
         getSchema: function(force=false){

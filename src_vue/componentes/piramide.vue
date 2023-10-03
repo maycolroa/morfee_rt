@@ -439,7 +439,7 @@
                 </div><!-- End panel-body -->
             </div><!-- End panel-wrapper -->
         </div><!-- End card-view -->
-        <div :class="hot_status? '': 'd-none'">
+        <div :class="('CALOR' == getTriangleInfo('code') && hot_status)? '': 'd-none'">
             <div class="row">
                 <div class="col-sm-4">
                     <contador-light ref="ib_prom" texto="IBNR Promedio" duracion="1" miles pretag="$ "></contador-light>
@@ -460,6 +460,18 @@
                 </div>
             </div>
         </div>
+        <!-- <h5>AUTORIZACIONES</h5>
+        <ul>
+            <li v-for="(war, i) in warnings.aut" :key="i">{{ war.pre + ' ' + war.rad }}</li>
+        </ul>
+        <h5>FACTURAS</h5>
+        <ul>
+            <li v-for="(war, i) in warnings.fac" :key="i">{{ war.pre + ' ' + war.rad }}</li>
+        </ul>
+        <h5>PAGOS</h5>
+        <ul>
+            <li v-for="(war, i) in warnings.pag" :key="i">{{ war.pre + ' ' + war.rad }}</li>
+        </ul> -->
         <!-- *********************** -->
         <!-- SECTION MODAL DATA CELL -->
         <!-- *********************** -->
@@ -992,13 +1004,13 @@ export default {
                 'max': {'fuente': 'max', 'valor': Math.round(Math.abs(this.getIBNR('max'))), 'active': false},
                 'smx': {'fuente': 'smx', 'valor': Math.round(Math.abs(this.getIBNR('smx'))), 'active': false},
             };
-            // let tmin = Object.values(summary).reduce((ac, elm) => {
-            //     if(ac == null){
-            //         return elm;
-            //     }
-            //     return (ac.valor < elm.valor)? ac: elm;
-            // }, null);
-            // summary[tmin.fuente].active = true;
+            let tmin = Object.values(summary).reduce((ac, elm) => {
+                if(ac == null){
+                    return elm;
+                }
+                return (ac.valor < elm.valor)? ac: elm;
+            }, null);
+            summary[tmin.fuente].active = true;
             this.$refs.ib_prom.setValor(summary.prom.valor, summary.prom.active);
             this.$refs.ib_ladder.setValor(summary.ladder.valor, summary.ladder.active);
             this.$refs.ib_min.setValor(summary.min.valor, summary.min.active);

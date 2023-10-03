@@ -69,7 +69,7 @@
 				</div>
 				<div id="mobile_only_nav" class="mobile-only-nav pull-right">
 					<ul class="nav navbar-right top-nav pull-right">
-						<li>
+						<li class="d-none">
 							<a id="open_right_sidebar" href="#"><i class="zmdi zmdi-settings top-nav-icon"></i></a>
 						</li>
 						<li class="dropdown auth-drp">
@@ -101,57 +101,6 @@
 				{% endblock %}
 			</div>
 			<!-- /Left Sidebar Menu -->
-			
-			<!-- Right Sidebar Menu -->
-			<div class="fixed-sidebar-right hidden-print">
-				<ul class="right-sidebar">
-					<li>
-						<div  class="tab-struct custom-tab-1">
-							<div class="tab-content" id="right_sidebar_content">
-								<div  id="chat_tab" class="tab-pane fade active in" role="tabpanel">
-									<div class="chat-box-wrap">
-										<div id="chat_list_scroll">
-											<div class="nicescroll-bar">
-												<ul class="chat-list-wrap">
-													<li class="chat-list">
-														<div class="chat-body">
-															<a href="javascript:void(0)">
-																<div class="chat-data">
-																	<img class="user-img img-circle"  src="{% static 'dist/img/user.png' %}" alt="user"/>
-																	<div class="user-data">
-																		<span class="name block capitalize-font">Clay Masse</span>
-																		<span class="time block truncate txt-grey">No one saves us but ourselves.</span>
-																	</div>
-																	<div class="status away"></div>
-																	<div class="clearfix"></div>
-																</div>
-															</a>
-															<a href="javascript:void(0)">
-																<div class="chat-data">
-																	<img class="user-img img-circle"  src="{% static 'dist/img/user1.png' %}" alt="user"/>
-																	<div class="user-data">
-																		<span class="name block capitalize-font">Evie Ono Hono</span>
-																		<span class="time block truncate txt-grey">Unity is strength</span>
-																	</div>
-																	<div class="status offline"></div>
-																	<div class="clearfix"></div>
-																</div>
-															</a>
-														</div>
-													</li>
-												</ul>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</li>
-				</ul>
-			</div>
-			<!-- /Right Sidebar Menu -->
-			
-			
 			
 			<!-- Right Sidebar Backdrop -->
 			<div class="right-sidebar-backdrop"></div>

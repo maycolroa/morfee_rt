@@ -173,24 +173,27 @@ def raw_facet_pay_control(request):
     user_id = request.user.id
     consulta = createConsulta('raw_pay_ctr' + str(rawper), tema, clave, user_id)
     mongo = Mongo(tema)
+    print('Vanegas Lynch')
     try:
         datos = mongo.aggregate([
             {"$match": {'crx': periodo} },
+            {"$addFields": {
+                "cd_0": {"$in": ["$pmx", ['0', 0]]},
+                "cd_1": {"$in": ["$pmx", ['1', 1]]},
+            }},
             {'$group': {
                 '_id': None,
                 's_vdo': {'$sum': '$vdo'},		# FACTURADO TOTAL
                 's_gde': {'$sum': '$gde'},		# GLOSA DEFINITIVA
                 's_vpbs': {'$sum': '$vpbs'},	# PAGADO PBS
                 's_vppm': {'$sum': '$vppm'},	# PAGADO PM
-                'f_pbs': {'$sum': {'$cond': [{'$in': ['$pmx', ['0', 0]]}, '$vdo', 0]}},		# FACTURADO PBS
-                'f_pm': {'$sum': {'$cond': [{'$in': ['$pmx', ['1', 1]]}, '$vdo', 0]}},		# FACTURADO PM
-                'g_pbs': {'$sum': {'$cond': [{'$in': ['$pmx', ['0', 0]]}, '$gde', 0]}},		# GLOSADO PBS
-                'g_pm': {'$sum': {'$cond': [{'$in': ['$pmx', ['1', 1]]}, '$gde', 0]}},		# GLOSADO PM
+                'f_pbs': {'$sum': {'$cond': ["$cd_0", '$vdo', 0]}},		# FACTURADO PBS
+                'f_pm': {'$sum': {'$cond': ["$cd_1", '$vdo', 0]}},		# FACTURADO PM
+                'g_pbs': {'$sum': {'$cond': ["$cd_0", '$gde', 0]}},		# GLOSADO PBS
+                'g_pm': {'$sum': {'$cond': ["$cd_1", '$gde', 0]}},		# GLOSADO PM
                 'total': {'$sum': 1}
             }}
         ])
-        # // rawCtr.s_vpbs
-        # // rawCtr.s_vppm
         consulta.contenido = str(datos)
         consulta.estado = 'close'
         consulta.save()

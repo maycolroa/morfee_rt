@@ -7,16 +7,16 @@
             </div>
             <div class="d-flex">
                 <temporizador ref="timecop"></temporizador>
-                <get-view-periodo collections="retec_pagos"></get-view-periodo>
+                <get-view-periodo :class="status" collections="retec_pagos"></get-view-periodo>
                 <!-- <select-periodo ref="xtime" :coleccion="fuente" :alias="krache_time"></select-periodo> -->
-                <div :class="section == 'basic'? 'btn-group dk-disabled': 'btn-group'">
+                <div :class="section == 'basic'? 'btn-group dk-disabled ' + status: 'btn-group ' + status">
                     <button :class="display == 'chart'? 'btn btn-success': 'btn btn-default'" @click="display = 'chart'"><i class="fa fa-bar-chart"></i></button>
                     <button :class="display == 'table'? 'btn btn-success': 'btn btn-default'" @click="display = 'table'"><i class="fa fa-table"></i></button>
                 </div>
             </div>
         </div>
         <div class="d-flex justify-content-between mb-4 df-options">
-            <a :class="section == elm.code? 'flex-fill bg-target': 'flex-fill bg-custom'" href="javascript:void(0)" v-for="(elm, i) in opt" :key="i" @click="setSection(elm.code)">
+            <a :class="sectionStyle(elm.code)" href="javascript:void(0)" v-for="(elm, i) in opt" :key="i" @click="setSection(elm.code)">
                 <div class="d-flex align-items-center">
                     <span class="lc-icon d-flex align-items-center justify-content-center me-2"><i :class="section == elm.code? 'fa fa-folder-open-o': 'fa fa-folder-o'"></i></span>
                     <span>{{ elm.tx }}</span>
@@ -314,6 +314,7 @@
                             sin_valores 
                             altura_minima="100" 
                             unidad="30" 
+                            truncar
                             custom="Valor: {valueX}, Registros: {total}" 
                             custom_label="{valueX} ({total} registros)" 
                             empty_data="No hay datos para graficar."></am-ver>
@@ -348,6 +349,7 @@
                             sin_valores 
                             altura_minima="100" 
                             unidad="30" 
+                            truncar
                             custom="Valor: {valueX}, Registros: {total}" 
                             custom_label="{valueX} ({total} registros)" 
                             empty_data="No hay datos para graficar."></am-ver>
@@ -386,6 +388,7 @@
                             sin_valores 
                             altura_minima="100" 
                             unidad="30" 
+                            truncar
                             custom="Valor: {valueX}, Registros: {total}" 
                             custom_label="{valueX} ({total} registros)" 
                             empty_data="No hay datos para graficar."></am-ver>
@@ -420,6 +423,7 @@
                             sin_valores 
                             altura_minima="100" 
                             unidad="30" 
+                            truncar
                             custom="Valor: {valueX}, Registros: {total}" 
                             custom_label="{valueX} ({total} registros)" 
                             empty_data="No hay datos para graficar."></am-ver>
@@ -458,6 +462,7 @@
                             sin_valores 
                             altura_minima="100" 
                             unidad="30" 
+                            truncar
                             custom="Valor: {valueX}, Registros: {total}" 
                             custom_label="{valueX} ({total} registros)" 
                             empty_data="No hay datos para graficar."></am-ver>
@@ -492,6 +497,7 @@
                             sin_valores 
                             altura_minima="100" 
                             unidad="30" 
+                            truncar
                             custom="Valor: {valueX}, Registros: {total}" 
                             custom_label="{valueX} ({total} registros)" 
                             empty_data="No hay datos para graficar."></am-ver>
@@ -825,6 +831,10 @@ export default {
             str += Math.round(Math.random() * 999 + 1000);
             return str;
         },
+        sectionStyle: function(code){
+            let acc = (this.status == this.state.LOADING)? ' loading': '';
+            return (this.section == code)? 'flex-fill bg-target' + acc: 'flex-fill bg-custom' + acc;
+        },
         isEmpty: function(arg){
             if([undefined, null, ''].includes(arg)) return true;
             return /^\s*$/.test(arg);
@@ -925,22 +935,23 @@ export default {
         },
         getSchema: function(force=false){
             this.status_sch = this.state.LOADING;
+            this.status = this.state.LOADING;
             this.$refs.timecop.dispatchQuery(
                 'schema_pay' + this.periodo,
                 this.pathdata + '/schema',
                 {'tema': this.fuente, 'periodo': this.periodo},
                 res => {
-                    console.log('koi');
                     this.rawSchema = res[0];
-                    console.log(this.rawSchema);
                     this.num_registros = this.rawSchema.total;
                     this.status_sch = this.state.LOADED;
+                    this.status = this.state.LOADED;
                 },
                 force
             );
         },
         manager: function(force=false){
             if('basic' == this.section){
+                this.status = this.state.LOADING;
                 this.$refs.timecop.dispatchQuery(
                     'raw_pay_dat' + this.periodo,
                     this.pathdata + '/data',
@@ -949,10 +960,12 @@ export default {
                         console.log(res);
                         this.rawData = (res.length > 0)?  res[0]: {'rs_0': [], 'rs_1': [], 'rs_2': [], 'rs_3': [], 'rs_4': [], 'rs_5': [], 'pmx': [], 'ran_1a':[], 'ran_1b':[], 'ran_2a':[], 'ran_2b':[], 'ran_3a':[], 'ran_3b':[]};
                         this.writeCards();
+                        this.status = this.state.LOADED;
                     },
                     force
                 );
             }else if('controls' == this.section){
+                this.status = this.state.LOADING;
                 this.$refs.timecop.dispatchQuery(
                     'raw_pay_ctr' + this.periodo,
                     this.pathdata + '/controls',
@@ -961,6 +974,7 @@ export default {
                         console.log(res);
                         this.rawCtr = (res.length > 0)? res[0]: null;
                         // this.rawData = (res.length > 0)?  res[0]: {'rs_0': [], 'rs_1': [], 'rs_2': [], 'rs_3': [], 'rs_4': [], 'cores': [], 's0': [], 'v0': [], 's1': [], 'v1': []};
+                        this.status = this.state.LOADED;
                     },
                     force
                 );
@@ -1001,7 +1015,6 @@ export default {
         }
     },
     mounted() {
-        
         this.listen();
         if(this.urol == 'Consultor'){
             this.opt.pop();
@@ -1020,7 +1033,7 @@ export default {
 .tr-25 > td, .td-25 {width: 25%}
 .td-25 {width: 25%}
 
-.component-loading .card-view > div {opacity: .35 !important; pointer-events: none !important; cursor:wait !important}
+.component-loading .card-view > div, .loading {opacity: .35 !important; pointer-events: none !important; cursor:wait !important}
 .component-loading .panel-body.vega {opacity: .35 !important; pointer-events: none !important; cursor:wait !important}
 .component-loading .df-options > a {opacity: .35 !important; pointer-events: none !important; cursor:wait !important}
 </style>
