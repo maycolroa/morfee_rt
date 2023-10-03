@@ -7,16 +7,16 @@
             </div>
             <div class="d-flex">
                 <temporizador ref="timecop"></temporizador>
-                <get-view-periodo collections="retec_autorizaciones"></get-view-periodo>
+                <get-view-periodo :class="status" collections="retec_autorizaciones"></get-view-periodo>
                 <!-- <select-periodo ref="xtime" :coleccion="fuente" :alias="krache_time"></select-periodo> -->
-                <div :class="section == 'basic'? 'btn-group dk-disabled': 'btn-group'">
+                <div :class="section == 'basic'? 'btn-group dk-disabled ' + status: 'btn-group ' + status">
                     <button :class="display == 'chart'? 'btn btn-success': 'btn btn-default'" @click="display = 'chart'"><i class="fa fa-bar-chart"></i></button>
                     <button :class="display == 'table'? 'btn btn-success': 'btn btn-default'" @click="display = 'table'"><i class="fa fa-table"></i></button>
                 </div>
             </div>
         </div>
         <div class="d-flex justify-content-between mb-4 df-options">
-            <a :class="section == elm.code? 'flex-fill bg-target': 'flex-fill bg-custom'" href="javascript:void(0)" v-for="(elm, i) in opt" :key="i" @click="setSection(elm.code)">
+            <a :class="sectionStyle(elm.code)" href="javascript:void(0)" v-for="(elm, i) in opt" :key="i" @click="setSection(elm.code)">
                 <div class="d-flex align-items-center">
                     <span class="lc-icon d-flex align-items-center justify-content-center me-2"><i :class="section == elm.code? 'fa fa-folder-open-o': 'fa fa-folder-o'"></i></span>
                     <span>{{ elm.tx }}</span>
@@ -680,6 +680,10 @@ export default {
             str += Math.round(Math.random() * 999 + 1000);
             return str;
         },
+        sectionStyle: function(code){
+            let acc = (this.status == this.state.LOADING)? ' loading': '';
+            return (this.section == code)? 'flex-fill bg-target' + acc: 'flex-fill bg-custom' + acc;
+        },
         isEmpty: function(arg){
             if([undefined, null, ''].includes(arg)) return true;
             return /^\s*$/.test(arg);
@@ -714,52 +718,6 @@ export default {
             if(['suma', 'total'].includes(arg)){
                 this.taritem = arg;
                 this.writeItems();
-            }
-        },
-        loadData: function(arg){
-            if(this.status != this.state.LOADING){
-                let pam = new FormData();
-                pam.append('tema', this.fuente);
-                pam.append('periodo', arg);
-                this.status = this.state.LOADING;
-                axios.post(this.pathdata + '/data', pam).then(res => {
-                    this.rawData = (res.data.length > 0)?  res.data[0]: {'rs_1': [], 'rs_2': [], 'rs_3': [], 'rs_4': [], 'facet_pla': [], 'facet_amb': [], 'facet_total': [], 'facet_vbs': [], 'facet_vac': [], 'facet_vpm': [], 'facet_pmx': [], 'facet_doc': [], 'gp_esti': [], 'gp_stt': []};
-                    registerJSON(this.krache, this.rawData, 'per_' + arg);
-                    registerJSON(this.krache, arg, 'lastper');
-                    this.writeCards();
-                    this.status = this.state.LOADED;
-                }).catch(err => {
-                    this.status = this.state.FAILED;
-                    console.log(err);
-                });
-            }
-        },
-        loadControls: function(arg){
-            if(this.status != this.state.LOADING){
-                let pam = new FormData();
-                pam.append('tema', this.fuente);
-                pam.append('periodo', arg);
-                this.status = this.state.LOADING;
-                axios.post(this.pathdata + '/controls', pam).then(res => {
-                    this.rawCtr = res.data;
-                    registerJSON(this.krache_ctr, this.rawCtr, 'per_' + arg);
-                    registerJSON(this.krache_ctr, arg, 'lastper');
-                    this.rawCtr.forEach(elm => {
-                        if(elm._id == '0'){
-                            this.$refs.a_1.setValor(this.clearNumber(elm.sum_fac));
-                            this.$refs.a_2.setValor(this.clearNumber(elm.sum_vbs));
-                            this.$refs.a_3.setValor(this.clearNumber(Math.abs(elm.sum_fac - elm.sum_vbs)));
-                        }else if(elm._id == '1'){
-                            this.$refs.b_1.setValor(this.clearNumber(elm.sum_fac));
-                            this.$refs.b_2.setValor(this.clearNumber(elm.sum_vpm));
-                            this.$refs.b_3.setValor(this.clearNumber(Math.abs(elm.sum_fac - elm.sum_vpm)));
-                        }
-                    })
-                    this.status = this.state.LOADED;
-                }).catch(err => {
-                    this.status = this.state.FAILED;
-                    console.log(err);
-                });
             }
         },
         writeCards: function(){
@@ -841,62 +799,9 @@ export default {
         makeItem: function(elm){
             return {'_id': elm._id, 'valor': elm.total};
         },
-        loadSchema: function(tload){
-            // facets.unshift("x_id:group:none:1");
-            this.pinload = tload;
-            if(this.pinload <= 2){
-                let lim_a = this.porcion[this.pinload].a;
-                let lim_b = this.porcion[this.pinload].b;
-                let facets = [];
-                let matches = [];
-                if(this.pinload == 0){
-                    facets = ["x_id:group:none:1"].concat(this.campos.slice(lim_a, lim_b).map(elm => "x_" + elm + ":group:none:1"));
-                    matches = this.campos.slice(lim_a, lim_b).map(elm => "x_" + elm + ":" + elm + ":exists:true");
-                }else if(this.pinload < 2){
-                    facets = this.campos.slice(lim_a, lim_b).map(elm => "x_" + elm + ":group:none:1");
-                    matches = this.campos.slice(lim_a, lim_b).map(elm => "x_" + elm + ":" + elm + ":exists:true");
-                }else{
-                    facets = this.campos.slice(lim_a).map(elm => "x_" + elm + ":group:none:1");
-                    matches = this.campos.slice(lim_a).map(elm => "x_" + elm + ":" + elm + ":exists:true");
-                }
-                var pam = new FormData();
-                pam.append('tema', this.fuente);
-                pam.append('facets', facets.join('|'));
-                pam.append('match', matches.join('|'));
-                pam.append('periodo', this.periodo);
-                this.status_sch = this.state.LOADING;
-                axios.post(root_path + 'reservas/mng/facet', pam).then(res => {
-                    if(res.data.length > 0){
-                        var raw = res.data[0];
-                        if(tload == 0){
-                            this.rawSchema.push({'field': '_id', 'total': raw['x_id'][0].total});
-                            this.num_registros = raw['x_id'][0].total;
-                        }
-                        this.campos.forEach(elm => {
-                            if(raw['x_' + elm] != undefined){
-                                if(raw['x_' + elm].length > 0){
-                                    this.rawSchema.push({'field': elm, 'total': raw['x_' + elm][0].total});
-                                }
-                            }
-                        });
-                    }
-                    registerJSON(this.krache, this.rawSchema, 'sch_' + this.periodo);
-                    this.status_sch = this.state.LOADED;
-                    this.loadSchema(this.pinload + 1);
-                }).catch(err => {
-                    this.status_sch = this.state.FAILED;
-                    console.log('Load schema failed!');
-                    console.log(err);
-                });
-            }
-        },
-        loadSchemaParts: function(){
-            this.rawSchema = [];
-            this.pinload = 0;
-            this.loadSchema(this.pinload);
-        },        
         getSchema: function(force=false){
             this.status_sch = this.state.LOADING;
+            this.status = this.state.LOADING;
             this.$refs.timecop.dispatchQuery(
                 'schema_auto' + this.periodo,
                 this.pathdata + '/schema',
@@ -905,20 +810,16 @@ export default {
                     this.rawSchema = res[0];
                     this.num_registros = this.rawSchema.total;
                     this.status_sch = this.state.LOADED;
+                    this.status = this.state.LOADED;
                 },
                 force
             );
         },
         manager: function(force=false){
-            // this.rawData = getRegisterJSON(this.krache, 'per_' + this.periodo);
-            // if(this.isEmpty(this.rawData)){
-            //     this.loadData(this.periodo);
-            // }else{
-            //     this.writeCards();
-            // }
             if('schema' == this.section){
                 this.getSchema(force);
             }else if('controls' == this.section){
+                this.status = this.state.LOADING;
                 this.$refs.timecop.dispatchQuery(
                     'raw_aut_ctr' + this.periodo,
                     this.pathdata + '/controls',
@@ -949,10 +850,12 @@ export default {
                         this.$refs.c_1.setValor(this.clearNumber(c_fac));
                         this.$refs.c_2.setValor(this.clearNumber(c_vac));
                         this.$refs.c_3.setValor(this.clearNumber(Math.abs(c_fac - c_vac)));
+                        this.status = this.state.LOADED;
                     },
                     force
                 );
-            }else{
+            }else if('import' != this.section){
+                this.status = this.state.LOADING;
                 this.$refs.timecop.dispatchQuery(
                     'raw_aut_dat' + this.periodo,
                     this.pathdata + '/data',
@@ -962,6 +865,7 @@ export default {
                         console.log(res);
                         this.rawData = (res.length > 0)?  res[0]: {'rs_1': [], 'rs_2': [], 'rs_3': [], 'rs_4': [], 'facet_pla': [], 'facet_amb': [], 'facet_total': [], 'facet_vbs': [], 'facet_vac': [], 'facet_vpm': [], 'facet_pmx': [], 'facet_doc': [], 'pmx': []};
                         this.writeCards();
+                        this.status = this.state.LOADED;
                     },
                     force
                 );
@@ -1008,7 +912,7 @@ export default {
 .dk-hand {cursor: pointer !important}
 .text-bold {font-weight: bold !important}
 .dk-disabled {opacity: .5 !important; user-select: none !important; pointer-events: none !important}
-.component-loading .card-view > div {opacity: .35 !important; pointer-events: none !important; cursor:wait !important}
+.component-loading .card-view > div, .loading {opacity: .35 !important; pointer-events: none !important; cursor:wait !important}
 .component-loading .panel-body.vega {opacity: .35 !important; pointer-events: none !important; cursor:wait !important}
 .component-loading .df-options > a {opacity: .35 !important; pointer-events: none !important; cursor:wait !important}
 </style>

@@ -36,6 +36,7 @@ export default {
         canal: {type: String, default: ''},
         pretag: {type: String, default: ''},
         fontsize: {type: String, default: '22px'},
+        iconsize: {type: String, default: 'fs-1'},
         warning: {type: Boolean, default: false},
         active: {type: Boolean, default: false}
     },
@@ -48,8 +49,8 @@ export default {
             lc_valor: '',
             lc_texto: '',
             // css: ['icon-layers', 'data-right-rep-icon', 'txt-light-grey'],
-            css: ['icon-layers', 'txt-light-grey', 'fs-1'],
-            css_err: ['fa fa-warning', 'fs-1', 'has-error'],
+            css: ['icon-layers', 'txt-light-grey', this.iconsize],
+            css_err: ['fa fa-warning', this.iconsize, 'has-error'],
             estilos: '',
 
             largo: 0,

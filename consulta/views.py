@@ -116,3 +116,28 @@ def slice_data(request):
     ])
     print(datos)
     return HttpResponse(datos, content_type="application/json")
+
+def fac_prestadores(request):
+    prestador = request.POST.get('prestador')
+    mongo = Mongo('retec_facturas')
+    print('kiloe')
+    datos = mongo.aggregate([
+        {"$project": {'_id':0, 'nmp': 1}},
+        {"$match": {"nmp": {"$regex": str(prestador), "$options": "i"}}},
+        {"$group": {'_id': "$nmp"}},
+        {"$sort": {"nmp": 1}},
+        {"$limit": 10}
+    ])
+    print(datos)
+    return HttpResponse(datos, content_type="application/json")
+
+def pay_prestadores(request):
+    prestador = request.POST.get('prestador')
+    mongo = Mongo('retec_pagos')
+    datos = mongo.aggregate([
+        {"$project": {'nmp': 1}},
+        {"$match": {"nmp": {"$regex": str(prestador), "$options": "i"}}},
+        {"$sort": {"nmp": 1}},
+        {"$limit": 10}
+    ])
+    return HttpResponse(datos, content_type="application/json")

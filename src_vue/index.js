@@ -97,7 +97,6 @@ Vue.component('contador-light', require('./componentes/Contador_light.vue').defa
 Vue.component('navegador', require('./componentes/navegacion.vue').default);
 Vue.component('consultar-usuario', require('./componentes/formConsulta.vue').default);
 
-Vue.component('ejemplo', require('./componentes/amcharts/ejemplo.vue').default);
 Vue.component('amchart-linea', require('./componentes/amcharts/line.vue').default);
 Vue.component('amchart-piramide', require('./componentes/amcharts/piramide.vue').default);
 Vue.component('amchart-area', require('./componentes/amcharts/area.vue').default);

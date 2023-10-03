@@ -33,24 +33,20 @@
         <div :class="status == state.LOADING? 'd-none': ''">
             <div class="row">
                 <div class="col-sm-2">
-                    <contador-light ref="c_per" texto="Periodos FRAD" valor="0" duracion="1" icono="fa fa-calendar"></contador-light>
+                    <contador-light ref="c_per" texto="Periodos FRAD" valor="0" duracion="1" icono="fa fa-calendar" iconsize="fs-4" fontsize="18px"></contador-light>
                 </div>
                 <div class="col-sm-3">
-                    <contador-light ref="c_fac" pretag="$ " texto="Valor facturado" valor="0" duracion="1" icono="fa fa-line-chart"></contador-light>
+                    <contador-light ref="c_fac" pretag="$ " texto="Valor facturado" valor="0" duracion="1" icono="fa fa-line-chart" iconsize="fs-4" fontsize="18px"></contador-light>
                 </div>
                 <div class="col-sm-3">
-                    <contador-light ref="c_glo" pretag="$ " texto="Valor glosado" valor="0" duracion="1" icono="fa fa-line-chart"></contador-light>
+                    <contador-light ref="c_glo" pretag="$ " texto="Valor glosado" valor="0" duracion="1" icono="fa fa-line-chart" iconsize="fs-4" fontsize="18px"></contador-light>
                 </div>
                 <div class="col-sm-2">
-                    <contador-light ref="c_percent" texto="% glosa" valor="0" duracion="1" icono="fa fa-percent"></contador-light>
+                    <contador-light ref="c_percent" texto="% glosa" valor="0" duracion="1" icono="fa fa-percent" iconsize="fs-4" fontsize="18px"></contador-light>
                 </div>
                 <div class="col-sm-2">
-                    <contador-light ref="c_ratificado" texto="% glosa rat" valor="0" duracion="1" icono="fa fa-percent"></contador-light>
+                    <contador-light ref="c_ratificado" texto="% glosa rat" valor="0" duracion="1" icono="fa fa-percent" iconsize="fs-4" fontsize="18px"></contador-light>
                 </div>
-
-                
-                
-               
             </div>
             <div :class="section == 'vertical'? '': 'd-none'">
                 <div class="panel panel-default card-view border">
@@ -61,13 +57,25 @@
                                 <div class="txt-dark">FAMISANAR</div>
                             </div>
                             <div>
-                                <a href="javascript:void(0)" class="me-2" click="$refs.gp_bi.exportar()"><i class="zmdi zmdi-download"></i></a>
+                                <a href="javascript:void(0)" class="me-2 d-none"><i class="zmdi zmdi-download"></i></a>
                                 <a href="#" class="full-screen"><i class="zmdi zmdi-fullscreen"></i></a>
                             </div>
                         </div>
                     </div>
                     <div class="panel-wrapper collapse in">
                         <div :class="'panel-body ' + status">
+                            <div class="cnt-content">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Nombre del prestador" v-model="f_bridge" @change="loadPrestadores">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-success"><i class="fa fa-search"></i></button>
+                                    </div>
+                                </div>
+                                <div class="cnt-options">
+                                    <div class="py-2" v-if="status_in == state.LOADING"><i class="fa fa-spinner fa-spin me-2"></i> <span>Cargando...</span></div>
+                                    <div class="py-2" v-for="(elm, i) in prestadores" :key="i">{{ elm._id }}</div>
+                                </div>
+                            </div>
                             <amchart-barra-two 
                             ref="gp_bi"
                             campo_valor="Glosado:Glosado,Facturado:Facturado" 
@@ -232,12 +240,16 @@ export default {
             ],
             titles: {'facturado': 'VALORES FACTURADOS POR PERIODOS', 'glosado': 'GLOSAS POR PERIODO', 'relacion': 'PORCENTAJE DE GLOSAS EN RELACIÓN CON VALORES FACTURADOS'},
             campo: 'facturado',     // facturado | glosado | relacion
+            f_prestador: '',
+            f_bridge: '',
+            prestadores: [],
 			datos: [],
             numper: 0,
             sum_fac: 0,
             sum_glo: 0,
             sum_rat: 0,
             status: 'ini',
+            status_in: 'ini',
             state: {'INI': 'ini', 'LOADING': 'loading', 'LOADED': 'loaded', 'FAILED': 'failed'}
         }
     },
@@ -293,6 +305,26 @@ export default {
             this.$refs.gp_bar.setColor(cls[arg]);
             this.$refs.gp_bar.setDatos(tm);
         },
+        loadPrestadores: function(){
+            if(this.status_in != this.state.LOADING){
+                this.status_in = this.state.LOADING;
+                let tm = this.f_bridge;
+                let pam = new FormData();
+                pam.append('prestador', tm);
+                axios.post(root_path + "consulta/facturas/prestadores", pam).then(res => {
+                    this.prestadores = res.data;
+                    console.log('hola');
+                    console.log(res.data);
+                    this.status_in = this.state.LOADED;
+                    if(tm != this.f_bridge){
+                        this.loadPrestadores();
+                    }
+                }).catch(err => {
+                    console.log(err);
+                    this.status_in = this.state.FAILED;
+                });
+            }
+        },
         postResult: function(res){
             this.sum_fac = 0;
             this.sum_glo = 0;
@@ -346,4 +378,8 @@ export default {
 <style scoped>
     .colmin {width: 1%; white-space: nowrap; text-align: center}
 	.loading {opacity: .45; pointer-events: none; user-select: none}
+    .cnt-content {position:relative}
+    .cnt-options {position:absolute; top:100%; left:0; background:#FFF; z-index:1000; width:100%; border:1px solid #DDD}
+    .cnt-options > div {padding-left:1rem; cursor:default}
+    .cnt-options > div:hover {background:#F1F1F1}
 </style>

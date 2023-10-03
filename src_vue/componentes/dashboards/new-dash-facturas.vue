@@ -7,18 +7,18 @@
             </div>
             <div class="d-flex">
                 <temporizador ref="timecop"></temporizador>
-                <get-view-periodo collections="retec_facturas"></get-view-periodo>
+                <get-view-periodo :class="status" collections="retec_facturas"></get-view-periodo>
                 <div class="d-none">
                     <!-- <select-periodo ref="xtime" :coleccion="fuente" :alias="krache_time"></select-periodo> -->
                 </div>
-                <div :class="section == 'basic'? 'btn-group dk-disabled': 'btn-group'">
+                <div :class="section == 'basic'? 'btn-group dk-disabled ' + status: 'btn-group ' + status">
                     <button :class="display == 'chart'? 'btn btn-success': 'btn btn-default'" @click="display = 'chart'"><i class="fa fa-bar-chart"></i></button>
                     <button :class="display == 'table'? 'btn btn-success': 'btn btn-default'" @click="display = 'table'"><i class="fa fa-table"></i></button>
                 </div>
             </div>
         </div>
         <div class="d-flex justify-content-between mb-4 df-options">
-            <a :class="section == elm.code? 'flex-fill bg-target': 'flex-fill bg-custom'" href="javascript:void(0)" v-for="(elm, i) in opt" :key="i" @click="setSection(elm.code)">
+            <a :class="sectionStyle(elm.code)" href="javascript:void(0)" v-for="(elm, i) in opt" :key="i" @click="setSection(elm.code)">
                 <div class="d-flex align-items-center">
                     <span class="lc-icon d-flex align-items-center justify-content-center me-2"><i :class="section == elm.code? 'fa fa-folder-open-o': 'fa fa-folder-o'"></i></span>
                     <span>{{ elm.tx }}</span>
@@ -321,6 +321,7 @@
                             sin_valores 
                             altura_minima="100" 
                             unidad="30" 
+                            truncar
                             empty_data="No hay datos para graficar." 
                             custom="{valueX} ({total} registros)"></am-ver>
                     </div>
@@ -342,7 +343,7 @@
                 <div class="panel-wrapper collapse in">
                     <div :class="status == state.LOADING? 'panel-body opaco': 'panel-body'">
                         <table-data :class="altCss(display == 'table')" ref="tb_1_S" cols="_id:PRESTADOR,suma:TOTAL:$ " compact counter lastright sumar="suma"></table-data>
-                        <am-ver :class="altCss(display == 'chart')" ref="gp_1_S" pretag="$ " grilla="0" multicolor campo_categoria="_id" campo_valor="suma" etiquetas tooltip sin_valores altura_minima="100" unidad="30" empty_data="No hay datos para graficar." custom="{valueX} ({total} registros)"></am-ver>
+                        <am-ver :class="altCss(display == 'chart')" ref="gp_1_S" pretag="$ " grilla="0" multicolor truncar campo_categoria="_id" campo_valor="suma" etiquetas tooltip sin_valores altura_minima="100" unidad="30" empty_data="No hay datos para graficar." custom="{valueX} ({total} registros)"></am-ver>
                     </div>
                 </div>
             </div>
@@ -364,7 +365,7 @@
                 <div class="panel-wrapper collapse in">
                     <div :class="status == state.LOADING? 'panel-body opaco': 'panel-body'">
                         <table-data :class="altCss(display == 'table')" ref="tb_0_V" cols="_id:PRESTADOR,suma:TOTAL:$ " compact counter lastright sumar="suma"></table-data>
-                        <am-ver :class="altCss(display == 'chart')" ref="gp_0_V" pretag="$ " grilla="0" multicolor campo_categoria="_id" campo_valor="suma" etiquetas tooltip sin_valores altura_minima="100" unidad="30" empty_data="No hay datos para graficar." custom="{valueX} ({total} registros)"></am-ver>
+                        <am-ver :class="altCss(display == 'chart')" ref="gp_0_V" pretag="$ " grilla="0" multicolor truncar campo_categoria="_id" campo_valor="suma" etiquetas tooltip sin_valores altura_minima="100" unidad="30" empty_data="No hay datos para graficar." custom="{valueX} ({total} registros)"></am-ver>
                     </div>
                 </div>
             </div>
@@ -384,7 +385,7 @@
                 <div class="panel-wrapper collapse in">
                     <div :class="status == state.LOADING? 'panel-body opaco': 'panel-body'">
                         <table-data :class="altCss(display == 'table')" ref="tb_1_V" cols="_id:PRESTADOR,suma:TOTAL:$ " compact counter lastright sumar="suma"></table-data>
-                        <am-ver :class="altCss(display == 'chart')" ref="gp_1_V" pretag="$ " grilla="0" multicolor campo_categoria="_id" campo_valor="suma" etiquetas tooltip sin_valores altura_minima="100" unidad="30" empty_data="No hay datos para graficar." custom="{valueX} ({total} registros)"></am-ver>
+                        <am-ver :class="altCss(display == 'chart')" ref="gp_1_V" pretag="$ " grilla="0" multicolor truncar campo_categoria="_id" campo_valor="suma" etiquetas tooltip sin_valores altura_minima="100" unidad="30" empty_data="No hay datos para graficar." custom="{valueX} ({total} registros)"></am-ver>
                     </div>
                 </div>
             </div>
@@ -406,7 +407,7 @@
                 <div class="panel-wrapper collapse in">
                     <div :class="status == state.LOADING? 'panel-body opaco': 'panel-body'">
                         <table-data :class="altCss(display == 'table')" ref="tb_pac_0" cols="_id:PRESTADOR,suma:TOTAL:$ " compact counter lastright sumar="suma"></table-data>
-                        <am-ver :class="altCss(display == 'chart')" ref="gp_pac_0" pretag="$ " grilla="0" multicolor campo_categoria="_id" campo_valor="suma" etiquetas tooltip sin_valores altura_minima="100" unidad="30" empty_data="No hay datos para graficar." custom="{valueX} ({total} registros)"></am-ver>
+                        <am-ver :class="altCss(display == 'chart')" ref="gp_pac_0" pretag="$ " grilla="0" multicolor truncar campo_categoria="_id" campo_valor="suma" etiquetas tooltip sin_valores altura_minima="100" unidad="30" empty_data="No hay datos para graficar." custom="{valueX} ({total} registros)"></am-ver>
                     </div>
                 </div>
             </div>
@@ -426,7 +427,7 @@
                 <div class="panel-wrapper collapse in">
                     <div :class="status == state.LOADING? 'panel-body opaco': 'panel-body'">
                         <table-data :class="altCss(display == 'table')" ref="tb_pac_1" cols="_id:PRESTADOR,suma:TOTAL:$ " compact counter lastright sumar="suma"></table-data>
-                        <am-ver :class="altCss(display == 'chart')" ref="gp_pac_1" pretag="$ " grilla="0" multicolor campo_categoria="_id" campo_valor="suma" etiquetas tooltip sin_valores altura_minima="100" unidad="30" empty_data="No hay datos para graficar." custom="{valueX} ({total} registros)"></am-ver>
+                        <am-ver :class="altCss(display == 'chart')" ref="gp_pac_1" pretag="$ " grilla="0" multicolor truncar campo_categoria="_id" campo_valor="suma" etiquetas tooltip sin_valores altura_minima="100" unidad="30" empty_data="No hay datos para graficar." custom="{valueX} ({total} registros)"></am-ver>
                     </div>
                 </div>
             </div>
@@ -1040,6 +1041,10 @@ export default {
             str += Math.round(Math.random() * 999 + 1000);
             return str;
         },
+        sectionStyle: function(code){
+            let acc = (this.status == this.state.LOADING)? ' loading': '';
+            return (this.section == code)? 'flex-fill bg-target' + acc: 'flex-fill bg-custom' + acc;
+        },
         parseNull: function(arg, tx='(Vacío)') {
             return arg.map(elm => {
                 if(elm._id == null){
@@ -1088,22 +1093,6 @@ export default {
             if(this.status != this.state.LOADING && this.status_sch != this.state.LOADING){
                 this.section = arg;
                 this.manager();
-            }
-        },
-        loadIndigena: function(arg){
-            if(this.status != this.state.LOADING){
-                let pam = new FormData();
-                pam.append('tema', this.fuente);
-                pam.append('periodo', arg);
-                this.status = this.state.LOADING;
-                axios.post(this.pathdata + '/indigena', pam).then(res => {
-                    this.rawIndi = (res.data.length > 0)? res.data[0]: {'s_vdo': '', 's_vpbs': '', 'total': ''};
-                    registerJSON(this.krache_indi, this.rawIndi, 'per_' + arg);
-                    this.status = this.state.LOADED;
-                }).catch(err => {
-                    this.status = this.state.FAILED;
-                    console.log(err);
-                })
             }
         },
         writeCards: function(){
@@ -1176,6 +1165,7 @@ export default {
             // let tmp = getRegisterJSON(this.krache, 'sch_' + this.periodo);
             // let tmp = localStorage.getItem('sch_' + this.key_history);
             this.status_sch = this.state.LOADING;
+            this.status = this.state.LOADING;
             this.$refs.timecop.dispatchQuery(
                 'schema_factura' + this.periodo,
                 this.pathdata + '/schema',
@@ -1184,6 +1174,7 @@ export default {
                     this.rawSchema = res[0];
                     this.num_registros = this.rawSchema.total;
                     this.status_sch = this.state.LOADED;
+                    this.status = this.state.LOADED;
                 },
                 force
             );
@@ -1193,6 +1184,7 @@ export default {
                 this.getSchema(force);
             }else if('controls' == this.section){
                 console.log('In controls section!' + this.fuente);
+                this.status = this.state.LOADING;
                 this.$refs.timecop.dispatchQuery(
                     'raw_fac_ctr' + this.periodo,
                     this.pathdata + '/controls',
@@ -1233,17 +1225,12 @@ export default {
                         }else{
                             console.log('Contenido vacío!');
                         }
+                        this.status = this.state.LOADED;
                     },
                     force
                 );
-            }else if('data-indigena' == this.section){
-                this.rawIndi = getRegisterJSON(this.krache_indi, 'per_' + this.periodo);
-                if(this.isEmpty(this.rawIndi)){
-                    this.loadIndigena(this.periodo);
-                }else{
-                    console.log('Cargado en memoria!');
-                }
-            }else{
+            }else if('import' != this.section){
+                this.status = this.state.LOADING;
                 this.$refs.timecop.dispatchQuery(
                     'raw_facet_fac' + this.periodo, 
                     this.pathdata + '/data',
@@ -1251,6 +1238,7 @@ export default {
                     res => {
                         this.rawData = (res.length > 0)?  res[0]: {'rs_0': [], 'rs_1': [], 'rs_2': [], 'rs_3': [], 'rs_4': [], 'cores': [], 's0': [], 'v0': [], 's1': [], 'v1': [], 'pmx': []};
                         this.writeCards();
+                        this.status = this.state.LOADED;
                     },
                     force
                 );
@@ -1315,7 +1303,7 @@ export default {
 .tr-center th {font-weight: bold}
 .tr-20 > td, .td-20 {width: 20%}
 .td-30 {width: 33%}
-.component-loading .card-view > div {opacity: .35 !important; pointer-events: none !important; cursor:wait !important}
+.component-loading .card-view > div, .loading {opacity: .35 !important; pointer-events: none !important; cursor:wait !important}
 .component-loading .panel-body.vega {opacity: .35 !important; pointer-events: none !important; cursor:wait !important}
 .component-loading .df-options > a {opacity: .35 !important; pointer-events: none !important; cursor:wait !important}
 </style>
