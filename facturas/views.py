@@ -11,16 +11,22 @@ def tpl_cuentas_medicas(request):
     return render(request, 'facturas/cuentas_medicas.html')
 
 def data_cm(request):
+    cnombre = request.POST.get('consulta')
+    prestador = request.POST.get('prestador') if request.POST.get('prestador') else ''
     clave = request.POST.get('clave') if request.POST.get('clave') else ''
     user_id = request.user.id
+    filtro = {"$match": {}}
+    if prestador:
+        filtro = {"$match": {"nmp": prestador}}
     # rawper = int(request.POST.get('periodo'))
-    consulta = createConsulta('raw_cmed_fac', 'retec_facturas', clave, user_id)
+    consulta = createConsulta(cnombre, 'retec_facturas', clave, user_id)
     mongo = Mongo('retec_facturas')
-    print('Exe query mongodb...')
     datos = mongo.aggregate([
         # {"$addFields": {"vraw": {"$toString": "$fr"}} },
         # {"$project": {"vdo": 1, "vgl": 1,  "prd": {"$substrBytes": ["$vraw", 0, 6]}, "vpbs": 1, "vppm": 1, "vpac": 1, "vrpbs": 1, "vrpm": 1, "vrpac": 1} },
-        {"$project": {"vdo": 1, "vgl": 1, "gld":1,  "vr_per": 1, "vpbs": 1, "vppm": 1, "vpac": 1, "vrpbs": 1, "vrpm": 1, "vrpac": 1} },
+        # {"$limit": 1000},
+        filtro,
+        {"$project": {"_id": 0, "nmp": 1, "vdo": 1, "vgl": 1, "gld":1,  "vr_per": 1, "vpbs": 1, "vppm": 1, "vpac": 1, "vrpbs": 1, "vrpm": 1, "vrpac": 1} },
         {"$facet": {
             "result": [
                 {"$group": {
@@ -36,11 +42,19 @@ def data_cm(request):
                     "res_pac": {"$sum": "$vrpac"}
                 }},
                 {"$sort": { "_id": 1} },
+            ],
+            "prestadores": [
+                {"$group": {'_id': "$nmp"}},
+                {"$sort": {"_id": 1}},
+                {"$limit": 4000}
+            ],
+            'filtro': [
+                {"$project": {'filtro': prestador}},
+                {"$limit": 1}
             ]
         }},
         # {"$limit": 99},
     ])
-    print('Print result query...')
     consulta.contenido = str(datos)
     consulta.estado = 'close'
     consulta.save()
@@ -391,7 +405,7 @@ def schema_factura(request):
                 'n_idc': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$idc', None] }, None] }, 0, 1] } },
                 'n_tus': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$tus', None] }, None] }, 0, 1] } },
                 'n_ius': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$ius', None] }, None] }, 0, 1] } },
-                'n_iav': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$iav', None] }, None] }, 0, 1] } },
+                'n_iav': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$iau', None] }, None] }, 0, 1] } },
                 'n_fav': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$fav', None] }, None] }, 0, 1] } },
                 'n_amb': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$amb', None] }, None] }, 0, 1] } },
                 'n_ids': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$ids', None] }, None] }, 0, 1] } },

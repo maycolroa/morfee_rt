@@ -53,7 +53,7 @@
                     <div class="panel-heading">
                         <div class="d-flex justify-content-between">
                             <div>
-                                <h6 class="panel-title txt-dark text-bold text-upper mb-0">FACTURADO vs GLOSADO<i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
+                                <h6 class="panel-title txt-dark text-bold text-upper mb-0">FACTURADO vs GLOSADO <span v-if="this.isEmpty(titulo) == false">({{ titulo }})</span><i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
                                 <div class="txt-dark">FAMISANAR</div>
                             </div>
                             <div>
@@ -64,16 +64,26 @@
                     </div>
                     <div class="panel-wrapper collapse in">
                         <div :class="'panel-body ' + status">
-                            <div class="cnt-content">
+                            <div :class="f_prestador == ''? 'cnt-content': 'd-none'">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Nombre del prestador" v-model="f_bridge" @change="loadPrestadores">
+                                    <input type="text" class="form-control" placeholder="Nombre del prestador" v-model="f_bridge">
                                     <div class="input-group-btn">
-                                        <button class="btn btn-success"><i class="fa fa-search"></i></button>
+                                        <button class="btn btn-danger" :disabled="f_bridge == ''" @click="f_bridge = ''"><i class="fa fa-times"></i></button>
                                     </div>
                                 </div>
                                 <div class="cnt-options">
-                                    <div class="py-2" v-if="status_in == state.LOADING"><i class="fa fa-spinner fa-spin me-2"></i> <span>Cargando...</span></div>
-                                    <div class="py-2" v-for="(elm, i) in prestadores" :key="i">{{ elm._id }}</div>
+                                    <div v-for="(elm, i) in minpre" :key="i" @click="f_prestador = elm">{{ elm }}</div>
+                                </div>
+                            </div>
+                            <div v-if="f_prestador != ''">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" :value="f_prestador" readonly>
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-danger" @click="f_prestador = f_bridge = ''"><i class="fa fa-times"></i></button>
+                                    </div>
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-success" @click="exeQuery(true)" :disabled="status == state.LOADING"><i class="fa fa-search"></i></button>
+                                    </div>
                                 </div>
                             </div>
                             <amchart-barra-two 
@@ -94,7 +104,7 @@
                     <div class="panel-heading">
                         <div class="d-flex justify-content-between">
                             <div>
-                                <h6 class="panel-title txt-dark text-bold text-upper mb-0">FACTURADO vs GLOSADO<i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
+                                <h6 class="panel-title txt-dark text-bold text-upper mb-0">FACTURADO vs GLOSADO <span v-if="this.isEmpty(titulo) == false">({{ titulo }})</span><i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
                                 <div class="txt-dark">FAMISANAR</div>
                             </div>
                             <div>
@@ -129,7 +139,7 @@
                     <div class="panel-heading">
                         <div class="d-flex justify-content-between">
                             <div>
-                                <h6 class="panel-title txt-dark text-bold text-upper mb-0">VALORES PAGADOS<i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
+                                <h6 class="panel-title txt-dark text-bold text-upper mb-0">VALORES PAGADOS <span v-if="this.isEmpty(titulo) == false">({{ titulo }})</span><i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
                                 <div class="txt-dark">FAMISANAR</div>
                             </div>
                             <div>
@@ -162,7 +172,7 @@
                     <div class="panel-heading">
                         <div class="d-flex justify-content-between">
                             <div>
-                                <h6 class="panel-title txt-dark text-bold text-upper mb-0">VALORES EN RESERVA<i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
+                                <h6 class="panel-title txt-dark text-bold text-upper mb-0">VALORES EN RESERVA <span v-if="this.isEmpty(titulo) == false">({{ titulo }})</span><i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
                                 <div class="txt-dark">FAMISANAR</div>
                             </div>
                             <div>
@@ -227,6 +237,7 @@
 export default {
     props: {
         pathdata: {type: String, default: ''},
+        user_id: {type: String, default: ''},
     },
     data() {
         return {
@@ -242,15 +253,23 @@ export default {
             campo: 'facturado',     // facturado | glosado | relacion
             f_prestador: '',
             f_bridge: '',
+            titulo: '',
             prestadores: [],
+            minpre: [],
 			datos: [],
             numper: 0,
             sum_fac: 0,
             sum_glo: 0,
             sum_rat: 0,
+            fillpre: true,
             status: 'ini',
             status_in: 'ini',
             state: {'INI': 'ini', 'LOADING': 'loading', 'LOADED': 'loaded', 'FAILED': 'failed'}
+        }
+    },
+    watch: {
+        f_bridge: function(val){
+            this.customFilter(val);
         }
     },
     methods: {
@@ -305,24 +324,20 @@ export default {
             this.$refs.gp_bar.setColor(cls[arg]);
             this.$refs.gp_bar.setDatos(tm);
         },
-        loadPrestadores: function(){
-            if(this.status_in != this.state.LOADING){
-                this.status_in = this.state.LOADING;
-                let tm = this.f_bridge;
-                let pam = new FormData();
-                pam.append('prestador', tm);
-                axios.post(root_path + "consulta/facturas/prestadores", pam).then(res => {
-                    this.prestadores = res.data;
-                    console.log('hola');
-                    console.log(res.data);
-                    this.status_in = this.state.LOADED;
-                    if(tm != this.f_bridge){
-                        this.loadPrestadores();
+        customFilter: function(str){
+            this.minpre = [];
+            if(/^\s*$/.test(str)){
+                return true;
+            }
+            let len = 0;
+            for(let i = 0; i < this.prestadores.length; i++){
+                if(new RegExp(str, 'i').test(this.prestadores[i])){
+                    this.minpre.push(this.prestadores[i]);
+                    len++;
+                    if(len > 9){
+                        break;
                     }
-                }).catch(err => {
-                    console.log(err);
-                    this.status_in = this.state.FAILED;
-                });
+                }
             }
         },
         postResult: function(res){
@@ -330,6 +345,22 @@ export default {
             this.sum_glo = 0;
             this.sum_rat = 0;
             this.datos = res[0].result;
+            console.log('valquiria');
+            console.log(res[0].prestadores);
+            if(this.fillpre){
+                this.prestadores = this.isEmpty(res[0].prestadores)? []: res[0].prestadores.map(elm => elm._id);
+            }
+            this.titulo = '';
+            if(Array.isArray(res[0].filtro)){
+                if(res[0].filtro.length > 0){
+                    let tile = res[0].filtro[0].filtro;
+                    if(!this.isEmpty(tile)){
+                        this.titulo = tile;
+                    }
+                }
+            }
+            console.log('kivito');
+            console.log(res[0]);
             this.datos.forEach(elm => {
                 this.sum_fac += elm.v_facturado;
                 this.sum_glo += elm.v_glosado;
@@ -360,7 +391,15 @@ export default {
         },
         exeQuery: function(force){
             this.status = this.state.LOADING;
-            this.$refs.timecop.dispatchQuery('raw_cmed_fac', this.pathdata, {}, null, force);
+            this.fillpre = true;
+            let pam = {};
+            let cname = 'raw_cmed_fac';
+            if(!this.isEmpty(this.f_prestador)){
+                pam.prestador = this.f_prestador;
+                cname = 'raw_cmed_fac_' + this.user_id;
+                this.fillpre = false;
+            }
+            this.$refs.timecop.dispatchQuery(cname, this.pathdata, pam, null, force);
         },
         listen: function(){
             this.$eventBus.$on('search-finish', res => {
@@ -380,6 +419,6 @@ export default {
 	.loading {opacity: .45; pointer-events: none; user-select: none}
     .cnt-content {position:relative}
     .cnt-options {position:absolute; top:100%; left:0; background:#FFF; z-index:1000; width:100%; border:1px solid #DDD}
-    .cnt-options > div {padding-left:1rem; cursor:default}
+    .cnt-options > div {padding:.25rem 1rem; cursor:default; color:#000 !important; font-size: .85rem; font-family: Arial}
     .cnt-options > div:hover {background:#F1F1F1}
 </style>

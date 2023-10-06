@@ -8,4 +8,5 @@ urlpatterns = [
     path('mng/data/fuente', views.mng_fuente_pyr, name='retec_fuente'),
 
     path('reserva', views.tpl_reserva, name='try_reserva'),
+    path('reserva/data', views.reserva_data, name='try_reserva_data'),
 ]

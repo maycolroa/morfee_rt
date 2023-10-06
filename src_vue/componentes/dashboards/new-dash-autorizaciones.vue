@@ -24,17 +24,28 @@
             </a>
         </div>
         <div :class="section == 'controls'? 'd-none': 'row'">
-            <div class="col-sm-3">
-                <local-counter ref="cnt_1" class="border" texto="SERVICIOS" valor="0" duracion="1" miles></local-counter>
+            <div class="col-sm-7">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <local-counter ref="cnt_1" class="border" texto="SERVICIOS" iconsize="fs-3" valor="0" duracion="1" miles></local-counter>
+                    </div>
+                    <div class="col-sm-4">
+                        <local-counter ref="cnt_vbs" class="border" texto="TOTAL RESERVA PBS" iconsize="fs-3" valor="0" duracion="1" miles pretag="$ "></local-counter>
+                    </div>
+                    <div class="col-sm-4">
+                        <local-counter ref="cnt_vpm" class="border" texto="TOTAL RESERVA PM" iconsize="fs-3" valor="0" duracion="1" miles pretag="$ "></local-counter>
+                    </div>
+                </div>
             </div>
-            <div class="col-sm-3">
-                <local-counter ref="cnt_vbs" class="border" texto="TOTAL RESERVA PBS" valor="0" duracion="1" miles pretag="$ "></local-counter>
-            </div>
-            <div class="col-sm-3">
-                <local-counter ref="cnt_vac" class="border" texto="TOTAL RESERVA PAC" valor="0" duracion="1" miles pretag="$ "></local-counter>
-            </div>
-            <div class="col-sm-3">
-                <local-counter ref="cnt_vpm" class="border" texto="TOTAL RESERVA PM" valor="0" duracion="1" miles pretag="$ "></local-counter>
+            <div class="col-sm-5">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <local-counter ref="cnt_vac" class="border" texto="TOTAL RESERVA PAC" iconsize="fs-3" valor="0" duracion="1" miles pretag="$ "></local-counter>
+                    </div>
+                    <div class="col-sm-6">
+                        <local-counter ref="cnt_res" class="border" texto="TOTAL RESERVA" iconsize="fs-3" valor="0" duracion="1" miles pretag="$ "></local-counter>
+                    </div>
+                </div>
             </div>
         </div>
         <div :class="section == 'basic'? '': 'd-none'">
@@ -728,10 +739,21 @@ export default {
             // rs_5: Actual
             // rs_6: Listado (20)
             if(this.rawData != null){
+                let xsum = 0;
+                if(this.rawData['facet_vbs'].length > 0){
+                    xsum += this.rawData['facet_vbs'][0].n;
+                }
+                if(this.rawData['facet_vpm'].length > 0){
+                    xsum += this.rawData['facet_vpm'][0].n;
+                }
+                if(this.rawData['facet_vac'].length > 0){
+                    xsum += this.rawData['facet_vac'][0].n;
+                }
                 this.rawData['facet_total'].length > 0? this.$refs.cnt_1.setValor(Math.round(this.rawData['facet_total'][0].n)): this.$refs.cnt_1.setValor('');
                 this.rawData['facet_vbs'].length > 0? this.$refs.cnt_vbs.setValor(Math.round(this.rawData['facet_vbs'][0].n)): this.$refs.cnt_vbs.setValor('');
-                this.rawData['facet_vac'].length > 0? this.$refs.cnt_vac.setValor(Math.round(this.rawData['facet_vac'][0].n)): this.$refs.cnt_vac.setValor('');
                 this.rawData['facet_vpm'].length > 0? this.$refs.cnt_vpm.setValor(Math.round(this.rawData['facet_vpm'][0].n)): this.$refs.cnt_vpm.setValor('');
+                this.rawData['facet_vac'].length > 0? this.$refs.cnt_vac.setValor(Math.round(this.rawData['facet_vac'][0].n)): this.$refs.cnt_vac.setValor('');
+                xsum > 0? this.$refs.cnt_res.setValor(Math.round(xsum)): this.$refs.cnt_res.setValor('');
                 this.$refs.gp_doc.setDatos(this.rawData['facet_doc']);
                 if(Array.isArray(this.rawData['pmx'])){
                     let aux = {};
@@ -778,7 +800,6 @@ export default {
                     this.$refs.gp_1_S.setDatos(this.rawData['rs_3'].map(elm => this.makeItem(elm)).sort((a, b) => b.valor - a.valor).slice(0, 30).sort((a, b) => a.valor - b.valor), '');
                     this.$refs.tb_1_V.setDatos(this.rawData['rs_4'].map(elm => this.makeItem(elm)), '');
                     this.$refs.gp_1_V.setDatos(this.rawData['rs_4'].map(elm => this.makeItem(elm)).sort((a, b) => b.valor - a.valor).slice(0, 30).sort((a, b) => a.valor - b.valor), '');
-
                     /*isaias
                     this.$refs.tb_5_V.setDatos(this.rawData['rs_5'], '$ ');
                     this.$refs.gp_5_V.setDatos(this.rawData['rs_5'].slice(0, 30).sort((a, b) => a.valor - b.valor), '$ ');

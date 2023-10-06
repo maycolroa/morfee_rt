@@ -12,6 +12,10 @@ import json
 def tpl_reserva(request):
     return render(request, 'triangulos/reserva.html')
 
+def reserva_data(request):
+    # mongo = Mongo('retec_facturas')
+    return HttpResponse([], content_type="application/json")
+
 @login_required(login_url='/login/')
 def piramide(request):
     clienteId = '0'

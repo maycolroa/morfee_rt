@@ -11,5 +11,5 @@
 </style>
 {% endblock %}
 {% block contenido %}
-<cuentas-medicas pathdata="{% url 'fac_cm_data' %}"></cuentas-medicas>
+<cuentas-medicas pathdata="{% url 'fac_cm_data' %}" user_id="{{ user.id }}"></cuentas-medicas>
 {% endblock %}

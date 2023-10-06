@@ -57,6 +57,19 @@ def createConsulta(name, cole, cla, user):
         cn.save()
         return cn
 
+def loadConsulta(request):
+    cname = request.POST.get('consulta')
+    c = Consulta.objects.filter(nombre=cname, estado="close").first()
+    if c:
+        contenido = json.loads(c.contenido) if c.contenido else []
+        print('Consulta encontrada')
+        rs = {'nombre': c.nombre, 'coleccion': c.coleccion, 'contenido': contenido, 'estado': c.estado, 'created_at': c.created_at}
+        return JsonResponse(rs)
+    else:
+        print('No existe la consulta')
+        rs = {'nombre': cname, 'coleccion': '', 'contenido': '', 'estado': 'void', 'created_at': str(date.today())}
+        return JsonResponse(rs)
+
 def consultas_view(request):
     #autorizaciones facturas pagos incapacidades
     cm_colection = request.POST.get('collections') if request.POST.get('collections') else ''

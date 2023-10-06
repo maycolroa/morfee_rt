@@ -168,6 +168,7 @@ Vue.component('cuentas-medicas-pagos', require('./componentes/pagos/cuentas_medi
 Vue.component('temporizador', require('./componentes/temporizador.vue').default);
 Vue.component('neuronas', require('./componentes/neuronas.vue').default);
 Vue.component('animacion', require('./componentes/animacion.vue').default);
+Vue.component('reserva-global', require('./componentes/reserva_global.vue').default);
 
 
 window.app = new Vue({

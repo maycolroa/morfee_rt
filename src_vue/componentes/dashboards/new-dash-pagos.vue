@@ -656,7 +656,7 @@
                                         <td>
                                             <div class="text-bold">PAGADO PBS</div>{{ numformat(clearNumber(rawCtr.s_vpbs)) }}
                                         </td>
-                                        <td :class="0 == 0? 'dk-success': 'txt-danger'">
+                                        <td :class="(rawCtr.f_pbs - (rawCtr.g_pbs + rawCtr.s_vpbs)) == 0? 'dk-success': 'txt-danger'">
                                             <div class="text-bold">DIFERENCIA</div>
                                             {{ numformat(clearNumber(rawCtr.f_pbs - (rawCtr.g_pbs + rawCtr.s_vpbs))) }}
                                         </td>
@@ -699,7 +699,7 @@
                                         <td>
                                             <div class="text-bold">PAGADO PM</div>{{ numformat(clearNumber(rawCtr.s_vppm)) }}
                                         </td>
-                                        <td :class="0 == 0? 'dk-success': 'txt-danger'">
+                                        <td :class="(rawCtr.f_pm - (rawCtr.g_pm + rawCtr.s_vppm)) == 0? 'dk-success': 'txt-danger'">
                                             <div class="text-bold">DIFERENCIA</div>
                                             {{ numformat(clearNumber(rawCtr.f_pm - (rawCtr.g_pm + rawCtr.s_vppm))) }}
                                         </td>
@@ -1029,6 +1029,7 @@ export default {
 .dk-disabled {opacity: .5 !important; user-select: none !important; pointer-events: none !important}
 .dk-row {color:#000; font-family: Arial}
 .dk-row td, .tr-center th {text-align: center !important}
+.dk-success {color:#29B672 !important}
 .tr-center th {font-weight: bold}
 .tr-25 > td, .td-25 {width: 25%}
 .td-25 {width: 25%}

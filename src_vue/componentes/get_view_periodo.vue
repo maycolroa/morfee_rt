@@ -1,6 +1,6 @@
 <template>
     <div> 
-        <div class="input-group me-4">
+        <div :class="'input-group ' + mrgn">
             <div class="input-group-addon" style="background:#FFF">
                 <a href="javascript:void(0)" @click="openDetails"><i class="fa fa-calendar fs-5"></i></a>
             </div>
@@ -31,7 +31,7 @@
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
-        </div>        
+        </div>
         <!-- End modal -->
     </div>
 </template>
@@ -40,6 +40,7 @@ export default {
     props : {
         collections: {type: String, default: 'retec_contratos'},
         storage: {type: String, default: ''},
+        sinmargen: {type: Boolean, default: false},
     },
     data() {
         return {
@@ -52,6 +53,7 @@ export default {
             post_refresh: false,
             prefijo: '',
             zero: null,
+            mrgn: 'me-4',
             status: 'ini',
             state: {'INI': 'ini', 'LOADING': 'loading', 'LOADED': 'loaded', 'FAILED': 'failed'},
         }
@@ -177,6 +179,9 @@ export default {
         },
     },
     mounted() {
+        if(this.sinmargen){
+            this.mrgn = '';
+        }
         this.prefijo = this.isEmpty(this.storage)? '': this.storage + '_';
         this.collections.split(',').forEach(elm => {
             let short = elm.replace('retec_', '').slice(0, 3);
