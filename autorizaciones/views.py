@@ -64,40 +64,55 @@ def raw_facet_auto(request):
     try:
         datos = mongo.aggregate([
             {'$match': {'crx': periodo} },
+            {"$addFields": {
+                "cd_0": {"$in": ["$pmx", ['0', 0]]},
+                "cd_1": {"$in": ["$pmx", ['1', 1]]},
+                "cd_sm": {"$in": ["$pla", ['S', 'M']]},
+                "cd_vc": {"$in": ["$pla", ['V', 'C']]},
+            }},
             {
                 '$facet': {
                     'rs_1': [
-                        {'$match': {'pmx': {"$in": ['0', 0]},  'pla': {'$in': ['S', 'M']}}}, 
+                        # {'$match': {'pmx': {"$in": ['0', 0]},  'pla': {'$in': ['S', 'M']}}}, 
+                        {'$match': {'cd_0': True, "cd_sm": True}}, 
                         {'$group': {'_id': '$nmp', 'valor': {'$sum': '$vbs'}, 'total': {'$sum': 1} }},
-                        {'$sort': {'valor': -1}}
+                        {'$sort': {'valor': -1}},
+                        {"$limit": 30}
                     ], 
                     'rs_2': [
-                        {'$match': {'pmx': {"$in": ['0', 0]}, 'pla':{ '$in':['V', 'C']}}}, 
+                        # {'$match': {'pmx': {"$in": ['0', 0]}, 'pla':{ '$in':['V', 'C']}}}, 
+                        {'$match': {'cd_0': True, 'cd_vc': True}}, 
                         {'$group': {'_id': '$nmp', 'valor': {'$sum': '$vbs'}, 'total': {'$sum': 1} }},
-                        {'$sort': {'valor': -1}}
+                        {'$sort': {'valor': -1}},
+                        {"$limit": 30}
                     ], 
                     'rs_3': [
-                        {'$match': {'pmx': {"$in": ['1', 1]}, 'pla': {'$in': ['S', 'M']}}}, 
+                        # {'$match': {'pmx': {"$in": ['1', 1]}, 'pla': {'$in': ['S', 'M']}}}, 
+                        {'$match': {'cd_1': True, 'cd_sm': True}}, 
                         {'$group': {'_id': '$nmp', 'valor': {'$sum': '$vpm'}, 'total': {'$sum': 1} }},
-                        {'$sort': {'valor': -1}}
+                        {'$sort': {'valor': -1}},
+                        {"$limit": 30}
                     ], 
                     'rs_4': [
-                        {'$match': {'pmx': {"$in": ['1', 1]}, 'pla':{ '$in':['V', 'C']}}}, 
+                        # {'$match': {'pmx': {"$in": ['1', 1]}, 'pla':{ '$in':['V', 'C']}}}, 
+                        {'$match': {'cd_1': True, 'cd_vc': True}}, 
                         {'$group': {'_id': '$nmp', 'valor': {'$sum': '$vpm'}, 'total': {'$sum': 1} }},
-                        {'$sort': {'valor': -1}}
+                        {'$sort': {'valor': -1}},
+                        {"$limit": 30}
                     ],
                     'rs_5': [
-                        {'$match': {'pmx': {"$in": ['0', 0]}, 'pla':'P'}}, 
+                        # {'$match': {'pmx': {"$in": ['0', 0]}, 'pla':'P'}}, 
+                        {'$match': {'cd_0': True, 'pla':'P'}}, 
+                        {'$group': {'_id': '$nmp', 'valor': {'$sum': '$vac'}, 'total': {'$sum': 1} }},
+                        {'$sort': {'valor': -1}},
+                        {"$limit": 30}
+                    ],
+                    'rs_6': [
+                        # {'$match': {'pmx': {"$in": ['1', 1]}, 'pla':'P'}}, 
+                        {'$match': {'cd_1': True, 'pla':'P'}}, 
                         {'$group': {'_id': '$nmp', 'valor': {'$sum': '$vac'}, 'total': {'$sum': 1} }},
                         {'$sort': {'valor': -1}}
                     ],
-                    'rs_6': [
-                        {'$match': {'pmx': {"$in": ['1', 1]}, 'pla':'P'}}, 
-                        {'$group': {'_id': '$nmp', 'valor': {'$sum': '$vac'}, 'total': {'$sum': 1} }},
-                        {'$sort': {'valor': -1}}
-                    ], 
-                    
-
                     'pmx': [{'$group': {'_id': '$pmx', 'total': {'$sum': 1} } }],
                     'facet_amb': [{"$sortByCount": "$amb"}],
                     'facet_pla': [{"$sortByCount": "$pla"}],
@@ -179,7 +194,7 @@ def schema_auto(request):
                 'n_idc': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$idc', None] }, None] }, 0, 1] } },
                 'n_tus': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$tus', None] }, None] }, 0, 1] } },
                 'n_ius': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$ius', None] }, None] }, 0, 1] } },
-                'n_iav': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$iav', None] }, None] }, 0, 1] } },
+                'n_iav': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$iau', None] }, None] }, 0, 1] } },
                 'n_fav': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$fav', None] }, None] }, 0, 1] } },
                 'n_amb': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$amb', None] }, None] }, 0, 1] } },
                 'n_ids': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$ids', None] }, None] }, 0, 1] } },

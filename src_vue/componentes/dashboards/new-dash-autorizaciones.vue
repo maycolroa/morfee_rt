@@ -8,7 +8,6 @@
             <div class="d-flex">
                 <temporizador ref="timecop"></temporizador>
                 <get-view-periodo :class="status" collections="retec_autorizaciones"></get-view-periodo>
-                <!-- <select-periodo ref="xtime" :coleccion="fuente" :alias="krache_time"></select-periodo> -->
                 <div :class="section == 'basic'? 'btn-group dk-disabled ' + status: 'btn-group ' + status">
                     <button :class="display == 'chart'? 'btn btn-success': 'btn btn-default'" @click="display = 'chart'"><i class="fa fa-bar-chart"></i></button>
                     <button :class="display == 'table'? 'btn btn-success': 'btn btn-default'" @click="display = 'table'"><i class="fa fa-table"></i></button>
@@ -638,9 +637,6 @@ export default {
             pathsearch: root_path + 'consulta/dash/consulta/auto',
             fuente: 'retec_autorizaciones',
             // fuente: '7_retec_autorizacion',
-            krache: 'dash_auto_' + this.cliente,
-            krache_ctr: 'dash_auto_ctr_' + this.cliente,
-            krache_time: 'time_autorizacion_' + this.cliente,
             section: 'basic',
             display: 'chart',       // table | chart
             taritem: 'suma',        // suma | total
@@ -913,8 +909,6 @@ export default {
                 this.manager();
             });
             this.$eventBus.$on('time-refresh', bool => {
-                unregisterJSON(this.krache);
-                unregisterJSON(this.krache_ctr);
                 this.manager(true);
                 //this.lc_token = this.makeToken();
             });
