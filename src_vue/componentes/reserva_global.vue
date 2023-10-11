@@ -11,7 +11,7 @@
                 <contador-light ref="cnt_fac" class="border" texto="TOTAL RESERVA CONOCIDA LIQUIDADA" valor="0" duracion="1" miles></contador-light>
             </div>
             <div class="col-sm-6">
-                <contador-light ref="cnt_1" class="border" texto="TOTAL RESERVA NO CONOCIDA - IBNR (CHAIN LADDER)" valor="0" duracion="1" miles></contador-light>
+                <contador-light ref="cnt_ibnr" class="border" texto="TOTAL RESERVA NO CONOCIDA - IBNR (CHAIN LADDER)" valor="0" duracion="1" miles></contador-light>
             </div>
             <div class="col-sm-6">
                 <contador-light ref="cnt_all" class="border" texto="TOTAL RESERVA TÉCNICA" valor="0" duracion="1" miles></contador-light>
@@ -74,7 +74,6 @@ export default {
             let pam = new FormData();
             pam.append('consulta', cfac);
             axios.post(root_path + 'consulta/load', pam).then(res => {
-                console.log('listo rawpalinga');
                 let raw = res.data.contenido;
                 console.log(raw);
                 if(raw.length > 0){
@@ -91,6 +90,26 @@ export default {
                 this.$refs.cnt_fac.setValor('');
             });
         },
+        loadIBNR: function(){
+            let cbin = `ibnr_${this.periodo}`;
+            let pam = new FormData();
+            pam.append('consulta', cbin);
+            axios.post(root_path + 'consulta/load', pam).then(res => {
+                let raw = res.data.contenido;
+                console.log(raw);
+                if(raw.length > 0){
+                    let ibnr = raw[0].all;
+                    this.sum_all += ibnr;
+                    this.$refs.cnt_all.setValor(Math.round(this.sum_all));
+                    this.$refs.cnt_ibnr.setValor(ibnr);
+                }else{
+                    this.$refs.cnt_fac.setValor('');
+                }
+            }).catch(err => {
+                console.log(err);
+                // this.$refs.cnt_fac.setValor('');
+            });
+        },
         listen: function(){
             this.$eventBus.$on('time-select', obj => {
                 console.log('time-select dispatch');
@@ -99,6 +118,7 @@ export default {
                 this.sum_all = 0;
                 this.loadAuto();
                 this.loadFacturas();
+                this.loadIBNR();
             });
             this.$eventBus.$on('time-refresh', obj => {
                 console.log('time-refresh dispatch');
@@ -107,6 +127,7 @@ export default {
                 this.sum_all = 0;
                 this.loadAuto();
                 this.loadFacturas();
+                this.loadIBNR();
             });
         }
     },

@@ -651,7 +651,6 @@ export default {
             anio: '',
             mes: '',
             show_head: true,
-            f_periodo: '',
             f_cross: 'bg-cruce',
             f_in: 'bg-in',
             f_out: 'bg-danger',
@@ -688,7 +687,8 @@ export default {
                 ]},
                 'crx': null
             },
-            state: {'INI': 'ini', 'LOADING': 'loading', 'LOADED': 'loaded', 'FAILED': 'failed'}
+            state: {'INI': 'ini', 'LOADING': 'loading', 'LOADED': 'loaded', 'FAILED': 'failed'},
+            ibnr_sch: null,
         }
     },
     watch: {
@@ -723,6 +723,10 @@ export default {
                 let c = a * b;
                 sum += c - a;
             });
+            if('ladder' == tipo){
+                console.log();
+                this.loadIBNR(Math.round(Math.abs(sum)));
+            }
             return sum;
         },
         makeRango: function(num){	// Version 3
@@ -920,9 +924,6 @@ export default {
                         if(this.hot_acum[tm1] >= this.hot_acum[tm0]){
                             let fac = (this.hot_acum[tm0] > 0)? this.hot_acum[tm1] / this.hot_acum[tm0]: 1;
                             this.hot_fac[tm1] = fac;
-                            // if(this.hot_mm[ranum] == undefined){
-                            //     this.hot_mm[ranum] = {'min': fac, 'max': fac, 'periodo': ri + 1, 'data': [], 'suma': 0, 'total': 0};
-                            // }
                             this.hot_mm[ranum].min = this.secureMin(this.hot_mm[ranum].min, fac);
                             this.hot_mm[ranum].max = this.secureMax(this.hot_mm[ranum].max, fac);
                             this.hot_mm[ranum].data.push(fac);
@@ -994,8 +995,6 @@ export default {
                     }
                 }
             });
-            console.log('Bakiri sam');
-            console.log(this.hot_mm);
             this.hot_status = true;
             let summary = {
                 'prom': {'fuente': 'prom', 'valor': Math.round(Math.abs(this.getIBNR('prom'))), 'active': false},
@@ -1290,20 +1289,6 @@ export default {
                 tm[elm.anio]['meses'].push({'num': elm.num, 'tx': elm.tx, 'match': elm.match});
             });
             this.periodos_select = Object.values(tm);
-            // if(this.status_per != this.state.LOADING){
-            //     console.log('cargando periodos');
-            //     let pam = new FormData();
-            //     pam.append('tema', '6_retec_facturas_view');//'this.fuente);
-            //     pam.append('campo', 'crx');
-            //     this.status_per = this.state.LOADING;
-            //     axios.post(this.pathperiodos, pam).then(res => {
-            //         this.periodos_db = res.data;
-            //         this.status_per = this.state.LOADED;
-            //     }).catch(err => {
-            //         this.status_per = this.state.FAILED;
-            //         console.log(err);
-            //     });
-            // }
         },
         openCell: function(pre, rad, r, c, ori){
             this.type_cell = 'normal';
@@ -1352,7 +1337,7 @@ export default {
             this.warnings = {'aut': [], 'fac': [], 'pag': []};
         },
         endLoad: function(contenido, origen){
-            console.log('Resultado en end-load');
+            console.log('Resultado en end-load (local function)');
             if(Array.isArray(contenido)){
                 contenido[0].datos.forEach(elm => {
                     this.pushValue(elm, origen);
@@ -1371,6 +1356,43 @@ export default {
                 this.status = this.state.FAILED;
             }
         },
+        loadIBNR: function(sum){
+            let ym = this.targetPeriodoDB.num;
+            let cname = `ibnr_${ym}`;
+            let pam = new FormData();
+            pam.append('csrfmiddlewaretoken', token_root);
+            pam.append('consulta', cname);
+            console.log(`Consultando... ===== ibnr_${ym}`);
+            axios.post(root_path + 'consulta/load', pam).then(res => {
+                console.log('Yuna IBNR from sql!');
+                console.log(res.data);
+                // if('void' == res.data.estado){
+                //     console.log('Is void status');
+                //     this.saveIBNR(cname, sum);
+                // }else{
+
+                // }
+                this.saveIBNR(cname, sum);
+            }).catch(err => {
+                console.log(err);
+            });
+        },
+        saveIBNR: function(cname, val){
+            if(this.f_filtro == 'all'){
+                this.ibnr_sch = {'all': 0, 'pbs': 0, 'pm': 0, 'pac': 0};
+                this.ibnr_sch[this.f_filtro] = val;
+                let pam = new FormData();
+                pam.append('csrfmiddlewaretoken', token_root);
+                pam.append('consulta', cname);
+                ['all', 'pbs', 'pm', 'pac'].forEach(elm => pam.append(elm, this.ibnr_sch[elm]));
+                axios.post(root_path + 'consulta/save', pam).then(res => {
+                    console.log('Etchecopar!');
+                    console.log(res.data);
+                }).catch(err => {
+                    console.log(err);
+                });
+            }
+        },
         listen: function(){
             this.$eventBus.$on('time-refresh', arg => {
                 this.targetPeriodoDB = arg.info;
@@ -1381,7 +1403,7 @@ export default {
             this.$eventBus.$on('end-load', arg => {
                 let origen = arg.origen;
                 let contenido = arg.contenido;
-                console.log('Resultado en end-load');
+                console.log('Listen end-load');
                 console.log(arg);
                 if(Array.isArray(contenido)){
                     contenido[0].datos.forEach(elm => {
@@ -1410,8 +1432,7 @@ export default {
         let ki = new Date();
         this.anio = ki.getFullYear();
         this.mes = ki.getMonth() + 1;
-        this.f_periodo = this.anio + this.mes.toString().padStart(2, '0');
-        this.loadPeriodos();
+        // this.loadPeriodos();
     }
 }
 </script>

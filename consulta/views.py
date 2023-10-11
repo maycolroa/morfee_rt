@@ -59,6 +59,8 @@ def createConsulta(name, cole, cla, user):
 
 def loadConsulta(request):
     cname = request.POST.get('consulta')
+    print('Into loadConsulta')
+    print(cname)
     c = Consulta.objects.filter(nombre=cname, estado="close").first()
     if c:
         contenido = json.loads(c.contenido) if c.contenido else []
@@ -154,3 +156,18 @@ def pay_prestadores(request):
         {"$limit": 10}
     ])
     return HttpResponse(datos, content_type="application/json")
+
+def saveConsulta(request):
+    name = request.POST.get('consulta')
+    all = request.POST.get('all')
+    pbs = request.POST.get('pbs')
+    pm = request.POST.get('pm')
+    pac = request.POST.get('pac')
+    datos = [{'all': float(all), 'pbs': float(pbs), 'pm': float(pm), 'pac': float(pac)}]
+    sudata = str(datos).replace("'", '"')
+    uid = request.user.id
+    bone = {"nombre": name, "coleccion": '', "clave": '', "contenido": sudata, "estado": 'close', "cliente_id": 0, "user_id": uid}
+    obj, created = Consulta.objects.update_or_create(nombre=name, defaults=bone)
+    print(obj)
+    print(created)
+    return JsonResponse({'status': 'success'})
