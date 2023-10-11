@@ -195,7 +195,7 @@ def schema_auto(request):
                 'n_tus': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$tus', None] }, None] }, 0, 1] } },
                 'n_ius': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$ius', None] }, None] }, 0, 1] } },
                 'n_iav': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$iau', None] }, None] }, 0, 1] } },
-                'n_fav': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$fav', None] }, None] }, 0, 1] } },
+                'n_fav': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$fau', None] }, None] }, 0, 1] } },
                 'n_amb': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$amb', None] }, None] }, 0, 1] } },
                 'n_ids': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$ids', None] }, None] }, 0, 1] } },
                 'n_ser': {'$sum': {'$cond': [{'$eq': [{'$ifNull': ['$ser', None] }, None] }, 0, 1] } },
