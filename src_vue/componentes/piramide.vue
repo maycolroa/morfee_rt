@@ -707,6 +707,9 @@ export default {
         }
     },
     methods: {
+        printwar: function(){
+            return JSON.stringify(this.warnings);
+        },
         getDataMM: function(ym, atr, alt=false){
             if(atr == '' || [undefined, null].includes(this.hot_mm[ym])){
                 return '';
@@ -914,7 +917,7 @@ export default {
                     let ranum = this.periodos[ri].num;
                     let tm1 = `${pre.num}_${rad.num}`;
                     if(this.hot_mm[ranum] == undefined){
-                        this.hot_mm[ranum] = {'min': null, 'min_p': null, 'max': null, 'max_p': null, 'periodo': ri + 1, 'data': [], 'data12': [], 'data24': [], 'suma': 0, 'total': 0, 'pro': null, 'pro_p': null, 'pro_12': '', 'pro_24': '', 'ladder': '', 'ladder_p': '', 'smx': '', 'smx_p': ''};
+                        this.hot_mm[ranum] = {'min': null, 'min_p': null, 'max': null, 'max_p': null, 'periodo': ri + 1, 'data': [], 'data12': [], 'data24': [], 'suma': 0, 'total': 0, 'pro': null, 'pro_p': null, 'pro_12': '', 'pro_24': '', 'ladder': '', 'ladder_p': '', 'smx': '', 'smx_p': '', 'len': 0, 'kall': []};
                     }
                     if(ri == 0){
                         this.hot_fac[tm1] = '';
@@ -935,13 +938,18 @@ export default {
                             }
                             this.hot_mm[ranum].suma += fac;
                         }else{
+                            console.log('El kindong...........................');
                             // console.log('El actual debería ser mayor que el anterior.');
                             // console.log();
                         }
                     }
                     this.hot_mm[ranum].total += this.hot_acum[tm1];
+                    this.hot_mm[ranum].kall.push(this.hot_acum[tm1]);       // kall is array with all total cell acums, pensado para sumar porciones del array.
+                    this.hot_mm[ranum].len++;
                 });
             });
+            console.log('Kalling!');
+            console.log(this.hot_mm);
             // Para organizar los colores
             this.periodos.forEach((pre, pi) => {
                 this.periodos.slice(pi).forEach((rad, ri) => {
@@ -973,8 +981,11 @@ export default {
                     this.hot_mm[per.num].pro = this.hot_mm[per.num].suma / (37 - this.hot_mm[per.num].periodo);
                     let cx1 = this.hot_mm[per.num].num;
                     let cx0 = this.hot_mm[per.num].numback;
-                    this.hot_mm[per.num].ladder = (cx1 == cx0)? '': this.hot_mm[cx1].total / this.hot_mm[cx0].total;
-                    this.hot_mm[per.num].smx = (this.hot_mm[per.num].suma - this.hot_mm[per.num].min - this.hot_mm[per.num].max) / (37 - this.hot_mm[per.num].periodo);
+                 // this.hot_mm[per.num].ladder = (cx1 == cx0)? '': this.hot_mm[cx1].total / this.hot_mm[cx0].total;
+                    this.hot_mm[per.num].ladder = (cx1 == cx0)? '': this.hot_mm[cx1].total / this.sumSlice(this.hot_mm[cx0].kall, this.hot_mm[cx1].len);
+                    let largo = this.hot_mm[per.num].len - 3
+                    console.log('Largo ... ' + largo);
+                    this.hot_mm[per.num].smx = (largo > 0)? (this.hot_mm[per.num].suma - this.hot_mm[per.num].min - this.hot_mm[per.num].max) / largo: 1;   // (37 - this.hot_mm[per.num].periodo);
                 }
                 back = per.num;
             });
@@ -991,7 +1002,8 @@ export default {
                         this.hot_mm[per.num].pro_12 = this.hot_mm[per.num].data12.reduce((ac, elm) => ac + elm, 0) / this.hot_mm[per.num].data12.length;
                         this.hot_mm[per.num].pro_24 = this.hot_mm[per.num].data24.reduce((ac, elm) => ac + elm, 0) / this.hot_mm[per.num].data24.length;
                         this.hot_mm[per.num].ladder_p = pers.map(num => this.hot_mm[num].ladder).reduce((ac, elm) => ac * elm, 1);
-                        this.hot_mm[per.num].smx_p = (this.hot_mm[per.num].suma - this.hot_mm[per.num].min - this.hot_mm[per.num].max) / (37 - this.hot_mm[per.num].periodo);
+                        // this.hot_mm[per.num].smx_p = (this.hot_mm[per.num].suma - this.hot_mm[per.num].min - this.hot_mm[per.num].max) / (37 - this.hot_mm[per.num].periodo);
+                        this.hot_mm[per.num].smx_p = pers.map(num => this.hot_mm[num].smx).reduce((ac, elm) => ac * elm, 1);
                     }
                 }
             });
@@ -1015,6 +1027,9 @@ export default {
             this.$refs.ib_min.setValor(summary.min.valor, summary.min.active);
             this.$refs.ib_max.setValor(summary.max.valor, summary.max.active);
             this.$refs.ib_smx.setValor(summary.smx.valor, summary.smx.active);
+        },
+        sumSlice: function(arr, len){
+            return arr.reduce((ac, elm, i) => (i < len)? ac + elm: ac, 0);
         },
         setTriangle: function(elm){
             this.enable_controls = false;
@@ -1236,13 +1251,16 @@ export default {
                     'rad': doc._id.f_rad
                 });
             }else{
-                let ref = doc._id.f_pre + '_' + doc._id.f_rad;
-                if(this.hash[ref] == undefined){
-                    this.hash[ref] = [];
+                let npre = parseInt(doc._id.f_pre);
+                let ref = `${npre}_${doc._id.f_rad}`;   // doc._id.f_pre + '_' + doc._id.f_rad;
+                if(origen != 'aut' || npre >= this.per_12){
+                    if(this.hash[ref] == undefined){
+                        this.hash[ref] = [];
+                    }
+                    this.hash[ref].push({'valor': doc.total_pac, 'tipo': 'pac', 'origen': origen});
+                    this.hash[ref].push({'valor': doc.total_pbs, 'tipo': 'pbs', 'origen': origen});
+                    this.hash[ref].push({'valor': doc.total_pm, 'tipo': 'pm', 'origen': origen});
                 }
-                this.hash[ref].push({'valor': doc.total_pac, 'tipo': 'pac', 'origen': origen});
-                this.hash[ref].push({'valor': doc.total_pbs, 'tipo': 'pbs', 'origen': origen});
-                this.hash[ref].push({'valor': doc.total_pm, 'tipo': 'pm', 'origen': origen});
             }
         },
         fillPeriodos: function(arr, src){
@@ -1263,7 +1281,7 @@ export default {
                 }
             });
         },
-        loadPeriodos: function(){
+        /* loadPeriodos: function(){
             let aut = [202206, 202212, 202306];
             let fac = [202212, 202305, 202306];
             let pag = [202212, 202306];
@@ -1289,7 +1307,7 @@ export default {
                 tm[elm.anio]['meses'].push({'num': elm.num, 'tx': elm.tx, 'match': elm.match});
             });
             this.periodos_select = Object.values(tm);
-        },
+        }, */
         openCell: function(pre, rad, r, c, ori){
             this.type_cell = 'normal';
             this.targetCellRef = {'pre': pre, 'rad': rad, 'row': r, 'col': c, 'origen': ori};
@@ -1432,7 +1450,6 @@ export default {
         let ki = new Date();
         this.anio = ki.getFullYear();
         this.mes = ki.getMonth() + 1;
-        // this.loadPeriodos();
     }
 }
 </script>

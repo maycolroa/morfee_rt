@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'pagos',
     'proyecciones',
     'triangulos',
-    'users'
+    'users',
+    'lab',
 ]
 
 MIDDLEWARE = [
