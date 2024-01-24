@@ -384,8 +384,6 @@ export default {
             document.getElementById('fl_file').click();
         },
         sendFileUpload: function(){
-            alert(this.lc_prefijo + this.lc_destino);
-            return true;
             let per = (this.withperiodo)? (this.getPeriodo() != ''): true;
             if(per == false){
                 alert('Debe seleccionar el periodo de corte de la base de datos!');
