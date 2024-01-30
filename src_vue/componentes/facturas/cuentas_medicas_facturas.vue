@@ -54,7 +54,7 @@
                         <div class="d-flex justify-content-between">
                             <div>
                                 <h6 class="panel-title txt-dark text-bold text-upper mb-0">FACTURADO vs GLOSADO <span v-if="this.isEmpty(titulo) == false">({{ titulo }})</span><i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
-                                <div class="txt-dark">FAMISANAR</div>
+                                <div class="txt-dark">CAPITAL SALUD</div>
                             </div>
                             <div>
                                 <a href="javascript:void(0)" class="me-2 d-none"><i class="zmdi zmdi-download"></i></a>
@@ -105,7 +105,7 @@
                         <div class="d-flex justify-content-between">
                             <div>
                                 <h6 class="panel-title txt-dark text-bold text-upper mb-0">FACTURADO vs GLOSADO <span v-if="this.isEmpty(titulo) == false">({{ titulo }})</span><i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
-                                <div class="txt-dark">FAMISANAR</div>
+                                <div class="txt-dark">CAPITAL SALUD</div>
                             </div>
                             <div>
                                 <a href="javascript:void(0)" class="me-2" click="$refs.gp_line.exportar()"><i class="zmdi zmdi-download"></i></a>
@@ -140,7 +140,7 @@
                         <div class="d-flex justify-content-between">
                             <div>
                                 <h6 class="panel-title txt-dark text-bold text-upper mb-0">VALORES PAGADOS <span v-if="this.isEmpty(titulo) == false">({{ titulo }})</span><i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
-                                <div class="txt-dark">FAMISANAR</div>
+                                <div class="txt-dark">CAPITAL SALUD</div>
                             </div>
                             <div>
                                 <a href="javascript:void(0)" class="me-2" click="$refs.gp_pag.exportar()"><i class="zmdi zmdi-download"></i></a>
@@ -173,7 +173,7 @@
                         <div class="d-flex justify-content-between">
                             <div>
                                 <h6 class="panel-title txt-dark text-bold text-upper mb-0">VALORES EN RESERVA <span v-if="this.isEmpty(titulo) == false">({{ titulo }})</span><i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
-                                <div class="txt-dark">FAMISANAR</div>
+                                <div class="txt-dark">CAPITAL SALUD</div>
                             </div>
                             <div>
                                 <a href="javascript:void(0)" class="me-2" click="$refs.gp_res.exportar()"><i class="zmdi zmdi-download"></i></a>
@@ -208,7 +208,7 @@
                     <div>
                         <h6 class="panel-title txt-dark text-bold text-upper mb-0" v-if="display == 'barra'">{{ titles[campo] }}<i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
                         <h6 class="panel-title txt-dark text-bold text-upper mb-0" v-else>COMPARATIVO ENTRE VALOR FACTURADO Y GLOSADO<i class="fa fa-spin fa-spinner ms-2" v-if="status == state.LOADING"></i></h6>
-                        <div class="txt-dark">FAMISANAR</div>
+                        <div class="txt-dark">CAPITAL SALUD</div>
                     </div>
                     <div>
                         <a href="javascript:void(0)" class="me-2" click="$refs.gp_1.exportar()"><i class="zmdi zmdi-download"></i></a>

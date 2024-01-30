@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-b%xb#)n%)i)*qgeim!3929=7c#ipw#_h8q*cdp7vq&0$9iuc4@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '10.244.8.31', 'famisanar.morfee.com.co', 'dolphin-app-scewd.ondigitalocean.app', 'https://dolphin-app-scewd.ondigitalocean.app']
+ALLOWED_HOSTS = ['127.0.0.1', '10.244.8.31', 'reservas.morfee.com.co', 'https://reservas.morfee.com.co', 'famisanar.morfee.com.co', 'dolphin-app-scewd.ondigitalocean.app', 'https://dolphin-app-scewd.ondigitalocean.app']
 
 # Application definition
 
