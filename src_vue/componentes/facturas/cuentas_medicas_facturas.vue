@@ -295,9 +295,16 @@ export default {
             return (a < b)? 1: -1;
         },
         prettyPer: function(arg){
-            let a = arg.slice(0, 4);
-            let b = arg.slice(-2);
-            return `${a}-${b}`;
+            console.log('Contenido de prettyPer');
+            console.log(arg);
+            if([undefined, null, ''].includes(arg)){
+                return 'vacío';
+            }else{
+                let str = String(arg);
+                let a = str.slice(0, 4);
+                let b = str.slice(-2);
+                return `${a}-${b}`;
+            }
         },
         setSection: function(arg){
             this.section = arg;

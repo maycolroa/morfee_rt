@@ -22,11 +22,12 @@ def data_cm(request):
     consulta = createConsulta(cnombre, 'retec_facturas', clave, user_id)
     mongo = Mongo('retec_facturas')
     datos = mongo.aggregate([
-        # {"$addFields": {"vraw": {"$toString": "$fr"}} },
         # {"$project": {"vdo": 1, "vgl": 1,  "prd": {"$substrBytes": ["$vraw", 0, 6]}, "vpbs": 1, "vppm": 1, "vpac": 1, "vrpbs": 1, "vrpm": 1, "vrpac": 1} },
         # {"$limit": 1000},
         filtro,
-        {"$project": {"_id": 0, "nmp": 1, "vdo": 1, "vgl": 1, "gld":1,  "vr_per": 1, "vpbs": 1, "vppm": 1, "vpac": 1, "vrpbs": 1, "vrpm": 1, "vrpac": 1} },
+        {"$addFields": {"vraw": {"$toString": "$fr"}} },
+        {"$addFields": {"vr_per": {"$substrBytes": ["$vraw", 0, 6]}} },
+        {"$project": {"_id": 0, "nmp": 1, "fr": 1, "vdo": 1, "vgl": 1, "gld":1,  "vr_per": 1, "vpbs": 1, "vppm": 1, "vpac": 1, "vrpbs": 1, "vrpm": 1, "vrpac": 1} },
         {"$facet": {
             "result": [
                 {"$group": {
