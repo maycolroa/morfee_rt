@@ -120,8 +120,7 @@ else:
         }
     }
 
-# CUSTOM_URI_MONGO = 'mongodb://localhost:27017/'
-CUSTOM_URI_MONGO = 'mongodb+srv://carvi:ac2502412@sgsss.yv4ar.gcp.mongodb.net/morfeeweb?authSource=admin'
+CUSTOM_URI_MONGO = 'mongodb+srv://djcarvi:Ac2502412@sgsss.yv4ar.gcp.mongodb.net/morfeeweb?authSource=admin'
 CUSTOM_DB_MONGO = 'morfee_lobster'
 
 # Password validation
