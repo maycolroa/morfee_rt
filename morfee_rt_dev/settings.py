@@ -12,11 +12,11 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from os import getenv
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 PRODUCT_STATUS = getenv("PRODUCT_STATUS", "False") == "True"
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-b%xb#)n%)i)*qgeim!3929=7c#ipw#_h8q*cdp7vq&0$9iuc4@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '10.244.8.31', 'reservas.morfee.com.co', 'https://reservas.morfee.com.co', 'famisanar.morfee.com.co', 'dolphin-app-scewd.ondigitalocean.app', 'https://dolphin-app-scewd.ondigitalocean.app']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '10.244.8.31', 'reservas.morfee.com.co', 'famisanar.morfee.com.co', 'dolphin-app-scewd.ondigitalocean.app']
 
 # Application definition
 
@@ -81,13 +81,7 @@ TEMPLATES = [
     },
 ]
 
-# ASGI_APPLICATION = 'morfee_rt_dev.asgi.application'
-# CHANNEL_LAYERS = {
-#     'default': {'BACKEND': 'channels.layers.InMemoryChannelLayer'}
-# }
-
 WSGI_APPLICATION = 'morfee_rt_dev.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -97,7 +91,7 @@ if PRODUCT_STATUS == False:
             'ENGINE': 'django.db.backends.mysql',
             'NAME': 'db_morfee_rt',
             'USER': 'root',
-            'PASSWORD': '',
+            'PASSWORD': '123456',  # Aquí debes poner la contraseña de tu base de datos local si la tienes
             'HOST': '127.0.0.1',
             'PORT': '3306',
             'OPTIONS': {
@@ -149,11 +143,12 @@ MODELS = BASE_DIR / 'modelos'
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 if PRODUCT_STATUS == False:
-    STATIC_URL = 'static/'
-    STATICFILES_DIRS = [BASE_DIR / "static",]
-    STATIC_ROOT = "/staticfiles/"
+    STATIC_URL = '/static/'
+    STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
+    STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 else:
-    #Version actualizada
     AWS_ACCESS_KEY_ID = 'VDPJXJOCWLN4YLB7WLVG'
     AWS_SECRET_ACCESS_KEY = 'oCXyf0QEppqysauxt3mdRV03G4Cs3OSrkQLnPZeMuZk'
     AWS_STORAGE_BUCKET_NAME = 'almacenmorfee'
@@ -161,7 +156,6 @@ else:
     AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400', 'ACL': 'public-read'}
     AWS_QUERYSTRING_AUTH = False
     AWS_LOCATION = 'https://almacenmorfee.nyc3.digitaloceanspaces.com/'
-    # AWS_LOCATION = 'reservas/static'
     STATIC_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/reservas/static/"
 
     STATICFILES_FOLDER = "reservas/static"
@@ -169,7 +163,6 @@ else:
 
     STATICFILES_STORAGE = 'custom_storages.StaticFileStorage'
     DEFAULT_FILE_STORAGE = "custom_storages.MediaFileStorage"
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
